@@ -1,3 +1,29 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Outfit:wght@100..900&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  font-family: "Outfit", Verdana, Geneva, Tahoma, sans-serif;
+}
+
+label {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 16px;
+  color: #aaa;
+  pointer-events: none; /* Prevent label from being clicked */
+  transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+input:focus + label {
+  transform: translateY(-25px);
+  color: #007bff;
+}
+
+input:not(:placeholder-shown) + label {
+  transform: translateY(-25px);
+  color: #007bff;
+}

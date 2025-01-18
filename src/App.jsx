@@ -1,14 +1,17 @@
-import { useState } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Login from "./views/login";
+import Dashboard from "./views/Dashboard";
+import Signin from "./views/Signin";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <>
-      <div>
-        <h1 className="text-9xl text-center">Plexity Rate</h1>
-      </div>
-    </>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/signin" element={<Signin />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </Router>
   );
 }
 
