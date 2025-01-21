@@ -23,7 +23,7 @@ const Signin = () => {
   return (
     <>
       <div className="md:flex items-center justify-center  min-h-screen">
-        <div className="md:flex flex-row-reverse md:w-4/5 md:shadow-3xl">
+        <div className="md:flex flex-row-reverse md:w-3/4 md:shadow-2xl">
           <div className="w-full md:w-1/2 p-6 md:pr-20 md:py-10">
             <div className="flex gap-16 items-center mb-5">
               <img src={Logo} alt="" className="w-12 md:w-16" />
@@ -98,12 +98,6 @@ const Signin = () => {
                   <option value="Manager">Manager</option>
                   <option value="Founder">Founder</option>
                 </select>
-                {/* <label
-                  htmlFor="email"
-                  className="block absolute font-medium text-gray-700"
-                >
-                  Email: <span className="text-red-600">*</span>
-                </label> */}
               </div>
               <div className="form-group relative ">
                 <input

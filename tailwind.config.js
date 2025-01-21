@@ -16,7 +16,45 @@ export default {
       screens: {
         "max-sm": { max: "768px" },
       },
+      gridTemplateColumns: {
+        "2col": "250px 1fr",
+        "1col": "100px 1fr",
+      },
+
+      transitionProperty: {
+        "grid-cols": "grid-template-columns",
+      },
+
+      gridTemplateAreas: {
+        layout: ["Sidebar header", "sidebar main", "sidebar footer"],
+      },
     },
   },
-  plugins: [],
+  plugins: [
+    require("@tailwindcss/forms"),
+    function ({ addUtilities }) {
+      addUtilities({
+        ".grid-layout": {
+          display: "grid",
+          "grid-template-areas": `
+            "sidebar header"
+            "sidebar main"
+            "sidebar footer"
+          `,
+        },
+        ".header-area": {
+          "grid-area": "header",
+        },
+        ".sidebar-area": {
+          "grid-area": "sidebar",
+        },
+        ".main-area": {
+          "grid-area": "main",
+        },
+        ".footer-area": {
+          "grid-area": "footer",
+        },
+      });
+    },
+  ],
 };
