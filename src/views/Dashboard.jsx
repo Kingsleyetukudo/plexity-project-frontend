@@ -15,14 +15,17 @@ const Dashboard = () => {
         toggleBar ? "md:grid-cols-[270px_1fr]" : "grid-cols-[0px_1fr]"
       }`}
     >
-      <div className="header-area m-4 rounded-md">
+      <div className="header-area my-3 mb-5 md:m-4 sticky top-1 md:top-4 bg-white ">
         <UserDetails />
       </div>
-      <div className={`sidebar-area  ${toggleBar ? "block" : "max-sm:hidden"}`}>
+      <div
+        className={`sidebar-area sticky top-0  ${
+          toggleBar ? "block" : "max-sm:hidden"
+        }`}
+      >
         <SideBar />
       </div>
-      <div className=" mx-4 main-area ">
-        <div>{/* <DashboardBox /> */}</div>
+      <div className=" mx-2 md:mx-4 pb-8 main-area">
         <Outlet />
       </div>
     </div>

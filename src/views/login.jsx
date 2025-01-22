@@ -97,7 +97,7 @@ const Login = () => {
             <div className="flex justify-end">
               <button
                 type="submit"
-                className="text-xl font-bold px-16 py-4 text-white bg-indigo-600 rounded-full hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="text-xl font-bold px-16 py-4 text-white bg-color-2 rounded-full hover:bg-color-1 focus:outline-none focus:ring-2 focus:ring-color-1"
               >
                 Login
               </button>

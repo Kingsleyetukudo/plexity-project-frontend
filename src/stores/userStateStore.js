@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+// import { persistStore } from "redux-persist";
 import api from "../api";
 
 // Login thunk
@@ -29,6 +30,7 @@ const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.token = null;
+      localStorage.removeItem("persist:auth");
     },
 
     toggleBar: (state) => {

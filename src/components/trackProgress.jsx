@@ -14,7 +14,7 @@ const TaskProgressCard = () => {
               Total Rating
             </h3>
             {/* Icon */}
-            <div className="w-10 h-10 flex items-center justify-center rounded-full bg-color-3">
+            <div className="w-14 h-14 flex items-center justify-center rounded-full bg-color-2">
               <svg
                 className="w-7 h-7 text-white"
                 version="1.1"
@@ -41,7 +41,7 @@ const TaskProgressCard = () => {
           {/* Progress Bar */}
           <div className="relative w-full h-2 bg-gray-200 rounded-full">
             <div
-              className="absolute top-0 left-0 h-2 bg-blue-500 rounded-full"
+              className="absolute top-0 left-0 h-2 bg-color-1 rounded-full"
               style={{ width: `${progressPercentage}%` }}
             ></div>
           </div>
@@ -54,7 +54,7 @@ const TaskProgressCard = () => {
               Total Reviews
             </h3>
             {/* Icon */}
-            <div className="w-10 h-10 flex items-center justify-center rounded-full bg-color-3">
+            <div className="w-14 h-14 flex items-center justify-center rounded-full bg-color-2">
               <svg
                 className="w-7 h-7 text-white"
                 version="1.1"
@@ -96,7 +96,7 @@ const TaskProgressCard = () => {
               Pending Leave
             </h3>
             {/* Icon */}
-            <div className="w-10 h-10 flex items-center justify-center rounded-full bg-color-3">
+            <div className="w-14 h-14 flex items-center justify-center rounded-full bg-color-2">
               <svg
                 className="w-7 h-7 text-white"
                 version="1.1"
