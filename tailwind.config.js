@@ -3,6 +3,9 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      width: {
+        550: "550px",
+      },
       colors: {
         "color-1": "#5187c3",
         "color-2": "#4550a1",
