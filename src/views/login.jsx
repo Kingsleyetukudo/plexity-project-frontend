@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import { useState } from "react";
 import img from "../assets/images/login-image.png";
 import logo from "../assets/images/site-logo.png";
