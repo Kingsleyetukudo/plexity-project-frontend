@@ -4,6 +4,7 @@ import UserDetails from "../components/userDetails";
 import SideBar from "../components/sideBar";
 import { Outlet } from "react-router-dom";
 import { getAllUsers } from "../stores/userStateStore";
+import { getAllAppraisal } from "../stores/appraisalStore";
 import { useEffect } from "react";
 // import DashboardBox from "../components/dashboradBox";
 
@@ -14,6 +15,7 @@ const Dashboard = () => {
   useEffect(() => {
     if (status === "idle") {
       dispatch(getAllUsers());
+      dispatch(getAllAppraisal());
     }
   }, [dispatch, status]);
 

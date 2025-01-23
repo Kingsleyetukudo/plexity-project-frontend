@@ -2,6 +2,8 @@ import { configureStore } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import userStateStoe from "./userStateStore";
+import staffAppraisalSlice from "./staffAppraisalStore";
+import appraisal from "./appraisalStore";
 
 // Persist configuration
 const persistConfig = {
@@ -16,6 +18,8 @@ const persistedAuthReducer = persistReducer(persistConfig, userStateStoe);
 const store = configureStore({
   reducer: {
     auth: persistedAuthReducer,
+    staffAppraisal: staffAppraisalSlice,
+    appraisal: appraisal,
   },
 });
 

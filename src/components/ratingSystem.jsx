@@ -1,42 +1,23 @@
 import { useState } from "react";
-// import axios from "axios";
+import { useSelector } from "react-redux";
+// import { getAllAppraisal } from "../stores/appraisalStore";
 import api from "../api";
 
-// Sample questions from the database
-const questionsFromDB = [
-  {
-    title: "1. Quality of Work",
-    questions: [
-      "How well does the employee meet content quality standards (grammar, spelling, accuracy, error-free)?",
-      "Are projects delivered in line with the client’s specifications?",
-    ],
-  },
-  {
-    title: "2. Productivity and Efficiency",
-    questions: [
-      "Does the employee meet deadlines, manage time, prioritize tasks and manage workload efficiently?",
-      "Are the expected targets for content creation or editing being consistently met?",
-    ],
-  },
-  {
-    title: "3. Communication Skills",
-    questions: [
-      "Is the employee able to convey information effectively?",
-      "Does the employee communicate well with team members and clients?",
-    ],
-  },
-];
-
 const RatingComponent = () => {
+  const { appraisals } = useSelector((state) => state.appraisal);
+
   const [currentIndex, setCurrentIndex] = useState(0); // Track the current question set
   const [ratings, setRatings] = useState(
-    questionsFromDB.map((set) => ({
-      title: set.title,
-      questions: set.questions.map((question) => ({
-        question,
-        rating: 0, // Initialize rating as 0 for all questions
-      })),
-    }))
+    appraisals ||
+      [].map((set) => ({
+        title: set.title,
+        questions:
+          set.questions ||
+          [].map((question) => ({
+            question,
+            rating: 0,
+          })),
+      }))
   );
   const [comment, setComment] = useState(""); // Overall comment
   const [improveComment, setImproveComment] = useState(""); // Improvement comment
@@ -85,35 +66,42 @@ const RatingComponent = () => {
     }
   };
 
-  const currentSet = questionsFromDB[currentIndex];
+  const currentSet = appraisals[currentIndex];
 
   return (
     <div className="p-5 max-w-[550px] my-0 mx-auto border-[1px] border-[#ddd] rounded-md bg-[#f9f9f9] shadow-[0 4px 6px rgba(0,0,0,0.1)]">
-      {currentIndex < questionsFromDB.length ? (
+      {currentIndex < appraisals.length ? (
         <>
-          <h2 className="text-xl font-bold mb-4">{currentSet.title}</h2>
-          {currentSet.questions.map((question, index) => (
+          <h2 className="text-xl font-bold mb-4">
+            {currentIndex + 1}. {currentSet.title}
+          </h2>
+          {currentSet?.questions?.map((question, index) => (
             <div key={index} style={{ marginBottom: "15px" }}>
               <p style={{ marginBottom: "5px" }}>{question}</p>
               <div style={{ display: "flex", gap: "8px", cursor: "pointer" }}>
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <span
-                    key={star}
-                    onClick={() => handleRate(index, star)}
-                    style={{
-                      fontSize: "24px",
-                      color:
-                        star <= ratings[currentIndex].questions[index].rating
-                          ? "#FFD700"
-                          : "#ccc",
-                    }}
-                  >
-                    ★
-                  </span>
-                ))}
+                {Array.from({ length: 5 }, (_, starIndex) => {
+                  const star = starIndex + 1; // 1 to 5
+                  return (
+                    <span
+                      key={star}
+                      onClick={() => handleRate(index, star)}
+                      style={{
+                        fontSize: "30px",
+                        color:
+                          star <=
+                          ratings[currentIndex]?.questions?.[index]?.rating
+                            ? "#4550a1"
+                            : "#ccc",
+                      }}
+                    >
+                      ★
+                    </span>
+                  );
+                })}
               </div>
             </div>
           ))}
+
           <div
             className={`flex ${
               currentIndex ? "justify-between" : "justify-end"

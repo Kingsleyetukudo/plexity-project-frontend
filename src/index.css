@@ -36,33 +36,3 @@ input:not(:placeholder-shown) + label {
   transform: translateY(-25px);
   color: #007bff;
 }
-
-/* .rating-container {
-  padding: 20px;
-  max-width: 400px;
-  margin: 0 auto;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.rating-title {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.rating-stars {
-  display: flex;
-  gap: 8px;
-  cursor: pointer;
-}
-
-.star {
-  font-size: 24px;
-  color: #ccc;
-}
-
-.star.selected {
-  color: #ffd700;
-} */

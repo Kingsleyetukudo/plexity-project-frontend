@@ -1,21 +1,23 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../api";
 
-// Login thunk
-export const login = createAsyncThunk(
-  "auth/login",
-  async ({ email, password }, { rejectWithValue }) => {
+// create appraisal thunk
+export const getAllStaffAppraisal = createAsyncThunk(
+  "staffAppraisal/getAllStaffAppraisal",
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await api.post("/user/login", { email, password });
+      const response = await api.get("/appraised");
       console.log(response.data);
       return response.data; // Assuming the response contains user data and token
     } catch (error) {
-      return rejectWithValue(error.response?.data || "Login failed");
+      return rejectWithValue(
+        error.response?.data || "Getting all staff appraisal failed"
+      );
     }
   }
 );
 
-// Get all users thunk
+// Get all appraisal thunk
 export const getAllUsers = createAsyncThunk(
   "auth/getAllUsers",
   async (_, { rejectWithValue }) => {
@@ -28,33 +30,10 @@ export const getAllUsers = createAsyncThunk(
     }
   }
 );
-// Create new users thunk
-export const createUsers = createAsyncThunk(
-  "auth/createUsers",
-  async (
-    { firstName, lastName, email, department, position, password },
-    { rejectWithValue }
-  ) => {
-    try {
-      const res = await api.post("/user", {
-        firstName,
-        lastName,
-        email,
-        department,
-        position,
-        password,
-      });
-      console.log(res.data);
-      return res.data; // Assuming res.data contains an array of users
-    } catch (error) {
-      return rejectWithValue(error.response?.data || "Fetching users failed");
-    }
-  }
-);
 
-// Auth slice
-const authSlice = createSlice({
-  name: "auth",
+// slice
+const staffAppraisalSlice = createSlice({
+  name: "staffAppraisal",
   initialState: {
     users: [], // To store all users
     user: null, // To store logged-in user
@@ -79,16 +58,16 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       // Handle login
-      .addCase(login.pending, (state) => {
+      .addCase(getAllStaffAppraisal.pending, (state) => {
         state.status = "loading";
         state.error = null;
       })
-      .addCase(login.fulfilled, (state, action) => {
+      .addCase(getAllStaffAppraisal.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.user = action.payload.user; // Assuming API sends user data
         state.token = action.payload.token; // Assuming API sends a token
       })
-      .addCase(login.rejected, (state, action) => {
+      .addCase(getAllStaffAppraisal.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       })
@@ -104,22 +83,9 @@ const authSlice = createSlice({
       .addCase(getAllUsers.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
-      })
-      //  Handle createUsers
-      .addCase(createUsers.pending, (state) => {
-        state.status = "loading";
-        state.error = null;
-      })
-      .addCase(createUsers.fulfilled, (state) => {
-        state.status = "succeeded";
-        // state.users = [...state.users, action.payload];
-      })
-      .addCase(createUsers.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload;
       });
   },
 });
 
-export const { logout, toggleBar } = authSlice.actions;
-export default authSlice.reducer;
+export const { logout, toggleBar } = staffAppraisalSlice.actions;
+export default staffAppraisalSlice.reducer;
