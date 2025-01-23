@@ -6,6 +6,15 @@
 
 body {
   font-family: "Outfit", Verdana, Geneva, Tahoma, sans-serif;
+  background-color: rgba(244, 244, 244, 0.205);
+}
+
+.menuLinks {
+  @apply flex gap-2 flex-col items-center md:flex-row px-4 py-2 text-base md:text-xl text-black hover:bg-color-3 active:bg-color-1 hover:text-white;
+}
+
+.active {
+  @apply bg-color-1 text-white md:font-semibold;
 }
 
 label {
