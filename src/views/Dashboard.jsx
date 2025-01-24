@@ -36,8 +36,13 @@ const Dashboard = () => {
       >
         <SideBar />
       </div>
-      <div className=" mx-2 md:mx-4 pb-8 main-area">
+      <div className=" mx-2 md:mx-4 pb-8 main-area ">
         <Outlet />
+      </div>
+      <div className="footer-area">
+        <footer className="bg-white p-4 text-center">
+          <p className="text-gray-400">© 2021 Plexity. All rights reserved</p>
+        </footer>
       </div>
     </div>
   );

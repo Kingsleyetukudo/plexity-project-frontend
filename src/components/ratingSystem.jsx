@@ -1,26 +1,32 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
-// import { getAllAppraisal } from "../stores/appraisalStore";
 import api from "../api";
 
-const RatingComponent = () => {
+const RatingComponent = ({ closePopup }) => {
   const { appraisals } = useSelector((state) => state.appraisal);
+  const { user, users } = useSelector((state) => state.auth);
 
+  const [selectedUser, setSelectedUser] = useState(null); // Track the selected user
   const [currentIndex, setCurrentIndex] = useState(0); // Track the current question set
-  const [ratings, setRatings] = useState(
-    appraisals ||
-      [].map((set) => ({
-        title: set.title,
-        questions:
-          set.questions ||
-          [].map((question) => ({
-            question,
-            rating: 0,
-          })),
-      }))
-  );
+  const [ratings, setRatings] = useState([]);
   const [comment, setComment] = useState(""); // Overall comment
   const [improveComment, setImproveComment] = useState(""); // Improvement comment
+
+  // When a user is selected, initialize their ratings
+  const handleUserSelect = (user) => {
+    setSelectedUser(user);
+    console.log("Selected user:", user._id);
+    setRatings(
+      appraisals.map((set) => ({
+        title: set.title,
+        questions: set.questions.map((question) => ({
+          question,
+          rating: 0,
+        })),
+      }))
+    );
+    setCurrentIndex(0);
+  };
 
   const handleRate = (questionIndex, stars) => {
     setRatings((prevRatings) =>
@@ -39,17 +45,17 @@ const RatingComponent = () => {
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) => prevIndex + 1);
-    console.log(currentIndex);
   };
+
   const handlePrev = () => {
     setCurrentIndex((prevIndex) => prevIndex - 1);
   };
 
   const handleSubmit = async () => {
     const payload = {
-      appraisedEmployee: "678cfcd612d6e5ab3fb2b80a",
+      appraisedEmployee: selectedUser._id,
       appraisal: ratings,
-      appraisedBY: "678cfe1312d6e5ab3fb2b816", // Replace with the logged-in user's ID
+      appraisedBy: user._id,
       comment,
       improveComment,
     };
@@ -59,7 +65,9 @@ const RatingComponent = () => {
     try {
       const response = await api.post("/appraised", payload);
       console.log("Appraisal submitted:", response.data);
+      closePopup();
       alert("Thank you for your feedback!");
+      setSelectedUser(null); // Reset the state after submission
     } catch (error) {
       console.error("Error submitting appraisal:", error);
       alert("An error occurred while submitting your appraisal.");
@@ -70,17 +78,34 @@ const RatingComponent = () => {
 
   return (
     <div className="p-5 max-w-[550px] my-0 mx-auto border-[1px] border-[#ddd] rounded-md bg-[#f9f9f9] shadow-[0 4px 6px rgba(0,0,0,0.1)]">
-      {currentIndex < appraisals.length ? (
+      {!selectedUser ? (
+        // Display the list of users
+        <div>
+          <h2 className="text-xl font-bold mb-4">Select a Member</h2>
+          <ul className="list-none overflow-auto max-h-[300px]">
+            {users.map((user) => (
+              <li
+                key={user._id}
+                onClick={() => handleUserSelect(user)}
+                className="cursor-pointer p-3 border-b-[1px] border-[#ddd] hover:bg-[#f0f0f0]"
+              >
+                {user.firstName} {user.lastName}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : currentIndex < appraisals.length ? (
+        // Display the appraisal questions for the selected user
         <>
           <h2 className="text-xl font-bold mb-4">
             {currentIndex + 1}. {currentSet.title}
           </h2>
-          {currentSet?.questions?.map((question, index) => (
+          {currentSet.questions.map((question, index) => (
             <div key={index} style={{ marginBottom: "15px" }}>
               <p style={{ marginBottom: "5px" }}>{question}</p>
               <div style={{ display: "flex", gap: "8px", cursor: "pointer" }}>
                 {Array.from({ length: 5 }, (_, starIndex) => {
-                  const star = starIndex + 1; // 1 to 5
+                  const star = starIndex + 1;
                   return (
                     <span
                       key={star}
@@ -114,9 +139,7 @@ const RatingComponent = () => {
               >
                 Go back
               </button>
-            ) : (
-              ""
-            )}
+            ) : null}
             <button
               onClick={handleNext}
               className="md:text-xl font-semibold md:font-bold px-4 py-2 md:px-8 md:py-3 text-white bg-color-2 rounded-full hover:bg-color-1 focus:outline-none focus:ring-2 focus:ring-color-1"
@@ -126,6 +149,7 @@ const RatingComponent = () => {
           </div>
         </>
       ) : (
+        // Display the feedback form after all questions
         <div className="flex flex-col gap-4">
           <div className="flex flex-col items-center justify-center">
             <h2 className="text-xl font-bold">Thank You!</h2>

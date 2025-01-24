@@ -22,10 +22,19 @@ const Signin = () => {
 
   const closePopup = () => {
     setShowPopup(false);
-    setTimeout(() => navigate("/login"), 500); // Navigate to login after closing the popup
+    setTimeout(() => navigate("/login"), 500);
   };
 
   const handleSubmit = async (e) => {
+    const payload = {
+      firstName,
+      lastName,
+      email,
+      isApproved: false,
+      position,
+      department,
+      password,
+    };
     e.preventDefault();
 
     if (password !== confirmPassword) {
@@ -34,16 +43,7 @@ const Signin = () => {
     }
 
     setError(""); // Clear any existing errors
-    const result = await dispatch(
-      createUsers({
-        firstName,
-        lastName,
-        email,
-        position,
-        department,
-        password,
-      })
-    );
+    const result = await dispatch(createUsers(payload));
 
     if (result.meta.requestStatus === "fulfilled") {
       setShowPopup(true);

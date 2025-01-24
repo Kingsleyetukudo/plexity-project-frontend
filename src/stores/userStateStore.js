@@ -22,7 +22,7 @@ export const getAllUsers = createAsyncThunk(
     try {
       const res = await api.get("/user");
       console.log(res.data);
-      return res.data; // Assuming res.data contains an array of users
+      return res.data.users; // Assuming res.data contains an array of users
     } catch (error) {
       return rejectWithValue(error.response?.data || "Fetching users failed");
     }
@@ -31,19 +31,9 @@ export const getAllUsers = createAsyncThunk(
 // Create new users thunk
 export const createUsers = createAsyncThunk(
   "auth/createUsers",
-  async (
-    { firstName, lastName, email, department, position, password },
-    { rejectWithValue }
-  ) => {
+  async (payload, { rejectWithValue }) => {
     try {
-      const res = await api.post("/user", {
-        firstName,
-        lastName,
-        email,
-        department,
-        position,
-        password,
-      });
+      const res = await api.post("/user", payload);
       console.log(res.data);
       return res.data; // Assuming res.data contains an array of users
     } catch (error) {
@@ -57,11 +47,12 @@ const authSlice = createSlice({
   name: "auth",
   initialState: {
     users: [], // To store all users
-    user: null, // To store logged-in user
+    user: {}, // To store logged-in user
     token: null, // Authentication token
     status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
     error: null, // Error messages
     toggleBar: false, // Toggle state
+    openPopup: false, // Popup state
   },
   reducers: {
     logout: (state) => {
@@ -71,6 +62,11 @@ const authSlice = createSlice({
       // Clear persisted data if redux-persist is used
       localStorage.removeItem("persist:auth");
     },
+
+    openPopup: (state) => {
+      state.openPopup = true;
+    },
+
     toggleBar: (state) => {
       state.toggleBar = !state.toggleBar;
       console.log(state.toggleBar);
@@ -85,8 +81,8 @@ const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.user = action.payload.user; // Assuming API sends user data
-        state.token = action.payload.token; // Assuming API sends a token
+        state.user = action.payload.user;
+        state.token = action.payload.token;
       })
       .addCase(login.rejected, (state, action) => {
         state.status = "failed";

@@ -1,5 +1,9 @@
+import { useSelector } from "react-redux";
+
 const TaskProgressCard = () => {
-  const progress = 4.6; // Example progress value (percentage)
+  const { userTotalRating } = useSelector((state) => state.staffAppraisal);
+
+  const progress = userTotalRating; // Example progress value (percentage)
   const maxRating = 5;
 
   const progressPercentage = (progress / maxRating) * 100;
