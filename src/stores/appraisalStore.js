@@ -8,7 +8,7 @@ export const getAllAppraisal = createAsyncThunk(
     try {
       const response = await api.get("/appraisal");
       console.log(response.data.data.appraisals);
-      return response.data.data.appraisals || []; // Assuming the response contains user data and token
+      return response.data.data.appraisals || [];
     } catch (error) {
       return rejectWithValue(
         error.response?.data || "Getting all staff appraisal failed"

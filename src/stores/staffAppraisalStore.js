@@ -17,39 +17,45 @@ export const getAllStaffAppraisal = createAsyncThunk(
   }
 );
 
-// Get all appraisal thunk
-export const getAllUsers = createAsyncThunk(
-  "auth/getAllUsers",
-  async (_, { rejectWithValue }) => {
+// Get  appraisal for current user thunk
+export const getAppraisalByUser = createAsyncThunk(
+  "auth/getAppraisalByUser",
+  async (userId, { rejectWithValue }) => {
     try {
-      const res = await api.get("/user");
-      console.log(res.data);
-      return res.data; // Assuming res.data contains an array of users
+      const res = await api.get(`/appraised/currentUser/${userId}`);
+      console.log(res.data.data);
+      calculateAppraisal(res.data.data);
+      return res.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Fetching users failed");
     }
   }
 );
 
+// calculation of individual appraisal
+const calculateAppraisal = (appraisal) => {
+  let total = 0;
+  const totalAppraisalRating = appraisal.length;
+  appraisal.forEach((element) => {
+    total += element.overallRating;
+  });
+  const ratingTotal = total / totalAppraisalRating;
+  console.log("Rating", total / totalAppraisalRating);
+  return ratingTotal;
+};
+
 // slice
 const staffAppraisalSlice = createSlice({
   name: "staffAppraisal",
   initialState: {
-    users: [], // To store all users
-    user: null, // To store logged-in user
-    token: null, // Authentication token
+    getAllStaffAppraisal: [], // To store all users
+    appraisalByUser: [], // To store logged-in user
+    userTotalRating: 0,
     status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
     error: null, // Error messages
     toggleBar: false, // Toggle state
   },
   reducers: {
-    logout: (state) => {
-      state.user = null;
-      state.token = null;
-      state.toggleBar = false;
-      // Clear persisted data if redux-persist is used
-      localStorage.removeItem("persist:auth");
-    },
     toggleBar: (state) => {
       state.toggleBar = !state.toggleBar;
       console.log(state.toggleBar);
@@ -64,26 +70,32 @@ const staffAppraisalSlice = createSlice({
       })
       .addCase(getAllStaffAppraisal.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.user = action.payload.user; // Assuming API sends user data
-        state.token = action.payload.token; // Assuming API sends a token
+        state.getAllStaffAppraisal = action.payload;
+        // state.token = action.payload.token;
       })
       .addCase(getAllStaffAppraisal.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       })
+
       // Handle getAllUsers
-      .addCase(getAllUsers.pending, (state) => {
+      .addCase(getAppraisalByUser.pending, (state) => {
         state.status = "loading";
         state.error = null;
       })
-      .addCase(getAllUsers.fulfilled, (state, action) => {
+      .addCase(getAppraisalByUser.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.users = action.payload;
+        state.appraisalByUser = action.payload;
+        state.userTotalRating = calculateAppraisal(action.payload);
       })
-      .addCase(getAllUsers.rejected, (state, action) => {
+      .addCase(getAppraisalByUser.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       });
+    //   .addCase(calculateAppraisal.fulfilled, (state, action) => {
+    //     state.status = "succeeded";
+    //     state.userTotalRating = action.payload;
+    //   });
   },
 });
 
