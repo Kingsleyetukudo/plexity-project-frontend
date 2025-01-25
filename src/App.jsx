@@ -8,6 +8,7 @@ import Leaves from "./views/leave";
 import Settings from "./views/settings";
 import Goals from "./views/goals";
 import DashboardDefault from "./views/dashboardDefault";
+import AppraisalDetails from "./views/appraisalDetails";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="leave" element={<Leaves />} />
           <Route path="settings" element={<Settings />} />
           <Route path="goals" element={<Goals />} />
+          <Route path="appraisal/:id" element={<AppraisalDetails />} />
         </Route>
         <Route path="/signin" element={<Signin />} />
         <Route path="/login" element={<Login />} />

@@ -4,15 +4,22 @@ import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { getAppraisalByUser } from "../stores/staffAppraisalStore";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 const AppraisalBox = () => {
   const dispatch = useDispatch();
   const { appraisalByUser } = useSelector((state) => state.staffAppraisal);
   const { user } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(getAppraisalByUser(user._id));
     console.log(appraisalByUser);
   }, [dispatch, user]);
+
+  const handleRoute = (id) => {
+    navigate(`/dashboard/appraisal/${id}`);
+  };
+
   return (
     <>
       <div className="grid gap-6">
@@ -20,6 +27,7 @@ const AppraisalBox = () => {
           appraisalByUser.map((appraisal, index) => (
             <div
               key={index}
+              onClick={() => handleRoute(appraisal._id)}
               className="grid gap-2 bg-slate-200 shadow-lg cursor-pointer"
             >
               <div className="grid  md:grid-cols-2 md:p-4">

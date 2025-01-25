@@ -31,6 +31,19 @@ export const getAppraisalByUser = createAsyncThunk(
     }
   }
 );
+// Get  appraisal for current user thunk
+export const getAppraisalById = createAsyncThunk(
+  "auth/getAppraisalById",
+  async (appraisalId, { rejectWithValue }) => {
+    try {
+      const res = await api.get(`/appraised/appraisal/${appraisalId}`);
+      console.log(res.data);
+      return res.data.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Fetching users failed");
+    }
+  }
+);
 
 // calculation of individual appraisal
 const calculateAppraisal = (appraisal) => {
@@ -49,7 +62,8 @@ const staffAppraisalSlice = createSlice({
   name: "staffAppraisal",
   initialState: {
     getAllStaffAppraisal: [], // To store all users
-    appraisalByUser: [], // To store logged-in user
+    appraisalByUser: [],
+    individualAppraisal: {},
     userTotalRating: 0,
     status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
     error: null, // Error messages
@@ -91,11 +105,20 @@ const staffAppraisalSlice = createSlice({
       .addCase(getAppraisalByUser.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
+      })
+      // Handle getAppraisalById
+      .addCase(getAppraisalById.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(getAppraisalById.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.individualAppraisal = action.payload;
+      })
+      .addCase(getAppraisalById.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
       });
-    //   .addCase(calculateAppraisal.fulfilled, (state, action) => {
-    //     state.status = "succeeded";
-    //     state.userTotalRating = action.payload;
-    //   });
   },
 });
 
