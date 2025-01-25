@@ -8,6 +8,7 @@ import Leaves from "./views/leave";
 import Settings from "./views/settings";
 import Goals from "./views/goals";
 import DashboardDefault from "./views/dashboardDefault";
+import AdminDashboard from "./views/AdminDashboard";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         </Route>
         <Route path="/signin" element={<Signin />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
       </Routes>
     </Router>
   );
