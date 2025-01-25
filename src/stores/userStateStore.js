@@ -42,6 +42,47 @@ export const createUsers = createAsyncThunk(
   }
 );
 
+// Update user by Admin thunk
+export const updateUserByAdmin = createAsyncThunk(
+  "auth/updateUserByAdmin",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const res = await api.put(`/user/approveUser/${userId}`);
+      console.log(res.data);
+      return res.data; // Assuming res.data contains an array of users
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Fetching users failed");
+    }
+  }
+);
+
+// User Update personal profile thunk
+export const updateUser = createAsyncThunk(
+  "auth/updateUser",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const res = await api.put(`/user/updateUser/${userId}`);
+      console.log(res.data);
+      return res.data; // Assuming res.data contains an array of users
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Fetching users failed");
+    }
+  }
+);
+// Delete User thunk
+export const deleteUser = createAsyncThunk(
+  "auth/deleteUser",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const res = await api.delete(`/user/${userId}`);
+      console.log(res.data);
+      return res.data; // Assuming res.data contains an array of users
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Fetching users failed");
+    }
+  }
+);
+
 // Auth slice
 const authSlice = createSlice({
   name: "auth",

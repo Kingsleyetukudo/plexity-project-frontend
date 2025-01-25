@@ -36,3 +36,11 @@ input:not(:placeholder-shown) + label {
   transform: translateY(-25px);
   color: #007bff;
 }
+
+.rdt_TableCol {
+  @apply font-bold text-base;
+}
+
+.rdt_TableCell {
+  @apply text-base;
+}

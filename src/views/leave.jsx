@@ -1,8 +1,12 @@
+import TitleBar from "../components/titleBar";
+import { useState } from "react";
+
 const Leaves = () => {
+  const [title] = useState("Leaves");
   return (
     <>
       <div>
-        <h1>Leaves</h1>
+        <TitleBar title={title} />
       </div>
     </>
   );

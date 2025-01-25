@@ -1,12 +1,12 @@
 // import { Navigate } from "react-router-dom";
-import AppraisalBox from "../components/appraisalBox";
+import EmployeeList from "../components/employeeList";
 import RatingSystem from "../components/ratingSystem";
 import TitleBar from "../components/titleBar";
 import { useState } from "react";
 
-const Appraisal = () => {
+const Employees = () => {
   const [showPopup, setShowPopup] = useState(false);
-  const [title] = useState("My Apprisals");
+  const [title] = useState("Employee");
 
   const closePopup = () => {
     setShowPopup(false);
@@ -28,11 +28,13 @@ const Appraisal = () => {
               onClick={handleAppraisal}
               className="md:text-xl font-semibold md:font-bold px-4 py-2 md:px-8 md:py-3 text-white bg-color-2 rounded-full hover:bg-color-1 focus:outline-none focus:ring-2 focus:ring-color-1"
             >
-              Appriase
+              Add Employee
             </button>
           </div>
         </div>
-        <AppraisalBox />
+        <div>
+          <EmployeeList />
+        </div>
       </div>
       {showPopup && (
         <>
@@ -62,4 +64,4 @@ const Appraisal = () => {
   );
 };
 
-export default Appraisal;
+export default Employees;

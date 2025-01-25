@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import api from "../api";
+import PropTypes from "prop-types";
 
 const RatingComponent = ({ closePopup }) => {
   const { appraisals } = useSelector((state) => state.appraisal);
@@ -181,6 +182,10 @@ const RatingComponent = ({ closePopup }) => {
       )}
     </div>
   );
+};
+
+RatingComponent.propTypes = {
+  closePopup: PropTypes.func.isRequired,
 };
 
 export default RatingComponent;

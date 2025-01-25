@@ -22,11 +22,11 @@ const Dashboard = () => {
   console.log(users);
   return (
     <div
-      className={`grid-layout  grid-rows-[auto_1fr_auto]  md:grid-cols-[270px_1fr] transition-grid-cols duration-300 ease-in-out ${
-        toggleBar ? "md:grid-cols-[270px_1fr]" : "grid-cols-[0px_1fr]"
+      className={`grid-layout  grid-rows-[auto_1fr_auto]  md:grid-cols-[200px_1fr] transition-grid-cols duration-300 ease-in-out ${
+        toggleBar ? "md:grid-cols-[200px_1fr]" : "grid-cols-[0px_1fr]"
       }`}
     >
-      <div className="header-area my-3 mb-5 md:m-4 sticky top-1 md:top-4 bg-white ">
+      <div className="header-area my-3 mb-5 md:m-4 z-10 sticky top-1 md:top-4 bg-white ">
         <UserDetails />
       </div>
       <div
@@ -36,7 +36,7 @@ const Dashboard = () => {
       >
         <SideBar />
       </div>
-      <div className=" mx-2 md:mx-4 pb-8 main-area ">
+      <div className="  mx-2 md:mx-4 pb-8 main-area ">
         <Outlet />
       </div>
       <div className="footer-area">
