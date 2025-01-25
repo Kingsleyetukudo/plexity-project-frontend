@@ -41,9 +41,9 @@ const AppraisalDetails = () => {
   return (
     <div>
       <div className="grid grid-cols-1 gap-5">
-        <h1 className="font-extrabold text-xl md:text-3xl mb-5">
+        <h2 className="font-extrabold text-xl md:text-3xl mb-5">
           Appraisal Details
-        </h1>
+        </h2>
         <div className="grid grid-cols-1 gap-5">
           <div className="flex justify-between w-full bg-gray-800 text-white px-4 md:px-8 py-4 shadow-lg rounded-xl">
             <p className="text-lg">
@@ -51,7 +51,7 @@ const AppraisalDetails = () => {
               {moment(appraisal.date).format("LL")}
             </p>
             <p className="text-lg flex items-center">
-              <span className="font-bold mr-2">Rate:</span>{" "}
+              <span className="font-bold mr-2">Rating:</span>{" "}
               {appraisal.overallRating}
             </p>
           </div>

@@ -12,7 +12,7 @@ const Profile = () => {
   return (
     <>
       <div>
-        <h1>Profile</h1>
+        <h2 className="font-extrabold text-xl md:text-3xl mb-5">Profile</h2>
         <UserDisplay />
       </div>
     </>
