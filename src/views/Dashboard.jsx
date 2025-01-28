@@ -5,21 +5,24 @@ import SideBar from "../components/sideBar";
 import { Outlet } from "react-router-dom";
 import { getAllUsers } from "../stores/userStateStore";
 import { getAllAppraisal } from "../stores/appraisalStore";
+import { getAppraisalByUser } from "../stores/staffAppraisalStore";
 import { useEffect } from "react";
 // import DashboardBox from "../components/dashboradBox";
 
 const Dashboard = () => {
-  const { users, toggleBar, status } = useSelector((state) => state.auth);
+  const { toggleBar, status } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const user = JSON.parse(localStorage.getItem("persist:auth"));
+  const userDetails = JSON.parse(user.user);
 
   useEffect(() => {
     if (status === "idle") {
       dispatch(getAllUsers());
       dispatch(getAllAppraisal());
+      dispatch(getAppraisalByUser(userDetails._id));
     }
   }, [dispatch, status]);
 
-  console.log(users);
   return (
     <div
       className={`grid-layout  grid-rows-[auto_1fr_auto]  md:grid-cols-[200px_1fr] transition-grid-cols duration-300 ease-in-out ${

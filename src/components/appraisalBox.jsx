@@ -1,5 +1,5 @@
 import likeIcon from "../assets/images/like-icon.svg";
-import dislikeIcon from "../assets/images/dislike-icon.svg";
+import dislikeIcon from "../assets/images/commentImprove.svg";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { getAppraisalByUser } from "../stores/staffAppraisalStore";

@@ -3,6 +3,7 @@ import Logo from "../assets/images/site-logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import BG from "../assets/images/sign-up-bg.svg";
 import { useDispatch, useSelector } from "react-redux";
+import { CircleCheckBig } from "lucide-react";
 import { createUsers } from "../stores/userStateStore";
 
 const Signin = () => {
@@ -215,11 +216,21 @@ const Signin = () => {
                 aria-labelledby="modal-title"
                 aria-describedby="modal-description"
               >
+                <div className="flex justify-center items-center">
+                  <CircleCheckBig className="text-5xl text-green-600" />
+                </div>
                 <h2 id="modal-title" className="font-bold">
-                  Thank You!
+                  Congratulations!
                 </h2>
                 <p id="modal-description">
-                  Your registration was successful. <br /> Welcome aboard!
+                  Your registration has been successfully accepted.
+                </p>
+                <p>
+                  Please check your email inbox (and spam/junk folder, if
+                  necessary) for the approval message, which contains important
+                  details and next steps to complete your process. If you have
+                  any questions or encounter issues, feel free to contact our
+                  support team.
                 </p>
                 <div className="mt-6">
                   <button

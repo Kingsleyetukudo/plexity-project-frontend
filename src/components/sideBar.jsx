@@ -1,5 +1,4 @@
 import { NavLink } from "react-router-dom";
-// import dashboardIcon from "../assets/images/Dashboard.svg";
 import { useDispatch } from "react-redux";
 import { logout } from "../stores/userStateStore";
 import Logo from "../assets/images/plexityLogo.png";
@@ -7,13 +6,9 @@ import {
   LayoutDashboard,
   UserRoundPen,
   Star,
-  CircleGauge,
-  Goal,
-  Settings2,
   LogOut,
   UsersRound,
 } from "lucide-react";
-// import { useSelector } from "react-redux";
 
 const SideBar = () => {
   const dispatch = useDispatch();
@@ -32,7 +27,6 @@ const SideBar = () => {
               activeClassName="active"
               className="menuLinks"
             >
-              {/* <img src={dashboardIcon} alt="" className="w-5" /> */}
               <LayoutDashboard className="w-5" />
               Dashboard
             </NavLink>
@@ -55,26 +49,8 @@ const SideBar = () => {
               Employees
             </NavLink>
           </li>
-          <li>
-            <NavLink to="leave" className="menuLinks">
-              <CircleGauge className="w-5" />
-              Leave
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="goals" className="menuLinks">
-              <Goal className="w-5" />
-              Goals
-            </NavLink>
-          </li>
         </ul>
         <ul className="py-5 border-t-2 border-color-3">
-          <li>
-            <NavLink to="settings" className="menuLinks">
-              <Settings2 className="w-5" />
-              Settings
-            </NavLink>
-          </li>
           <li>
             <NavLink to="/login" className="menuLinks" onClick={handleLogout}>
               <LogOut className="w-5" />
