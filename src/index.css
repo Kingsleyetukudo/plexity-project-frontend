@@ -44,3 +44,7 @@ input:not(:placeholder-shown) + label {
 .rdt_TableCell {
   @apply text-base;
 }
+
+.text-input {
+  @apply border-t-0 border-r-0 border-l-0 bg-transparent border-b-[1px] focus:ring-0 focus:bg-transparent;
+}

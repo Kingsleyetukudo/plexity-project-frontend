@@ -12,7 +12,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const { user, token } = useSelector((state) => state.auth);
+  // const { user, token } = useSelector((state) => state.auth);
   const [error, setError] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -20,10 +20,22 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!window.grecaptcha) {
+      console.error("reCAPTCHA not loaded!");
+      return;
+    }
+
     try {
-      const result = await dispatch(login({ email, password })).unwrap();
+      const reCaptchatoken = await window.grecaptcha.execute(
+        import.meta.env.VITE_RECAPTCHA_SITE_KEY,
+        {
+          action: "submit",
+        }
+      );
+
+      const result = await dispatch(login({ email, password, reCaptchatoken }));
       // Assuming `result` contains user data on success
-      console.log("Login successful:", result, user, token);
+      console.log("Login successful:", result);
 
       navigate("/dashboard"); // Redirect to dashboard
     } catch (err) {

@@ -11,6 +11,7 @@ import DashboardDefault from "./views/dashboardDefault";
 import AppraisalDetails from "./views/appraisalDetails";
 import AdminDashboard from "./views/AdminDashboard";
 import Employees from "./views/employee";
+import Comment from "./views/comment";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="goals" element={<Goals />} />
           <Route path="appraisal/:id" element={<AppraisalDetails />} />
           <Route path="employee" element={<Employees />} />
+          <Route path="comment" element={<Comment />} />
         </Route>
         <Route path="/signin" element={<Signin />} />
         <Route path="/login" element={<Login />} />

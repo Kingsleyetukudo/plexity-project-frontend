@@ -17,7 +17,21 @@ export const getAllStaffAppraisal = createAsyncThunk(
   }
 );
 
-// Get  appraisal for current user thunk
+// Get All appraisal for click user thunk
+export const getAllAppraisalByClickUser = createAsyncThunk(
+  "auth/getAllAppraisalByClickUser",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const res = await api.get(`/appraised/currentUser/${userId}`);
+      console.log(res.data.data);
+      calculateAppraisal(res.data.data);
+      return res.data.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Fetching users failed");
+    }
+  }
+);
+// Get All  appraisal for current user thunk
 export const getAppraisalByUser = createAsyncThunk(
   "auth/getAppraisalByUser",
   async (userId, { rejectWithValue }) => {

@@ -1,22 +1,71 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import api from "../api";
 import PropTypes from "prop-types";
+import { getAllAppraisalByClickUser } from "../stores/staffAppraisalStore";
+import PopUpBox from "./popupBox";
 
 const RatingComponent = ({ closePopup }) => {
   const { appraisals } = useSelector((state) => state.appraisal);
   const { user, users } = useSelector((state) => state.auth);
+  // const [togglePopup, setTogglePopup] = useState(false);
 
-  const [selectedUser, setSelectedUser] = useState(null); // Track the selected user
-  const [currentIndex, setCurrentIndex] = useState(0); // Track the current question set
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [ratings, setRatings] = useState([]);
-  const [comment, setComment] = useState(""); // Overall comment
-  const [improveComment, setImproveComment] = useState(""); // Improvement comment
+  const [comment, setComment] = useState("");
+  const [improveComment, setImproveComment] = useState("");
+  const [isWithinOneMonth, setIsWithinOneMonth] = useState(false);
+  const [message] = useState(
+    "You can't appraise this member for the month again!"
+  );
+
+  const dispatch = useDispatch();
 
   // When a user is selected, initialize their ratings
-  const handleUserSelect = (user) => {
+  const handleUserSelect = async (selectUser) => {
+    const clickUser = await dispatch(
+      getAllAppraisalByClickUser(selectUser._id)
+    );
+
+    const openUser = clickUser.payload;
+    const allDates = openUser.map((d) => {
+      if (d.appraisedBy == user._id) {
+        return d.date;
+      }
+    });
+
+    // Function to find the most recent date in the array
+    const getMostRecentDate = (dates) => {
+      const recentDate = new Date(
+        Math.max(...dates.map((date) => new Date(date).getTime()))
+      );
+      return recentDate;
+    };
+
+    // Function to check if the most recent date is within one month from the current date
+    const checkIfWithinOneMonth = (recentDate) => {
+      const currentDate = new Date();
+
+      // Get the difference in months
+      const diffInMonths =
+        (currentDate.getFullYear() - recentDate.getFullYear()) * 12 +
+        (currentDate.getMonth() - recentDate.getMonth());
+
+      return diffInMonths <= 1 && currentDate.getDate() >= recentDate.getDate();
+    };
+
+    // Find the most recent date
+    const mostRecentDate = getMostRecentDate(allDates);
+
+    // Check if the most recent date is within one month from the current date
+    const withinOneMonth = checkIfWithinOneMonth(mostRecentDate);
+    setIsWithinOneMonth(withinOneMonth);
+    console.log("found", isWithinOneMonth);
+
     setSelectedUser(user);
-    console.log("Selected user:", user._id);
+
+    console.log("Selected user:", selectUser._id, openUser);
     setRatings(
       appraisals.map((set) => ({
         title: set.title,
@@ -67,12 +116,16 @@ const RatingComponent = ({ closePopup }) => {
       const response = await api.post("/appraised", payload);
       console.log("Appraisal submitted:", response.data);
       closePopup();
-      alert("Thank you for your feedback!");
       setSelectedUser(null); // Reset the state after submission
     } catch (error) {
       console.error("Error submitting appraisal:", error);
-      alert("An error occurred while submitting your appraisal.");
+      closePopup();
     }
+  };
+
+  const noAppraisePopup = () => {
+    setIsWithinOneMonth(false);
+    setSelectedUser(null);
   };
 
   const currentSet = appraisals[currentIndex];
@@ -88,9 +141,14 @@ const RatingComponent = ({ closePopup }) => {
               <li
                 key={user._id}
                 onClick={() => handleUserSelect(user)}
-                className="cursor-pointer p-3 border-b-[1px] border-[#ddd] hover:bg-[#f0f0f0]"
+                className="cursor-pointer p-3 border-b-[1px] border-[#ddd] hover:bg-[#f0f0f0] flex items-center justify-between"
               >
-                {user.firstName} {user.lastName}
+                <p>
+                  {user.firstName} {user.lastName}
+                </p>{" "}
+                <button className="text-[10px]   px-2.5 py-1  text-white bg-color-2 rounded-full hover:bg-color-1 focus:outline-none focus:ring-2 focus:ring-color-1">
+                  Appraise
+                </button>
               </li>
             ))}
           </ul>
@@ -179,6 +237,10 @@ const RatingComponent = ({ closePopup }) => {
             </button>
           </div>
         </div>
+      )}
+
+      {isWithinOneMonth && (
+        <PopUpBox note={message} closePopupNote={noAppraisePopup} />
       )}
     </div>
   );

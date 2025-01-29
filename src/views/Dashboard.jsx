@@ -10,16 +10,18 @@ import { useEffect } from "react";
 // import DashboardBox from "../components/dashboradBox";
 
 const Dashboard = () => {
-  const { toggleBar, status } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
-  const user = JSON.parse(localStorage.getItem("persist:auth"));
-  const userDetails = JSON.parse(user.user);
+  const { toggleBar, status, user } = useSelector((state) => state.auth);
 
+  const dispatch = useDispatch();
+
+  console.log(user._id);
   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("persist:auth"));
+    const userDetails = JSON.parse(user.user);
+    dispatch(getAppraisalByUser(userDetails._id));
     if (status === "idle") {
       dispatch(getAllUsers());
       dispatch(getAllAppraisal());
-      dispatch(getAppraisalByUser(userDetails._id));
     }
   }, [dispatch, status]);
 

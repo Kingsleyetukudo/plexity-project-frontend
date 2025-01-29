@@ -4,9 +4,13 @@ import api from "../api";
 // Login thunk
 export const login = createAsyncThunk(
   "auth/login",
-  async ({ email, password }, { rejectWithValue }) => {
+  async ({ email, password, reCaptchatoken }, { rejectWithValue }) => {
     try {
-      const response = await api.post("/user/login", { email, password });
+      const response = await api.post("/user/login", {
+        email,
+        password,
+        reCaptchatoken,
+      });
       console.log(response.data);
       return response.data; // Assuming the response contains user data and token
     } catch (error) {
@@ -105,7 +109,7 @@ const authSlice = createSlice({
     },
 
     openPopup: (state) => {
-      state.openPopup = true;
+      state.openPopup = !state.openPopup;
     },
 
     toggleBar: (state) => {
@@ -158,5 +162,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout, toggleBar } = authSlice.actions;
+export const { logout, toggleBar, openPopup } = authSlice.actions;
 export default authSlice.reducer;

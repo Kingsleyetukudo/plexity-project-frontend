@@ -8,6 +8,7 @@ import {
   Star,
   LogOut,
   UsersRound,
+  MessageSquareText,
 } from "lucide-react";
 
 const SideBar = () => {
@@ -47,6 +48,12 @@ const SideBar = () => {
             <NavLink to="employee" className="menuLinks">
               <UsersRound className="w-5" />
               Employees
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="comment" className="menuLinks">
+              <MessageSquareText className="w-5" />
+              Comment
             </NavLink>
           </li>
         </ul>

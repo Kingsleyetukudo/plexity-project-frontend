@@ -27,29 +27,52 @@ const Signin = () => {
   };
 
   const handleSubmit = async (e) => {
-    const payload = {
-      firstName,
-      lastName,
-      email,
-      isApproved: false,
-      position,
-      department,
-      password,
-    };
     e.preventDefault();
 
-    if (password !== confirmPassword) {
-      setError("Passwords do not match!");
+    // Ensure the reCAPTCHA script is loaded
+    if (!window.grecaptcha) {
+      setError("reCAPTCHA not loaded, check connection!");
+      console.error("reCAPTCHA not loaded!");
       return;
     }
 
-    setError(""); // Clear any existing errors
-    const result = await dispatch(createUsers(payload));
+    try {
+      // Generate reCAPTCHA token
+      const token = await window.grecaptcha.execute(
+        import.meta.env.VITE_RECAPTCHA_SITE_KEY,
+        {
+          action: "submit",
+        }
+      );
 
-    if (result.meta.requestStatus === "fulfilled") {
-      setShowPopup(true);
-    } else {
-      setError("Registration failed. Please try again.");
+      const payload = {
+        firstName,
+        lastName,
+        email,
+        isApproved: false,
+        position,
+        department,
+        password,
+        token,
+      };
+
+      if (password !== confirmPassword) {
+        setError("Passwords do not match!");
+        return;
+      }
+
+      setError("");
+
+      const result = await dispatch(createUsers(payload));
+
+      if (result.meta.requestStatus === "fulfilled") {
+        setShowPopup(true);
+      } else {
+        setError("Registration failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error executing reCAPTCHA:", error);
+      setError("reCAPTCHA verification failed.");
     }
   };
 
@@ -76,7 +99,7 @@ const Signin = () => {
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   required
-                  className="w-full px-3 py-2 border-b-2 border-gray-300 outline-none text-input"
+                  className="w-full px-3 py-2  border-gray-300 outline-none text-input"
                 />
                 <label className="block absolute font-medium text-gray-700">
                   First Name: <span className="text-red-600">*</span>
@@ -89,7 +112,7 @@ const Signin = () => {
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   required
-                  className="w-full px-3 py-2 border-b-2 border-gray-300 outline-none text-input"
+                  className="w-full px-3 py-2  border-gray-300 outline-none text-input"
                 />
                 <label className="block absolute font-medium text-gray-700">
                   Last Name: <span className="text-red-600">*</span>
@@ -104,7 +127,7 @@ const Signin = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-3 py-2 border-b-2 border-gray-300 outline-none text-input"
+                className="w-full px-3 py-2  border-gray-300 outline-none text-input"
               />
               <label className="block absolute font-medium text-gray-700">
                 Email: <span className="text-red-600">*</span>
@@ -116,7 +139,7 @@ const Signin = () => {
                 <select
                   value={department}
                   onChange={(e) => setDepartment(e.target.value)}
-                  className="w-full px-3 py-2 border-b-2 border-gray-300 outline-none text-input"
+                  className="w-full px-3 py-2  border-gray-300 outline-none text-input"
                 >
                   <option value="" disabled>
                     Select your department
@@ -131,7 +154,7 @@ const Signin = () => {
                 <select
                   value={position}
                   onChange={(e) => setPosition(e.target.value)}
-                  className="w-full px-3 py-2 border-b-2 border-gray-300 outline-none text-input"
+                  className="w-full px-3 py-2  border-gray-300 outline-none text-input"
                 >
                   <option value="" disabled>
                     Select your position
@@ -150,7 +173,7 @@ const Signin = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-3 py-2 border-b-2 border-gray-300 outline-none text-input"
+                className="w-full px-3 py-2  border-gray-300 outline-none text-input"
               />
               <label className="block absolute font-medium text-gray-700">
                 Password: <span className="text-red-600">*</span>
@@ -164,7 +187,7 @@ const Signin = () => {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
-                className="w-full px-3 py-2 border-b-2 border-gray-300 outline-none text-input"
+                className="w-full px-3 py-2  border-gray-300 outline-none text-input"
               />
               <label className="block absolute font-medium text-gray-700">
                 Confirm Password: <span className="text-red-600">*</span>

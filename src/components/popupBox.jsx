@@ -1,10 +1,13 @@
-import { useDispatch } from "react-redux";
-import { openPopup } from "../stores/userStateStore";
-const PopUpBox = () => {
-  const dispatch = useDispatch();
+// import { useDispatch } from "react-redux";
+// import { openPopup } from "../stores/userStateStore";
+import PropTypes from "prop-types";
+// import { useState } from "react";
+const PopUpBox = ({ note, closePopupNote }) => {
+  // const dispatch = useDispatch();
 
   const closePopup = () => {
-    dispatch(openPopup(true));
+    // dispatch(openPopup());
+    closePopupNote();
   };
   return (
     <>
@@ -17,9 +20,7 @@ const PopUpBox = () => {
         <h2 id="modal-title" className="font-bold">
           Thank You!
         </h2>
-        <p id="modal-description">
-          Your registration was successful. <br /> Welcome aboard!
-        </p>
+        <p id="modal-description">{note}</p>
         <div className="mt-6">
           <button
             onClick={closePopup}
@@ -35,6 +36,11 @@ const PopUpBox = () => {
       />
     </>
   );
+};
+
+PopUpBox.propTypes = {
+  note: PropTypes.string.isRequired,
+  closePopupNote: PropTypes.func.isRequired,
 };
 
 export default PopUpBox;
