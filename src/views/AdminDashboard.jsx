@@ -1,22 +1,26 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
 import React, { useState, useEffect } from "react";
 import {
   Home,
-  FileText,
   BarChart2,
-  ThumbsUp,
   MessageCircle,
-  Share2,
   LogOut,
   Moon,
   Sun,
   Menu,
   Search,
   Clock,
+  Users,
+  Star,
+  UserRoundPen,
+  MenuIcon,
 } from "lucide-react";
 
 const AdminDashboard = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isSidebarClosed, setIsSidebarClosed] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     // Load dark mode and sidebar state from localStorage
@@ -100,13 +104,19 @@ const AdminDashboard = () => {
 
   return (
     <div className={`${isDarkMode ? "dark" : ""} flex`}>
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={toggleMobileMenu}
+        />
+      )}
       {/* Sidebar Navigation */}
       <nav
         className={`
           fixed top-0 left-0 h-full w-[250px] p-4 bg-white 
           dark:bg-[#242526] border-r border-gray-200 
           dark:border-[#4D4C4C] transition-all duration-500
-          ${isSidebarClosed ? "w-[73px]" : ""}
+          ${isSidebarClosed ? "w-[63px]" : ""}
         `}
       >
         <div className="flex items-center">
@@ -119,7 +129,7 @@ const AdminDashboard = () => {
           </div>
           <span
             className={`
-              text-2xl font-semibold ml-4 text-black 
+              text-1xl font-semibold ml-4 text-black 
               dark:text-gray-300 transition-all 
               ${isSidebarClosed ? "opacity-0 pointer-events-none" : ""}
             `}
@@ -133,11 +143,11 @@ const AdminDashboard = () => {
           <ul>
             {[
               { icon: <Home />, name: "Dashboard" },
-              { icon: <FileText />, name: "Content" },
+              { icon: <UserRoundPen />, name: "Profile" },
               { icon: <BarChart2 />, name: "Analytics" },
-              { icon: <ThumbsUp />, name: "Like" },
+              { icon: <Users />, name: "Members" },
               { icon: <MessageCircle />, name: "Comment" },
-              { icon: <Share2 />, name: "Share" },
+              { icon: <Star />, name: "Total-Rating" },
             ].map((item, index) => (
               <li key={index} className="list-none mb-2">
                 <a
@@ -220,14 +230,13 @@ const AdminDashboard = () => {
           </ul>
         </div>
       </nav>
-
       {/* Dashboard Content */}
       <main
         className={`
-          ml-[250px] bg-white dark:bg-[#242526] 
-          min-h-screen w-[calc(100%-250px)] p-4 
+          lg:ml-[250px] bg-white dark:bg-[#242526] 
+          min-h-screen w-full lg:w-[calc(100%-250px)] p-4 
           transition-all duration-500
-          ${isSidebarClosed ? "ml-[73px] w-[calc(100%-73px)]" : ""}
+          ${isSidebarClosed ? "lg:ml-[73px] lg:w-[calc(100%-73px)]" : ""}
         `}
       >
         {/* Top Bar */}
@@ -292,20 +301,20 @@ const AdminDashboard = () => {
             <div className="flex justify-between flex-wrap">
               {[
                 {
-                  icon: <ThumbsUp />,
-                  text: "Total Likes",
+                  icon: <Users />,
+                  text: "Total Members",
                   number: "50,120",
                   color: "bg-blue-400",
                 },
                 {
                   icon: <MessageCircle />,
-                  text: "Comments",
+                  text: "Total Appraisal",
                   number: "20,120",
                   color: "bg-yellow-200",
                 },
                 {
-                  icon: <Share2 />,
-                  text: "Total Appraisal",
+                  icon: <Star />,
+                  text: "Total Rating",
                   number: "10,120",
                   color: "bg-purple-200",
                 },
@@ -343,7 +352,7 @@ const AdminDashboard = () => {
                 <Clock className="w-6 h-6" />
               </div>
               <span className="text-2xl font-medium ml-4 text-black dark:text-white">
-                Recent Activity
+                Recent Registrations
               </span>
             </div>
 
