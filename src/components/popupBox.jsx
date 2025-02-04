@@ -1,6 +1,8 @@
 // import { useDispatch } from "react-redux";
 // import { openPopup } from "../stores/userStateStore";
+import { X } from "lucide-react";
 import PropTypes from "prop-types";
+import icon from "../assets/images/successful-icon.svg";
 // import { useState } from "react";
 const PopUpBox = ({ note, closePopupNote }) => {
   // const dispatch = useDispatch();
@@ -17,19 +19,18 @@ const PopUpBox = ({ note, closePopupNote }) => {
         aria-labelledby="modal-title"
         aria-describedby="modal-description"
       >
+        <div className="flex justify-end">
+          <X onClick={closePopup} />
+        </div>
+        <div className="flex justify-center items-center">
+          <img src={icon} alt="" className="w-16" />
+        </div>
         <h2 id="modal-title" className="font-bold">
           Thank You!
         </h2>
         <p id="modal-description">{note}</p>
-        <div className="mt-6">
-          <button
-            onClick={closePopup}
-            className="bg-indigo-600 text-white px-4 py-2 rounded-full hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-semibold"
-          >
-            Close
-          </button>
-        </div>
       </div>
+      <div className="mt-6"></div>
       <div
         className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-40"
         onClick={closePopup}

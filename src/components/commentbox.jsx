@@ -1,67 +1,143 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { addComment } from "../stores/commentStore";
+import PopUpBox from "./popupBox";
+import PropTypes from "prop-types";
+import { X } from "lucide-react";
+import { fetchCommentsByCurrentUser } from "../stores/commentStore";
 
-const CommentBox = () => {
-  const [comment, setComment] = useState();
+const CommentBox = ({ closeCommentPopup }) => {
+  const [comment, setComment] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
   const { user, users } = useSelector((state) => state.auth);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [openSuccessBox, setOpenSuccessBox] = useState(false);
 
-  const handleUserSelect = (selectedUser) => {
-    setSelectedUser(selectedUser);
-    console.log(selectedUser);
+  const dispatch = useDispatch();
+
+  const handleUserSelect = (user) => {
+    setSelectedUser(user);
+    console.log("Selected User:", user);
   };
 
-  const handleSubmit = () => {
-    console.log(comment);
+  const handleSubmitComment = async () => {
+    if (!comment) {
+      setError("Please enter a comment.");
+      return;
+    }
+
+    const newComment = {
+      comment,
+      sender: user._id,
+      recipient: selectedUser._id,
+    };
+
+    const commentNew = await dispatch(addComment(newComment));
+    if (commentNew.payload.status === "success") {
+      setMessage("Comment submitted successfully.");
+      setOpenSuccessBox(true);
+
+      // Delay closing popup so success message is visible
+      setTimeout(() => {
+        setOpenSuccessBox(false);
+        closeCommentPopup(); // Close after success message is shown
+        setSelectedUser(null);
+        setComment("");
+        dispatch(fetchCommentsByCurrentUser(user._id));
+      }, 2000); // 2 seconds delay
+    } else {
+      setMessage("Your comment was not submitted.");
+    }
   };
+
+  const closePopup = () => {
+    setSelectedUser(null);
+    setComment("");
+  };
+
   return (
     <>
       {!selectedUser ? (
         <div>
-          <h2 className="text-xl font-bold mb-4">Select a Member</h2>
-          <ul className="list-none overflow-auto max-h-[300px]">
-            {users.map((user) => (
-              <li
-                key={user._id}
-                onClick={() => handleUserSelect(user)}
-                className="cursor-pointer p-3 border-b-[1px] border-[#ddd] hover:bg-[#f0f0f0] flex items-center justify-between"
-              >
-                <p>
-                  {user.firstName} {user.lastName}
-                </p>{" "}
-                <button className="text-[10px]   px-2.5 py-1  text-white bg-color-2 rounded-full hover:bg-color-1 focus:outline-none focus:ring-2 focus:ring-color-1">
-                  Appraise
-                </button>
-              </li>
-            ))}
-          </ul>
+          {/* User Selection Modal */}
+          <div
+            className="fixed space-y-5 w-[350px] md:min-w-[550px] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-5 bg-white shadow-md rounded-lg z-50"
+            role="dialog"
+          >
+            <div className="flex items-center justify-end">
+              <X onClick={closeCommentPopup} className="cursor-pointer" />
+            </div>
+            <h2 className="text-xl font-bold mb-4">Select a Member</h2>
+            <ul className="overflow-auto max-h-[300px]">
+              {users.map((user) => (
+                <li
+                  key={user._id}
+                  onClick={() => handleUserSelect(user)}
+                  className="cursor-pointer p-3 border-b border-gray-300 hover:bg-gray-100 flex items-center justify-between"
+                >
+                  <p>
+                    {user.firstName} {user.lastName}
+                  </p>
+                  <button className="text-sm px-2 py-1 text-white bg-blue-500 rounded-full hover:bg-blue-600">
+                    Comment
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+          {/* Background overlay */}
+          <div
+            className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-40"
+            onClick={closeCommentPopup}
+          />
         </div>
       ) : (
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col items-center justify-center">
+        <div>
+          {/* Comment Popup */}
+          <div
+            className="fixed space-y-5 w-[350px] md:min-w-[550px] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-5 bg-white shadow-md rounded-lg z-50"
+            role="dialog"
+          >
+            <div className="flex items-center justify-end">
+              <X onClick={closePopup} className="cursor-pointer" />
+            </div>
             <h2 className="text-xl font-bold">Anonymous Comment Section</h2>
-            <p>only management team can read your comment</p>
-          </div>
-          <div>
+            <p className="text-sm text-gray-600">
+              Only the management team can read your comment.
+            </p>
             <textarea
-              placeholder="Anonymous Comment Section"
+              placeholder="Write your comment..."
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              className="w-full p-2.5 h-[150px] mb-2.5 border-[1px solid #ddd] rounded-md resize-none"
+              className="w-full p-2 h-[150px] border rounded-md resize-none"
             />
+            {error && <p className="text-red-600">{error}</p>}
+            <div className="flex justify-end">
+              <button
+                onClick={handleSubmitComment}
+                className="px-4 py-2 text-white bg-blue-500 rounded-full hover:bg-blue-600"
+              >
+                Send
+              </button>
+            </div>
           </div>
-          <div className="flex justify-end">
-            <button
-              onClick={handleSubmit}
-              className="md:text-xl font-semibold md:font-bold px-4 py-2 md:px-8 md:py-3 text-white bg-color-2 rounded-full hover:bg-color-1 focus:outline-none focus:ring-2 focus:ring-color-1"
-            >
-              Send
-            </button>
-          </div>
+          {/* Background overlay */}
+          <div
+            className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-40"
+            onClick={closePopup}
+          />
         </div>
       )}
+
+      {/* Success Message Popup */}
+      {openSuccessBox && <PopUpBox note={message} />}
     </>
   );
+};
+
+CommentBox.propTypes = {
+  closeCommentPopup: PropTypes.func.isRequired,
 };
 
 export default CommentBox;

@@ -4,6 +4,7 @@ import storage from "redux-persist/lib/storage";
 import userStateStoe from "./userStateStore";
 import staffAppraisalSlice from "./staffAppraisalStore";
 import appraisal from "./appraisalStore";
+import comments from "./commentStore";
 
 // Persist configuration
 const persistConfig = {
@@ -20,6 +21,7 @@ const store = configureStore({
     auth: persistedAuthReducer,
     staffAppraisal: staffAppraisalSlice,
     appraisal: appraisal,
+    comment: comments,
   },
 });
 

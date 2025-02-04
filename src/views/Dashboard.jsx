@@ -6,6 +6,7 @@ import { Outlet } from "react-router-dom";
 import { getAllUsers } from "../stores/userStateStore";
 import { getAllAppraisal } from "../stores/appraisalStore";
 import { getAppraisalByUser } from "../stores/staffAppraisalStore";
+import { fetchCommentsByCurrentUser } from "../stores/commentStore";
 import { useEffect } from "react";
 // import DashboardBox from "../components/dashboradBox";
 
@@ -18,11 +19,12 @@ const Dashboard = () => {
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("persist:auth"));
     const userDetails = JSON.parse(user.user);
-    dispatch(getAppraisalByUser(userDetails._id));
     if (status === "idle") {
       dispatch(getAllUsers());
       dispatch(getAllAppraisal());
+      dispatch(fetchCommentsByCurrentUser(userDetails._id));
     }
+    dispatch(getAppraisalByUser(userDetails._id));
   }, [dispatch, status]);
 
   return (
