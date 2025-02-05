@@ -98,7 +98,13 @@ const EmployeeList = () => {
   return (
     <>
       <div className="h-[700px] overflow-scroll">
-        <DataTable columns={columns} data={users} className="h-[800px]" />
+        <DataTable
+          columns={columns}
+          data={users}
+          pagination
+          paginationPerPage={10}
+          paginationRowsPerPageOptions={[10, 20, 50, 100]}
+        />
       </div>
     </>
   );

@@ -9,9 +9,22 @@ import {
   LogOut,
   UsersRound,
   MessageSquareText,
+  BriefcaseBusiness,
+  HandCoins,
 } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const SideBar = () => {
+  const [currentUser, setCurrentUser] = useState({});
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("persist:auth"));
+    const userDetails = JSON.parse(user.user);
+
+    setCurrentUser(userDetails);
+  }, []);
+
+  console.log(currentUser);
   const dispatch = useDispatch();
   const handleLogout = () => {
     console.log("logout");
@@ -32,6 +45,7 @@ const SideBar = () => {
               Dashboard
             </NavLink>
           </li>
+
           <li>
             <NavLink to="profile" className="menuLinks">
               <UserRoundPen className="w-5" />
@@ -44,17 +58,51 @@ const SideBar = () => {
               Appraisal
             </NavLink>
           </li>
-          <li>
-            <NavLink to="employee" className="menuLinks">
-              <UsersRound className="w-5" />
-              Employees
-            </NavLink>
-          </li>
+
           <li>
             <NavLink to="comment" className="menuLinks">
               <MessageSquareText className="w-5" />
               Comment
             </NavLink>
+          </li>
+
+          <li>
+            <p className="text-base font-semibold px-4 ">Admin Section</p>
+            <ul>
+              {currentUser?.role === "admin" && (
+                <li>
+                  <NavLink to="employees" className="menuLinks">
+                    <UsersRound className="w-5" />
+                    Employees
+                  </NavLink>
+                </li>
+              )}
+              {currentUser?.role === "admin" && (
+                <li>
+                  <NavLink to="department" className="menuLinks">
+                    <BriefcaseBusiness className="w-5" />
+                    Department
+                  </NavLink>
+                </li>
+              )}
+              {currentUser?.role === "admin" && (
+                <li>
+                  <NavLink to="position" className="menuLinks">
+                    <HandCoins className="w-5" />
+                    Position
+                  </NavLink>
+                </li>
+              )}
+              {currentUser?.role === "admin" ||
+                (currentUser?.role === "mgt" && (
+                  <li>
+                    <NavLink to="anonymous-comments" className="menuLinks">
+                      <MessageSquareText className="w-5" />
+                      Anonymous
+                    </NavLink>
+                  </li>
+                ))}
+            </ul>
           </li>
         </ul>
         <ul className="py-5 border-t-2 border-color-3">

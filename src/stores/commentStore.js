@@ -86,7 +86,11 @@ const commentSlice = createSlice({
       })
 
       .addCase(addComment.fulfilled, (state, action) => {
-        state.comments.push(action.payload);
+        if (Array.isArray(state.comments)) {
+          state.comments.push(action.payload);
+        } else {
+          state.comments = [action.payload]; // Reset if undefined
+        }
       })
 
       .addCase(deleteCommentById.pending, (state) => {

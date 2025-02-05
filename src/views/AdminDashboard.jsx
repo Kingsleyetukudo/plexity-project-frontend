@@ -1,6 +1,10 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { getAllUsers } from "../stores/userStateStore";
+import moment from "moment";
+
 import {
   Home,
   BarChart2,
@@ -16,11 +20,16 @@ import {
   UserRoundPen,
   MenuIcon,
 } from "lucide-react";
+import { NavLink } from "react-router-dom";
 
 const AdminDashboard = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isSidebarClosed, setIsSidebarClosed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { users } = useSelector((state) => state.auth);
+  const [activityData, setAtivityData] = useState([]);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     // Load dark mode and sidebar state from localStorage
@@ -29,6 +38,12 @@ const AdminDashboard = () => {
 
     if (savedMode === "dark") setIsDarkMode(true);
     if (savedSidebarStatus === "close") setIsSidebarClosed(true);
+
+    dispatch(getAllUsers());
+
+    setAtivityData(users);
+
+    // console.log(activityData);
   }, []);
 
   useEffect(() => {
@@ -41,58 +56,6 @@ const AdminDashboard = () => {
     // Save sidebar state to localStorage
     localStorage.setItem("status", isSidebarClosed ? "close" : "open");
   }, [isSidebarClosed]);
-
-  const activityData = [
-    {
-      name: "Opeyemi Tella",
-      email: "opeyemitella@gmail.com",
-      joined: "2022-02-12",
-      type: "Boss",
-      status: "Liked",
-    },
-    {
-      name: "Kingsley Etekudo",
-      email: "kingsleyetekudo@gmail.com",
-      joined: "2022-02-12",
-      type: "Full-Stack Developer",
-      status: "Liked",
-    },
-    {
-      name: "Adekunle Lekan",
-      email: "adekunlelekan@gmail.com",
-      joined: "2022-02-13",
-      type: "Boss",
-      status: "Liked",
-    },
-    {
-      name: "Tijesunimi Michael",
-      email: "tijesunimimichael@gmail.com",
-      joined: "2022-02-13",
-      type: "HR Manager",
-      status: "Liked",
-    },
-    {
-      name: "Anuoluwapo Babatunde",
-      email: "anuoluwapobabatunde@gmail.com",
-      joined: "2022-02-14",
-      type: "Content Creator",
-      status: "Liked",
-    },
-    {
-      name: "Victor Busayo",
-      email: "victorbusayo@gmail.com",
-      joined: "2022-02-14",
-      type: "Full-Stack Developer",
-      status: "Liked",
-    },
-    {
-      name: "Wisdom Chidi",
-      email: "wisdomchidi@gmail.com",
-      joined: "2022-02-15",
-      type: "Content Creator",
-      status: "Liked",
-    },
-  ];
 
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
@@ -142,16 +105,20 @@ const AdminDashboard = () => {
         <div className="mt-10 h-[calc(100%-90px)] flex flex-col justify-between">
           <ul>
             {[
-              { icon: <Home />, name: "Dashboard" },
-              { icon: <UserRoundPen />, name: "Profile" },
-              { icon: <BarChart2 />, name: "Analytics" },
-              { icon: <Users />, name: "Members" },
-              { icon: <MessageCircle />, name: "Comment" },
-              { icon: <Star />, name: "Total-Rating" },
+              { icon: <Home />, name: "Dashboard", path: "/" },
+              { icon: <UserRoundPen />, name: "Profile", path: "/profile" },
+              { icon: <BarChart2 />, name: "Analytics", path: "/analytics" },
+              {
+                icon: <Users />,
+                name: "Members",
+                path: "members",
+              },
+              { icon: <MessageCircle />, name: "Comment", path: "/comments" },
+              { icon: <Star />, name: "Total-Rating", path: "/ratings" },
             ].map((item, index) => (
               <li key={index} className="list-none mb-2">
-                <a
-                  href="#"
+                <NavLink
+                  to={item.path}
                   className="flex items-center h-12 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-white"
                 >
                   {React.cloneElement(item.icon, {
@@ -165,7 +132,7 @@ const AdminDashboard = () => {
                   >
                     {item.name}
                   </span>
-                </a>
+                </NavLink>
               </li>
             ))}
           </ul>
@@ -303,7 +270,7 @@ const AdminDashboard = () => {
                 {
                   icon: <Users />,
                   text: "Total Members",
-                  number: "50,120",
+                  number: users.length,
                   color: "bg-blue-400",
                 },
                 {
@@ -355,14 +322,44 @@ const AdminDashboard = () => {
                 Recent Registrations
               </span>
             </div>
-
             <div className="flex justify-between w-full overflow-x-auto">
               {[
-                { title: "Name", data: activityData.map((d) => d.name) },
-                { title: "Email", data: activityData.map((d) => d.email) },
-                { title: "Joined", data: activityData.map((d) => d.joined) },
-                { title: "Type", data: activityData.map((d) => d.type) },
-                { title: "Status", data: activityData.map((d) => d.status) },
+                {
+                  title: "First Name",
+                  data: activityData
+                    .filter((d) => !d.isApproved) // Filter users where isApproved is false
+                    .map((d) => d.firstName),
+                },
+                {
+                  title: "Last Name",
+                  data: activityData
+                    .filter((d) => !d.isApproved)
+                    .map((d) => d.lastName),
+                },
+                {
+                  title: "Email",
+                  data: activityData
+                    .filter((d) => !d.isApproved)
+                    .map((d) => d.email),
+                },
+                {
+                  title: "Joined",
+                  data: activityData
+                    .filter((d) => !d.isApproved)
+                    .map((d) => moment(d.createdAt).format("l")),
+                },
+                {
+                  title: "Position",
+                  data: activityData
+                    .filter((d) => !d.isApproved)
+                    .map((d) => d.position),
+                },
+                {
+                  title: "Status",
+                  data: activityData
+                    .filter((d) => !d.isApproved)
+                    .map(() => "Not Approved"),
+                },
               ].map((column, index) => (
                 <div key={index} className="flex flex-col mx-4">
                   <span className="text-xl font-medium text-black dark:text-white mb-4">
@@ -379,6 +376,7 @@ const AdminDashboard = () => {
                 </div>
               ))}
             </div>
+            ;
           </section>
         </div>
       </main>

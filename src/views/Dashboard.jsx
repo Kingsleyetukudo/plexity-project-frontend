@@ -6,25 +6,44 @@ import { Outlet } from "react-router-dom";
 import { getAllUsers } from "../stores/userStateStore";
 import { getAllAppraisal } from "../stores/appraisalStore";
 import { getAppraisalByUser } from "../stores/staffAppraisalStore";
-import { fetchCommentsByCurrentUser } from "../stores/commentStore";
+import {
+  fetchCommentsByCurrentUser,
+  fetchComments,
+} from "../stores/commentStore";
 import { useEffect } from "react";
 // import DashboardBox from "../components/dashboradBox";
 
 const Dashboard = () => {
-  const { toggleBar, status, user } = useSelector((state) => state.auth);
+  const { toggleBar, status } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
 
-  console.log(user._id);
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("persist:auth"));
-    const userDetails = JSON.parse(user.user);
-    if (status === "idle") {
-      dispatch(getAllUsers());
-      dispatch(getAllAppraisal());
-      dispatch(fetchCommentsByCurrentUser(userDetails._id));
+    // Check if user exists in localStorage and parse it
+    const storedUser = localStorage.getItem("persist:auth");
+    let userDetails = null;
+    if (storedUser) {
+      try {
+        userDetails = JSON.parse(JSON.parse(storedUser).user);
+      } catch (error) {
+        console.error("Error parsing user data:", error);
+      }
     }
-    dispatch(getAppraisalByUser(userDetails._id));
+
+    // Check if userDetails is available before dispatching
+    if (userDetails && userDetails._id) {
+      console.log(userDetails._id); // Now this should work fine
+
+      if (status === "idle") {
+        dispatch(getAllUsers());
+        dispatch(getAllAppraisal());
+        dispatch(fetchCommentsByCurrentUser(userDetails._id));
+        dispatch(fetchComments());
+      }
+      dispatch(getAppraisalByUser(userDetails._id));
+    } else {
+      console.warn("User details not found!");
+    }
   }, [dispatch, status]);
 
   return (

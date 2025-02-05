@@ -3,7 +3,7 @@ import { useState } from "react";
 import img from "../assets/images/login-image.png";
 import logo from "../assets/images/site-logo.png";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { login } from "../stores/userStateStore";
 
@@ -34,10 +34,28 @@ const Login = () => {
       );
 
       const result = await dispatch(login({ email, password, reCaptchatoken }));
-      // Assuming `result` contains user data on success
-      console.log("Login successful:", result);
 
-      navigate("/dashboard"); // Redirect to dashboard
+      console.log(result.payload);
+
+      if (result?.payload?.message === "Email not found!") {
+        setError("This email is not registered.");
+        return; // Prevent navigation to the dashboard
+      }
+
+      if (result?.payload?.message === "Incorrect password") {
+        setError("Password incorrect");
+        return; // Prevent navigation to the dashboard
+      }
+
+      // Check if the user is approved
+      if (result?.payload?.isApproved === false) {
+        setError("Your account is pending approval by the admin.");
+        return; // Prevent navigation to the dashboard if not approved
+      } else {
+        // If login is successful and user is approved, redirect to the dashboard
+        console.log("Login successful:", result);
+        navigate("/dashboard"); // Redirect to dashboard
+      }
     } catch (err) {
       console.error("Login failed:", err);
       setError(err.message || "Invalid email or password");
