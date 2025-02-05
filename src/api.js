@@ -2,7 +2,8 @@ import axios from "axios";
 
 // Create an instance of axios
 const api = axios.create({
-  baseURL: "http://localhost:5000/", // Replace with your API base URL
+  // baseURL: "http://localhost:5000/", // Replace with your API base URL
+  baseURL: "https://plexity-project-backend.vercel.app/", // Replace with your API base URL
   timeout: 10000, // Request timeout
   headers: {
     "Content-Type": "application/json",
