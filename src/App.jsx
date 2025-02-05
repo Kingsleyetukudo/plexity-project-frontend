@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 import Login from "./views/login";
 import Dashboard from "./views/Dashboard";
 import Signin from "./views/Signin";
@@ -16,30 +21,43 @@ import Department from "./views/department";
 import Position from "./views/position";
 import AnonymousComments from "./views/anonymousComments";
 
+// Function to check if user is authenticated
+const getUser = () => {
+  try {
+    const storedUser = localStorage.getItem("persist:auth");
+    if (!storedUser) return null;
+    return JSON.parse(JSON.parse(storedUser).user);
+  } catch (error) {
+    console.error("Error parsing user data:", error);
+    return null;
+  }
+};
+
 function App() {
-  // Get user info from localStorage (could be from context or state as well)
-  // const user = JSON.parse(localStorage.getItem("persist:auth"));
-  // const userDetails = JSON.parse(user.user);
-  // const isUserApproved = userDetails.isApproved;
-  // const userRole = userDetails.role;
-
-  // console.log(userDetails);
-
-  // // Redirect to login if the user is not approved and tries to access protected routes
-  // if (user && !isUserApproved) {
-  //   return <Navigate to="/login" />;
-  // }
+  const user = getUser();
 
   return (
     <Router>
       <Routes>
+        {/* If user is not authenticated, redirect to login */}
+        <Route
+          path="/"
+          element={
+            user ? <Navigate to="/dashboard" /> : <Navigate to="/login" />
+          }
+        />
+
         {/* Admin dashboard route */}
+        <Route
+          path="/admin-dashboard"
+          element={user ? <AdminDashboard /> : <Navigate to="/login" />}
+        />
 
-        <Route path="/admin-dashboard" element={<AdminDashboard />} />
-
-        {/* Regular dashboard route */}
-
-        <Route path="/dashboard" element={<Dashboard />}>
+        {/* Regular dashboard routes (Protected) */}
+        <Route
+          path="/dashboard"
+          element={user ? <Dashboard /> : <Navigate to="/login" />}
+        >
           <Route index element={<DashboardDefault />} />
           <Route path="profile" element={<Profile />} />
           <Route path="profile/:id" element={<Profile />} />
@@ -55,7 +73,7 @@ function App() {
           <Route path="anonymous-comments" element={<AnonymousComments />} />
         </Route>
 
-        {/* Other routes */}
+        {/* Auth Routes */}
         <Route path="/signin" element={<Signin />} />
         <Route path="/login" element={<Login />} />
       </Routes>

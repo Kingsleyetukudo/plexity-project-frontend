@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 import { useState } from "react";
-import img from "../assets/images/login-image.png";
+import img from "../assets/images/login-image.svg";
 import logo from "../assets/images/site-logo.png";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
