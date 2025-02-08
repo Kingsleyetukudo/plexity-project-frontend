@@ -20,13 +20,17 @@ import Comment from "./views/comment";
 import Department from "./views/department";
 import Position from "./views/position";
 import AnonymousComments from "./views/anonymousComments";
+import AppraisalQuestionsView from "./views/appraisalQuestions";
+import { useMemo } from "react";
 
 // Function to check if user is authenticated
 const getUser = () => {
   try {
     const storedUser = localStorage.getItem("persist:auth");
     if (!storedUser) return null;
-    return JSON.parse(JSON.parse(storedUser).user);
+
+    const parsedStorage = JSON.parse(storedUser);
+    return parsedStorage?.user ? JSON.parse(parsedStorage.user) : null;
   } catch (error) {
     console.error("Error parsing user data:", error);
     return null;
@@ -34,7 +38,7 @@ const getUser = () => {
 };
 
 function App() {
-  const user = getUser();
+  const user = useMemo(getUser, []);
 
   return (
     <Router>
@@ -71,6 +75,10 @@ function App() {
           <Route path="department" element={<Department />} />
           <Route path="position" element={<Position />} />
           <Route path="anonymous-comments" element={<AnonymousComments />} />
+          <Route
+            path="appraisal-questions"
+            element={<AppraisalQuestionsView />}
+          />
         </Route>
 
         {/* Auth Routes */}

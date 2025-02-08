@@ -17,9 +17,9 @@ const Dropdown = ({ options, onFilter }) => {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 bg-white shadow-sm px-4 py-2 rounded-xl  text-active-color text-xs font-semibold"
+        className="flex items-center gap-2 bg-white shadow-md px-4 py-2 rounded-xl  text-active-color text-base font-semibold"
       >
-        <Filter className="text-active-color text-xs w-[17px]" />
+        <Filter className="text-active-color text-base w-[17px]" />
         <span>{selected}</span>
         {isOpen ? (
           <ChevronDown className="text-active-color text-xs w-[17px]" />
@@ -28,17 +28,17 @@ const Dropdown = ({ options, onFilter }) => {
         )}{" "}
       </button>
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-32 bg-white shadow-md rounded-xl border border-gray-200 z-10">
-          <p className="px-4 py-2 s text-brandColor-1 text-xs font-semibold shadow-sm">
+        <div className="absolute right-0 mt-2 w-36 bg-white shadow-md rounded-xl border border-gray-200 z-10">
+          {/* <p className="px-4 py-2 s text-brandColor-1 text-base font-semibold shadow-sm">
             Period
-          </p>
+          </p> */}
           {options.map((option) => (
             <div
-              key={option._id}
-              className="px-4 py-2 hover:bg-gray-100 hover:text-gray-700 cursor-pointer text-active-color text-xs"
-              onClick={() => handleSelection(option._id)}
+              key={option}
+              className="px-4 py-2 hover:bg-gray-100 hover:text-gray-700 cursor-pointer text-active-color text-sm"
+              onClick={() => handleSelection(option)}
             >
-              {option.firstName} {option.lastName}
+              {option}
             </div>
           ))}
         </div>

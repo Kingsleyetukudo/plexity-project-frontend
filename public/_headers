@@ -1,3 +1,4 @@
 / *
 Access-Control-Allow-Origin: *
 Content-Security-Policy: frame-src 'self' https://www.google.com;
+X-Nf-Timeout: 60

@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCommentsByCurrentUser } from "../stores/commentStore";
+import {
+  fetchCommentsByCurrentUser,
+  fetchComments,
+} from "../stores/commentStore";
 
 import UserCommentList from "../components/userCommentList";
 import TitleBar from "../components/titleBar";
@@ -9,7 +12,7 @@ import Dropdown from "../components/filterDropdown";
 
 const AnonymousComments = () => {
   const [showPopup, setShowPopup] = useState(false);
-  const [title] = useState("My Comments");
+  const [title] = useState("Comments");
   const { comments } = useSelector((state) => state.comment);
   const { user, users } = useSelector((state) => state.auth);
   const [filter, setFilter] = useState("All");
@@ -18,6 +21,7 @@ const AnonymousComments = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(fetchComments());
     dispatch(fetchCommentsByCurrentUser(user._id));
   }, [dispatch, user._id]);
 

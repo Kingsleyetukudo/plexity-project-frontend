@@ -5,6 +5,8 @@ import PopUpBox from "./popupBox";
 import PropTypes from "prop-types";
 import { X } from "lucide-react";
 import { fetchCommentsByCurrentUser } from "../stores/commentStore";
+import ReactQuill from "react-quill"; // Importing react-quill
+import "react-quill/dist/quill.snow.css"; // Importing default styles
 
 const CommentBox = ({ closeCommentPopup }) => {
   const [comment, setComment] = useState("");
@@ -32,6 +34,7 @@ const CommentBox = ({ closeCommentPopup }) => {
       sender: user._id,
       recipient: selectedUser._id,
     };
+    console.log(comment);
 
     const commentNew = await dispatch(addComment(newComment));
     if (commentNew.payload.status === "success") {
@@ -106,11 +109,12 @@ const CommentBox = ({ closeCommentPopup }) => {
             <p className="text-sm text-gray-600">
               Only the management team can read your comment.
             </p>
-            <textarea
-              placeholder="Write your comment..."
+            {/* Using ReactQuill for rich-text editing */}
+            <ReactQuill
               value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              className="w-full p-2 h-[150px] border rounded-md resize-none"
+              onChange={setComment}
+              placeholder="Write your comment..."
+              className="w-full  border rounded-md"
             />
             {error && <p className="text-red-600">{error}</p>}
             <div className="flex justify-end">

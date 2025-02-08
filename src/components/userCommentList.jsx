@@ -9,20 +9,23 @@ import {
 } from "../stores/commentStore";
 import DeleteCommentBox from "./deleteCommentBox";
 import moment from "moment";
+import DOMPurify from "dompurify"; // Import DOMPurify for sanitization
 
 const UserCommentList = ({ comments }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [expandedComments, setExpandedComments] = useState({});
   const [openOption, setOpenOption] = useState(null);
-  const [editCommentId, setEditCommentId] = useState(null); // Store comment ID instead of index
-  const [deleteCommentId, setDeleteCommentId] = useState(null); // Store comment ID instead of index
+  const [editCommentId, setEditCommentId] = useState(null);
+  const [deleteCommentId, setDeleteCommentId] = useState(null);
   const [commentList, setCommentList] = useState(comments);
   const [localComment, setLocalComment] = useState("");
   const dispatch = useDispatch();
 
-  const shortComment = (commentText) =>
-    commentText.split(" ").slice(0, 50).join(" ") + "...";
-
-  const toggleExpanded = () => setIsExpanded(!isExpanded);
+  const toggleExpanded = (id) => {
+    setExpandedComments((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
 
   const toggleOpenOption = (commentId) => {
     setOpenOption(openOption === commentId ? null : commentId);
@@ -30,17 +33,13 @@ const UserCommentList = ({ comments }) => {
 
   const openEditComment = (commentId) => {
     const commentToEdit = commentList.find((c) => c._id === commentId);
-    if (!commentToEdit) {
-      console.error("Comment not found for ID:", commentId);
-      return;
-    }
-
+    if (!commentToEdit) return;
     setLocalComment(commentToEdit.comment);
-    setEditCommentId(commentId); // Store comment ID
+    setEditCommentId(commentId);
   };
 
   const openDeleteComment = (commentId) => {
-    setDeleteCommentId(commentId); // Store the comment ID to delete
+    setDeleteCommentId(commentId);
     const commentToDelete = commentList.find((c) => c._id === commentId);
     if (commentToDelete) {
       setLocalComment(commentToDelete.comment);
@@ -48,9 +47,6 @@ const UserCommentList = ({ comments }) => {
   };
 
   const updateComment = (commentId, newComment) => {
-    console.log("Updating comment:", commentId, "with:", newComment);
-
-    // Update local state
     setCommentList((prevComments) =>
       prevComments.map((comment) =>
         comment._id === commentId
@@ -59,21 +55,16 @@ const UserCommentList = ({ comments }) => {
       )
     );
 
-    // Update Redux store
     dispatch(updateCommentAction({ id: commentId, comment: newComment }));
-
     setEditCommentId(null);
   };
 
   const deleteComment = async (commentId) => {
-    // Dispatch the delete action
     dispatch(deleteCommentById(commentId));
-
-    // Remove the deleted comment from the local state
     setCommentList((prevComments) =>
       prevComments.filter((comment) => comment._id !== commentId)
     );
-    setDeleteCommentId(null); // Close the delete confirmation box
+    setDeleteCommentId(null);
   };
 
   return (
@@ -82,15 +73,15 @@ const UserCommentList = ({ comments }) => {
         commentList.map((comment) => (
           <div
             key={comment._id}
-            className="shadow-[0px_0px_8px_0px_rgba(0,0,0,0.67)] p-5 rounded-xl flex flex-col gap-4"
+            className="shadow-lg p-5 rounded-xl flex flex-col gap-4 bg-white"
           >
             <div className="flex justify-between items-center">
               <p className="text-sm font-semibold">
-                For: {comment.recipient.firstName}
+                For: {comment.recipient.firstName} {comment.recipient.lastName}
               </p>
               <div className="flex gap-5 items-center">
                 <p className="text-sm font-semibold">
-                  Date: {moment(comment.date).format("ll")}
+                  Date: {moment(comment.createdAt).format("ll")}
                 </p>
                 <span className="bg-gray-200 rounded-full p-1 cursor-pointer relative">
                   <EllipsisVertical
@@ -129,15 +120,37 @@ const UserCommentList = ({ comments }) => {
                   }
                 />
               ) : (
-                <p>
-                  {isExpanded ? comment.comment : shortComment(comment.comment)}
-                </p>
+                <div
+                  className={`prose max-w-none overflow-hidden transition-all duration-300 ${
+                    expandedComments[comment._id]
+                      ? "max-h-[500px]"
+                      : "max-h-[60px]"
+                  }`}
+                  dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(comment.comment, {
+                      ALLOWED_TAGS: [
+                        "p",
+                        "b",
+                        "i",
+                        "h1",
+                        "u",
+                        "strong",
+                        "em",
+                        "ul",
+                        "ol",
+                        "li",
+                        "br",
+                      ],
+                      ALLOWED_ATTR: [],
+                    }),
+                  }}
+                />
               )}
               <button
-                onClick={toggleExpanded}
-                className="text-blue-500 font-medium"
+                onClick={() => toggleExpanded(comment._id)}
+                className="text-blue-500 font-medium mt-2"
               >
-                {isExpanded ? "Show less" : "Read more"}
+                {expandedComments[comment._id] ? "Show less" : "Read more"}
               </button>
             </div>
 
@@ -166,7 +179,9 @@ UserCommentList.propTypes = {
       comment: PropTypes.string.isRequired,
       recipient: PropTypes.shape({
         firstName: PropTypes.string.isRequired,
+        lastName: PropTypes.string.isRequired,
       }).isRequired,
+      createdAt: PropTypes.string.isRequired,
     })
   ).isRequired,
 };

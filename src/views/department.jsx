@@ -8,7 +8,7 @@ import CommentBox from "../components/commentbox";
 
 const Department = () => {
   const [showPopup, setShowPopup] = useState(false);
-  const [title] = useState("My Comments");
+  const [title] = useState("Departments");
   const { userComments } = useSelector((state) => state.comment);
   const { user } = useSelector((state) => state.auth);
   const [loadedComments, setLoadedComments] = useState([]);
@@ -46,7 +46,7 @@ const Department = () => {
                 onClick={handleAppraisal}
                 className="text-sm md:text-xl font-semibold md:font-bold px-4 py-2 md:px-8 md:py-3 text-white bg-color-2 rounded-full hover:bg-color-1 focus:outline-none focus:ring-2 focus:ring-color-1"
               >
-                Send Comment
+                Add Department
               </button>
             </div>
           </div>

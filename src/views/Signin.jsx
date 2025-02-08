@@ -12,9 +12,9 @@ const Signin = () => {
   const [email, setEmail] = useState("");
   const [position, setPosition] = useState("");
   const [department, setDepartment] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  // const [password, setPassword] = useState("");
+  // const [confirmPassword, setConfirmPassword] = useState("");
+  // const [showPassword, setShowPassword] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [error, setError] = useState("");
   const { status } = useSelector((state) => state.auth);
@@ -52,14 +52,13 @@ const Signin = () => {
         isApproved: false,
         position,
         department,
-        password,
         token,
       };
 
-      if (password !== confirmPassword) {
-        setError("Passwords do not match!");
-        return;
-      }
+      // if (password !== confirmPassword) {
+      //   setError("Passwords do not match!");
+      //   return;
+      // }
 
       setError("");
 
@@ -76,9 +75,9 @@ const Signin = () => {
     }
   };
 
-  const togglePasswordVisibility = () => {
-    setShowPassword((prevState) => !prevState);
-  };
+  // const togglePasswordVisibility = () => {
+  //   setShowPassword((prevState) => !prevState);
+  // };
 
   return (
     <div className="md:flex items-center justify-center min-h-screen">
@@ -166,7 +165,7 @@ const Signin = () => {
               </div>
             </div>
 
-            <div className="form-group relative">
+            {/* <div className="form-group relative">
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder=" "
@@ -178,9 +177,9 @@ const Signin = () => {
               <label className="block absolute font-medium text-gray-700">
                 Password: <span className="text-red-600">*</span>
               </label>
-            </div>
+            </div> */}
 
-            <div className="form-group relative">
+            {/* <div className="form-group relative">
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder=" "
@@ -208,7 +207,7 @@ const Signin = () => {
               >
                 {showPassword ? "Hide" : "Show"}
               </button>
-            </div>
+            </div> */}
 
             <div className="flex justify-end">
               <button
