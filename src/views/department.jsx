@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCommentsByCurrentUser } from "../stores/commentStore";
-
-import UserCommentList from "../components/userCommentList";
+import { getAllDepartments } from "../stores/departmentStore";
 import TitleBar from "../components/titleBar";
-import CommentBox from "../components/commentbox";
+import AddDepartmentBox from "../components/createDeparment";
+import DepartmentList from "../components/DepartmentList";
 
 const Department = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [title] = useState("Departments");
-  const { userComments } = useSelector((state) => state.comment);
-  const { user } = useSelector((state) => state.auth);
+  const { departments } = useSelector((state) => state.department);
   const [loadedComments, setLoadedComments] = useState([]);
   const [isLoading, setIsLoading] = useState(true); // Added loading state
   const dispatch = useDispatch();
@@ -20,16 +18,19 @@ const Department = () => {
   };
 
   useEffect(() => {
-    dispatch(fetchCommentsByCurrentUser(user._id));
-  }, [dispatch, user._id]);
+    dispatch(getAllDepartments());
+    setLoadedComments(departments?.data?.departments);
+    setIsLoading(false);
+    console.log(loadedComments);
+  }, [dispatch, loadedComments]);
 
-  useEffect(() => {
-    if (userComments?.data?.comments) {
-      setLoadedComments(userComments.data.comments);
-      console.log(userComments);
-      setIsLoading(false); // Set loading to false when data is available
-    }
-  }, [userComments]);
+  // useEffect(() => {
+  //   if (userComments?.data?.comments) {
+  //     setLoadedComments(userComments.data.comments);
+  //     console.log(userComments);
+  //     setIsLoading(false); // Set loading to false when data is available
+  //   }
+  // }, [userComments]);
 
   const handleAppraisal = () => {
     setShowPopup(true);
@@ -54,14 +55,14 @@ const Department = () => {
 
         {showPopup && (
           <>
-            <CommentBox closeCommentPopup={closePopup} />
+            <AddDepartmentBox closeDepartment={closePopup} />
           </>
         )}
 
         {isLoading ? (
-          <p>Loading comments...</p>
+          <p>Loading Deparments...</p>
         ) : (
-          <UserCommentList comments={loadedComments} />
+          <DepartmentList departments={loadedComments} />
         )}
       </div>
     </>

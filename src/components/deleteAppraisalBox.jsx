@@ -2,6 +2,7 @@ import { X } from "lucide-react";
 import PropTypes from "prop-types";
 
 const DeleteAppraisalBox = ({
+  text,
   commentId, // Pass the comment ID to delete
   deleteapppraise, // Function to handle deletion
   toggleDeleteapppraise, // Function to toggle the popup visibility
@@ -27,7 +28,7 @@ const DeleteAppraisalBox = ({
           <X onClick={closePopup} />
         </div>
         <p className="font-bold p-3 text-center">
-          Are you sure you want to delete this appraisal?
+          Are you sure you want to delete this {text}?
         </p>
 
         <div className="flex justify-center items-center gap-8">
@@ -56,6 +57,7 @@ const DeleteAppraisalBox = ({
 
 DeleteAppraisalBox.propTypes = {
   commentId: PropTypes.string.isRequired, // commentId is passed for deletion
+  text: PropTypes.string.isRequired, // commentId is passed for deletion
   deleteapppraise: PropTypes.func.isRequired, // deleteComment function to trigger deletion
   toggleDeleteapppraise: PropTypes.func.isRequired, // Function to close the popup
 };

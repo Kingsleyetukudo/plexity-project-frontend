@@ -63,8 +63,8 @@ function App() {
           element={user ? <Dashboard /> : <Navigate to="/login" />}
         >
           <Route index element={<DashboardDefault />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="profile/:id" element={<Profile />} />
+          {/* <Route path="profile" element={<Profile />} /> */}
+          <Route path="employees/profile/:id" element={<Profile />} />
           <Route path="appraisal" element={<Appraisal />} />
           <Route path="leave" element={<Leaves />} />
           <Route path="settings" element={<Settings />} />

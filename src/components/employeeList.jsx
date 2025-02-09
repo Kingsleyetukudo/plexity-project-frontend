@@ -1,6 +1,10 @@
-import DataTable from "react-data-table-component";
 import { useSelector, useDispatch } from "react-redux";
-import { EllipsisVertical, Search } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  EllipsisVertical,
+  Search,
+} from "lucide-react";
 import {
   updateUserByAdmin,
   getAllUsers,
@@ -8,19 +12,25 @@ import {
 } from "../stores/userStateStore";
 import { useState } from "react";
 import Dropdown from "./filterDropdown";
+import { useNavigate } from "react-router-dom";
 
 const EmployeeList = () => {
   const { users } = useSelector((state) => state.auth);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [setSelectedUser] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const transactionsPerPage = 10;
+  const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState(""); // Search term state
   const [filterStatus, setFilterStatus] = useState("All"); // Filter state
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const option = ["All", "Approved", "Not Approved"];
+  const tableOptions = ["View", "Approve", "Delete", "Reject"];
 
-  const handleOpenMenu = (event, userId) => {
-    setSelectedUser((prevId) => (prevId === userId ? null : userId));
-  };
+  // const handleOpenMenu = (event, userId) => {
+  //   setSelectedUser((prevId) => (prevId === userId ? null : userId));
+  // };
 
   const handleApprove = async (e, userId) => {
     try {
@@ -35,6 +45,11 @@ const EmployeeList = () => {
     } catch (error) {
       console.error("Error approving user:", error);
     }
+  };
+
+  const handleView = (userId) => {
+    // Navigate to the user's profile page
+    navigate(`profile/${userId}`);
   };
 
   const handleDelete = async (e, userId) => {
@@ -71,56 +86,18 @@ const EmployeeList = () => {
     return matchesSearch && matchesFilter;
   });
 
-  const columns = [
-    { name: "S/N", selector: (row, index) => index + 1, width: "60px" },
-    { name: "First Name", selector: (row) => row.firstName },
-    { name: "Last Name", selector: (row) => row.lastName },
-    { name: "Email", selector: (row) => row.email },
-    { name: "Position", selector: (row) => row.position },
-    { name: "Department", selector: (row) => row.department },
-    {
-      name: "Approve",
-      cell: (row) => (
-        <span
-          className={`px-3 py-2 text-white text-sm font-semibold rounded-full ${
-            row.isApproved ? "bg-green-500" : "bg-yellow-500"
-          }`}
-        >
-          {row.isApproved ? "Approved" : "Not Approved"}
-        </span>
-      ),
-    },
-    {
-      name: "Action",
-      cell: (row) => (
-        <div>
-          <EllipsisVertical
-            onClick={(e) => handleOpenMenu(e, row._id)}
-            className="cursor-pointer relative"
-          />
+  // Pagination Logic
+  const indexOfLastTransaction = currentPage * transactionsPerPage;
+  const indexOfFirstTransaction = indexOfLastTransaction - transactionsPerPage;
+  const currentTransactions = filteredUsers.slice(
+    indexOfFirstTransaction,
+    indexOfLastTransaction
+  );
+  const totalPages = Math.ceil(filteredUsers.length / transactionsPerPage);
 
-          {selectedUser && selectedUser === row._id ? (
-            <div className="absolute top-10 bg-white shadow-md z-20">
-              <ul className="flex flex-col gap-1 text-sm font-semibold">
-                <li
-                  className="bg-gray-300 hover:bg-color-2 hover:text-white px-2 py-1 cursor-pointer"
-                  onClick={(e) => handleApprove(e, row._id)}
-                >
-                  Approve
-                </li>
-                <li
-                  className="bg-gray-300 hover:bg-color-2 hover:text-white px-2 py-1"
-                  onClick={(e) => handleDelete(e, row._id)}
-                >
-                  Delete
-                </li>
-              </ul>
-            </div>
-          ) : null}
-        </div>
-      ),
-    },
-  ];
+  const toggleAction = (id) => {
+    setIsOpen(isOpen === id ? false : id);
+  };
 
   return (
     <>
@@ -141,14 +118,112 @@ const EmployeeList = () => {
         <Dropdown options={option} onFilter={setFilterStatus} />
       </div>
 
-      <div className="overflow-x-auto">
-        <DataTable
-          columns={columns}
-          data={filteredUsers} // Use filtered users instead of all users
-          pagination
-          paginationPerPage={10}
-          paginationRowsPerPageOptions={[10, 20, 50, 100]}
-        />
+      <div className="mb-8 grid grid-cols-1 gap-6">
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse border text-left border-gray-300">
+            <thead>
+              <tr className="bg-gray-200">
+                <th>S/N</th>
+                <th className="p-3 border">First Name</th>
+                <th className="p-3 border">Last Name</th>
+                <th className="p-3 border">Email</th>
+                <th className="p-3 border">Department</th>
+                <th className="p-3 border">Position</th>
+                <th className="p-3 border">Approve</th>
+                <th className="p-3 border">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentTransactions.map((txn, index) => (
+                <tr key={txn._id}>
+                  <td className="p-3 border">{index + 1}</td>
+                  <td className="p-3 border">{txn.firstName}</td>
+                  <td className="p-3 border">{txn.lastName}</td>
+                  <td className="p-3 border">{txn.email}</td>
+                  <td className="p-3 border">{txn.department}</td>
+                  <td className="p-3 border">{txn.position}</td>
+                  <td>
+                    <span
+                      className={`p-3 border flex items-center rounded-full gap-2 ${
+                        txn.isApproved
+                          ? "bg-green-200 text-green-600"
+                          : "bg-gray-200 text-gray-600"
+                      }`}
+                    >
+                      {txn.isApproved ? "Approved" : "Not Approved"}
+                    </span>
+                  </td>
+
+                  <td className="p-3 border text-center relative ">
+                    <button
+                      className=" px-1 py-1 border border-[#E4E7EC] bg-white text-brandColor-1 rounded"
+                      onClick={() => toggleAction(txn._id)}
+                    >
+                      <EllipsisVertical className="w-4 " />
+                    </button>
+                    {isOpen === txn._id && (
+                      <div className="absolute right-5 mt-2 w-16 bg-white shadow-md rounded-xl border border-gray-200 z-10">
+                        {tableOptions.map((option, index) => (
+                          <div
+                            key={index}
+                            className="text-left py-2 hover:bg-gray-100 hover:text-color-1 cursor-pointer text-active-color text-xs"
+                            onClick={() => {
+                              setIsOpen(false);
+                              if (option === "Approve") {
+                                handleApprove(txn._id); // Pass user ID directly
+                              } else if (option === "Delete") {
+                                handleDelete(txn._id); // Pass user ID directly
+                              } else if (option === "View") {
+                                handleView(txn._id); // Pass user ID directly
+                              }
+                            }}
+                          >
+                            <span className="px-2">{option}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {/* Pagination */}
+
+        <div className="flex items-center justify-center space-x-2 mt-4">
+          <button
+            className="px-3 py-1 rounded shadow-sm bg-gray-200 disabled:opacity-50"
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+          >
+            <ChevronLeft />
+          </button>
+
+          {[...Array(totalPages)].map((_, i) => (
+            <button
+              key={i}
+              className={`px-3 py-1 rounded ${
+                currentPage === i + 1
+                  ? "border-2 border-color-3 text-color-2"
+                  : "shadow-sm bg-text-color"
+              }`}
+              onClick={() => setCurrentPage(i + 1)}
+            >
+              {i + 1}
+            </button>
+          ))}
+
+          <button
+            className="px-3 py-1 rounded shadow-sm bg-gray-200 disabled:opacity-50"
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
+            disabled={currentPage === totalPages}
+          >
+            <ChevronRight />
+          </button>
+        </div>
       </div>
     </>
   );

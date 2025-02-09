@@ -5,6 +5,7 @@ import userStateStore from "./userStateStore";
 import staffAppraisalSlice from "./staffAppraisalStore";
 import appraisal from "./appraisalStore";
 import comments from "./commentStore";
+import department from "./departmentStore";
 
 // Persist configuration
 const persistConfig = {
@@ -23,6 +24,7 @@ const store = configureStore({
     staffAppraisal: staffAppraisalSlice,
     appraisal,
     comment: comments,
+    department,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

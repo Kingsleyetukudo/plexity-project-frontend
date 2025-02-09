@@ -51,7 +51,7 @@ const AppraisalQuestionsList = () => {
     // Dispatch the Redux action here
     console.log(apppraiseId, "and new", newapppraise);
     // dispatch(updateAppraisal({ apppraiseId, newapppraise }));
-    dispatch(updateAppraisal({ id: apppraiseId, newapppraise }));
+    dispatch(updateAppraisal({ id: apppraiseId, appraiseData: newapppraise }));
   };
 
   const deleteapppraise = (apppraiseId) => {
@@ -144,6 +144,7 @@ const AppraisalQuestionsList = () => {
 
             {deleteapppraiseId === apppraise._id && (
               <DeleteApppraiseBox
+                text={"Appraisal"}
                 apppraise={localapppraise}
                 setapppraise={setLocalapppraise}
                 toggleDeleteapppraise={() => setDeleteapppraiseId(null)}
