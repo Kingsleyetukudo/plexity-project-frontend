@@ -10,6 +10,7 @@ const StaffBiodataForm = ({ onSubmit }) => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     firstName: user?.firstName || "",
+    lastName: user?.lastName || "",
     email: user?.email || "",
     phone: user?.phone || "",
     dob: user?.dob || "",
@@ -19,21 +20,34 @@ const StaffBiodataForm = ({ onSubmit }) => {
     stateOfOrigin: user?.stateOfOrigin || "",
     department: user?.department || "",
     position: user?.position || "",
-    employmentYear: "",
+    employmentYear: user?.employmentYear || "",
     profileCompleted: true,
     hasDisability: user?.hasDisability || false,
     disabilityType: user?.disabilityType || "",
-    bankName: "",
-    accountName: "",
-    accountNumber: "",
+    accountDetails: {
+      bankName: user?.accountDetails?.bankName || "",
+      accountName: user?.accountDetails?.accountName || "",
+      accountNumber: user?.accountDetails?.accountNumber || "",
+    },
   });
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
-    });
+
+    if (name in formData.accountDetails) {
+      setFormData({
+        ...formData,
+        accountDetails: {
+          ...formData.accountDetails,
+          [name]: value,
+        },
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: type === "checkbox" ? checked : value,
+      });
+    }
   };
 
   const nextStep = () => setStep((prev) => prev + 1);
@@ -79,16 +93,28 @@ const StaffBiodataForm = ({ onSubmit }) => {
             {/* Step 1: Personal Information */}
             {step === 1 && (
               <>
-                <input
-                  type="text"
-                  name="firstName"
-                  placeholder="First Name"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  disabled={isFieldDisabled("firstName")}
-                  required
-                  className="w-full mb-4 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-600"
-                />
+                <div className="flex gap-5">
+                  <input
+                    type="text"
+                    name="firstName"
+                    placeholder="First Name"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    disabled={isFieldDisabled("firstName")}
+                    required
+                    className="w-full mb-4 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-600"
+                  />
+                  <input
+                    type="text"
+                    name="lastName"
+                    placeholder="Last Name"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    disabled={isFieldDisabled("lastName")}
+                    required
+                    className="w-full mb-4 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-600"
+                  />
+                </div>
                 <input
                   type="email"
                   name="email"
@@ -122,7 +148,9 @@ const StaffBiodataForm = ({ onSubmit }) => {
                   required
                   className="w-full mb-4 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-600"
                 >
-                  <option value="">Select Gender</option>
+                  <option value="" disabled>
+                    Select Gender
+                  </option>
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
                 </select>
@@ -133,7 +161,9 @@ const StaffBiodataForm = ({ onSubmit }) => {
                   required
                   className="w-full mb-4 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-600"
                 >
-                  <option value="">Marital Status</option>
+                  <option value="" disabled>
+                    Marital Status
+                  </option>
                   <option value="Single">Single</option>
                   <option value="Married">Married</option>
                 </select>
@@ -245,7 +275,7 @@ const StaffBiodataForm = ({ onSubmit }) => {
                   type="text"
                   name="bankName"
                   placeholder="Bank Name"
-                  value={formData.bankName}
+                  value={formData.accountDetails.bankName}
                   onChange={handleChange}
                   required
                   className="w-full mb-4 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-600"
@@ -254,7 +284,7 @@ const StaffBiodataForm = ({ onSubmit }) => {
                   type="text"
                   name="accountName"
                   placeholder="Account Name"
-                  value={formData.accountName}
+                  value={formData.accountDetails.accountName}
                   onChange={handleChange}
                   required
                   className="w-full mb-4 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-600"
@@ -263,7 +293,7 @@ const StaffBiodataForm = ({ onSubmit }) => {
                   type="text"
                   name="accountNumber"
                   placeholder="Account Number"
-                  value={formData.accountNumber}
+                  value={formData.accountDetails.accountNumber}
                   onChange={handleChange}
                   required
                   className="w-full mb-4 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-600"

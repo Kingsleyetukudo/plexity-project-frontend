@@ -51,17 +51,18 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (user?.profileCompleted === false) {
-      setShowProfileModal(true); // Open modal if profile is not completed
+      setShowProfileModal(true); // Ensure modal stays open if profile is incomplete
     }
   }, [user]);
 
   useEffect(() => {
-    if (status === "succeeded") {
-      setShowProfileModal(false); // Close modal only if update is successful
+    if (user?.profileCompleted === true) {
+      setShowProfileModal(false); // Close modal only if profile is successfully updated & completed
     }
-  }, [status]);
+  }, [status, user]);
 
   const onSubmit = (formData) => {
+    console.log(formData);
     dispatch(updateUser({ userId: user._id, userData: formData }));
   };
 

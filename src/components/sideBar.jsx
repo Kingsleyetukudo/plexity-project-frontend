@@ -71,12 +71,15 @@ const SideBar = () => {
             </NavLink>
           </li>
 
-          {(currentUser?.role === "admin" || currentUser?.role === "mgt") && (
+          {(currentUser?.role === "Admin" ||
+            currentUser?.role === "Mgt" ||
+            currentUser?.role === "Sub-Admin") && (
             <li>
               <p className="text-base font-semibold px-4 ">Admin Section</p>
               <ul>
-                {(currentUser?.role === "admin" ||
-                  currentUser?.role === "mgt") && (
+                {(currentUser?.role === "Admin" ||
+                  currentUser?.role === "Mgt" ||
+                  currentUser?.role === "Sub-Admin") && (
                   <li>
                     <NavLink to="employees" className="menuLinks">
                       <UsersRound className="w-5" />
@@ -84,8 +87,9 @@ const SideBar = () => {
                     </NavLink>
                   </li>
                 )}
-                {(currentUser?.role === "admin" ||
-                  currentUser?.role === "mgt") && (
+                {(currentUser?.role === "Admin" ||
+                  currentUser?.role === "Mgt" ||
+                  currentUser?.role === "Sub-Admin") && (
                   <li>
                     <NavLink to="department" className="menuLinks">
                       <BriefcaseBusiness className="w-5" />
@@ -93,8 +97,9 @@ const SideBar = () => {
                     </NavLink>
                   </li>
                 )}
-                {(currentUser?.role === "admin" ||
-                  currentUser?.role === "mgt") && (
+                {(currentUser?.role === "Admin" ||
+                  currentUser?.role === "Mgt" ||
+                  currentUser?.role === "Sub-Admin") && (
                   <li>
                     <NavLink to="position" className="menuLinks">
                       <HandCoins className="w-5" />
@@ -103,8 +108,8 @@ const SideBar = () => {
                   </li>
                 )}
 
-                {(currentUser?.role === "admin" ||
-                  currentUser?.role === "mgt") && (
+                {(currentUser?.role === "Admin" ||
+                  currentUser?.role === "Mgt") && (
                   <li>
                     <NavLink to="anonymous-comments" className="menuLinks">
                       <MessageSquareText className="w-5" />
@@ -112,8 +117,9 @@ const SideBar = () => {
                     </NavLink>
                   </li>
                 )}
-                {(currentUser?.role === "admin" ||
-                  currentUser?.role === "mgt") && (
+                {(currentUser?.role === "Admin" ||
+                  currentUser?.role === "Mgt" ||
+                  currentUser?.role === "Sub-Admin") && (
                   <li>
                     <NavLink to="appraisal-questions" className="menuLinks">
                       <FileText className="w-5" />
@@ -121,8 +127,9 @@ const SideBar = () => {
                     </NavLink>
                   </li>
                 )}
-                {(currentUser?.role === "admin" ||
-                  currentUser?.role === "mgt") && (
+                {(currentUser?.role === "Admin" ||
+                  currentUser?.role === "Mgt" ||
+                  currentUser?.role === "Sub-Admin") && (
                   <li>
                     <NavLink to="allAppraisal" className="menuLinks">
                       <FileText className="w-5" />
