@@ -19,6 +19,7 @@ import Comment from "./views/comment";
 import Department from "./views/department";
 import Position from "./views/position";
 import AnonymousComments from "./views/anonymousComments";
+import Form from "./components/StaffBiodataForm";
 import AppraisalQuestionsView from "./views/appraisalQuestions";
 import { useMemo } from "react";
 import PersonalProfile from "./views/personalProfile";
@@ -80,6 +81,7 @@ function App() {
           <Route path="department" element={<Department />} />
           <Route path="position" element={<Position />} />
           <Route path="anonymous-comments" element={<AnonymousComments />} />
+          <Route path="form" element={<Form />} />
           <Route path="allAppraisal" element={<AllAppraisal />} />
           <Route
             path="appraisal-questions"
