@@ -31,16 +31,19 @@ const TaskProgressCard = () => {
 
   useEffect(() => {
     if (!currentUser || !currentUser.role) return; // Prevents running when currentUser is null
+    console.log(comments);
 
-    const anonymousComments = comments?.data?.comments || [];
+    const anonymousComments = comments?.comments?.data?.comments || [];
     if (Array.isArray(anonymousComments)) {
       console.log(comments);
       const filteredComments = anonymousComments.filter((comment) => {
-        if (currentUser.role === "admin") return !comment.readByAdmin;
+        if (currentUser.role === "admin") {
+          console.log(currentUser);
+          return !comment.readByAdmin;
+        }
         if (currentUser.role === "mgt") return !comment.readByMgt;
         return false;
       });
-
       setUnreadComments(filteredComments);
     }
   }, [currentUser, comments]);

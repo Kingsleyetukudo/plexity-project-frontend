@@ -1,31 +1,42 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import userStateStoe from "./userStateStore";
+import userStateStore from "./userStateStore";
 import staffAppraisalSlice from "./staffAppraisalStore";
 import appraisal from "./appraisalStore";
 import comments from "./commentStore";
+import department from "./departmentStore";
+import position from "./positionStore";
 
 // Persist configuration
 const persistConfig = {
   key: "auth", // Key to store in localStorage
-  storage, // Specify storage mechanism (localStorage in this case)
-  whitelist: ["user", "token"], // Only persist specific fields from the state
+  storage, // Use localStorage as storage
+  whitelist: ["user", "token"], // Only persist specific fields
 };
 
-// Create a persisted reducer
-const persistedAuthReducer = persistReducer(persistConfig, userStateStoe);
+// Create a persisted reducer for user authentication state
+const persistedAuthReducer = persistReducer(persistConfig, userStateStore);
 
+// Configure store with middleware adjustments
 const store = configureStore({
   reducer: {
-    auth: persistedAuthReducer,
+    auth: persistedAuthReducer, // Persisted reducer
     staffAppraisal: staffAppraisalSlice,
-    appraisal: appraisal,
+    appraisal,
     comment: comments,
+    department,
+    position,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"], // Ignore persist actions
+      },
+    }),
 });
 
-// Persistor for use in the app
+// Persistor for managing persisted state
 const persistor = persistStore(store);
 
 export { store, persistor };

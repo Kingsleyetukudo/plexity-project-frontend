@@ -1,20 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Logo from "../assets/images/site-logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import BG from "../assets/images/sign-up-bg.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { CircleCheckBig } from "lucide-react";
 import { createUsers } from "../stores/userStateStore";
+import { getAllDepartments } from "../stores/departmentStore";
+import { getAllPositions } from "../stores/positionStore";
 
 const Signin = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [position, setPosition] = useState("");
+  const { departments } = useSelector((state) => state.department);
+  const { positions } = useSelector((state) => state.position);
   const [department, setDepartment] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  // const [password, setPassword] = useState("");
+  // const [confirmPassword, setConfirmPassword] = useState("");
+  // const [showPassword, setShowPassword] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [error, setError] = useState("");
   const { status } = useSelector((state) => state.auth);
@@ -25,6 +29,11 @@ const Signin = () => {
     setShowPopup(false);
     setTimeout(() => navigate("/login"), 500);
   };
+
+  useEffect(() => {
+    dispatch(getAllDepartments());
+    dispatch(getAllPositions());
+  }, [dispatch]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -52,14 +61,13 @@ const Signin = () => {
         isApproved: false,
         position,
         department,
-        password,
         token,
       };
 
-      if (password !== confirmPassword) {
-        setError("Passwords do not match!");
-        return;
-      }
+      // if (password !== confirmPassword) {
+      //   setError("Passwords do not match!");
+      //   return;
+      // }
 
       setError("");
 
@@ -76,9 +84,9 @@ const Signin = () => {
     }
   };
 
-  const togglePasswordVisibility = () => {
-    setShowPassword((prevState) => !prevState);
-  };
+  // const togglePasswordVisibility = () => {
+  //   setShowPassword((prevState) => !prevState);
+  // };
 
   return (
     <div className="md:flex items-center justify-center min-h-screen">
@@ -139,14 +147,16 @@ const Signin = () => {
                 <select
                   value={department}
                   onChange={(e) => setDepartment(e.target.value)}
-                  className="w-full px-3 py-2  border-gray-300 outline-none text-input"
+                  className="w-full px-3 py-2 border border-gray-300 outline-none text-input"
                 >
                   <option value="" disabled>
-                    Select your department
+                    Select a position
                   </option>
-                  <option value="Engineering">Engineering</option>
-                  <option value="Marketing">Marketing</option>
-                  <option value="Sales">Sales</option>
+                  {departments.map((pos) => (
+                    <option key={pos.id} value={pos.name}>
+                      {pos.name}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -154,19 +164,21 @@ const Signin = () => {
                 <select
                   value={position}
                   onChange={(e) => setPosition(e.target.value)}
-                  className="w-full px-3 py-2  border-gray-300 outline-none text-input"
+                  className="w-full px-3 py-2 border border-gray-300 outline-none text-input"
                 >
                   <option value="" disabled>
-                    Select your position
+                    Select a position
                   </option>
-                  <option value="Staff">Staff</option>
-                  <option value="Manager">Manager</option>
-                  <option value="Founder">Founder</option>
+                  {positions.map((pos) => (
+                    <option key={pos.id} value={pos.name}>
+                      {pos.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
 
-            <div className="form-group relative">
+            {/* <div className="form-group relative">
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder=" "
@@ -178,9 +190,9 @@ const Signin = () => {
               <label className="block absolute font-medium text-gray-700">
                 Password: <span className="text-red-600">*</span>
               </label>
-            </div>
+            </div> */}
 
-            <div className="form-group relative">
+            {/* <div className="form-group relative">
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder=" "
@@ -208,7 +220,7 @@ const Signin = () => {
               >
                 {showPassword ? "Hide" : "Show"}
               </button>
-            </div>
+            </div> */}
 
             <div className="flex justify-end">
               <button

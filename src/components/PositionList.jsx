@@ -1,64 +1,70 @@
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   ChevronLeft,
   ChevronRight,
   EllipsisVertical,
   Search,
 } from "lucide-react";
-import {
-  updateUserByAdmin,
-  getAllUsers,
-  deleteUser,
-} from "../stores/userStateStore";
 import { useState } from "react";
 import Dropdown from "./filterDropdown";
-import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
+import EditDepartment from "./editDepartment";
 
-const EmployeeList = () => {
-  const { users } = useSelector((state) => state.auth);
-  const [setSelectedUser] = useState(null);
+import DeleteAppraisalBox from "./deleteAppraisalBox";
+import {
+  deletePosition,
+  getAllPositions,
+  updatePosition,
+} from "../stores/positionStore";
+
+const PositionList = ({ departments }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const transactionsPerPage = 10;
   const [isOpen, setIsOpen] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
+  const [name, setName] = useState("");
+  const [selectedDepartment, setSelectedDepartment] = useState(null); // Track selected department
   const [searchTerm, setSearchTerm] = useState(""); // Search term state
   const [filterStatus, setFilterStatus] = useState("All"); // Filter state
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const option = ["All", "Approved", "Not Approved"];
-  const tableOptions = ["View", "Approve", "Delete", "Reject"];
+  const tableOptions = ["Edit", "Delete"];
 
-  // const handleOpenMenu = (event, userId) => {
-  //   setSelectedUser((prevId) => (prevId === userId ? null : userId));
-  // };
+  const handleEdit = (department) => {
+    console.log("Edit Department:", department);
+    setSelectedDepartment(department);
 
-  const handleApprove = async (e, userId) => {
-    try {
-      const response = await dispatch(updateUserByAdmin(userId));
-      setSelectedUser(null);
-      if (response.meta && response.meta.requestStatus === "fulfilled") {
-        console.log("User approved successfully", userId);
-        dispatch(getAllUsers());
-      } else {
-        console.log("Approval failed with status:", response);
-      }
-    } catch (error) {
-      console.error("Error approving user:", error);
-    }
+    setName(department.name); // Set the current name to state
+    handleOpenEdit();
   };
 
-  const handleView = (userId) => {
-    // Navigate to the user's profile page
-    navigate(`profile/${userId}`);
+  const handleOpenEdit = () => {
+    setOpenEdit(!openEdit);
   };
 
-  const handleDelete = async (e, userId) => {
+  const handleOpenDelete = () => {
+    setOpenDelete(!openDelete);
+  };
+
+  const handleUpdate = (departmentId, newName) => {
+    console.log(
+      `Updating department ${departmentId} with new name: ${newName}`
+    );
+    dispatch(
+      updatePosition({ id: departmentId, departmentData: { name: newName } })
+    );
+  };
+
+  const handleDeleteFunc = async (userId) => {
     try {
-      const response = await dispatch(deleteUser(userId));
-      setSelectedUser(null);
+      console.log(userId);
+      const response = await dispatch(deletePosition(userId));
+      setSelectedDepartment(null);
       if (response.meta && response.meta.requestStatus === "fulfilled") {
         console.log("User deleted successfully", userId);
-        dispatch(getAllUsers());
+        dispatch(getAllPositions());
       } else {
         console.log("Delete failed with status:", response);
       }
@@ -67,14 +73,17 @@ const EmployeeList = () => {
     }
   };
 
+  const handleDelete = (userId) => {
+    setSelectedDepartment(userId);
+    console.log(selectedDepartment);
+    handleOpenDelete();
+  };
+
   // Filter & Search logic
-  const filteredUsers = users.filter((user) => {
-    const matchesSearch =
-      user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.department.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredUsers = departments.filter((user) => {
+    const matchesSearch = user.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
 
     const matchesFilter =
       filterStatus === "All"
@@ -117,19 +126,14 @@ const EmployeeList = () => {
         {/* Filter Dropdown */}
         <Dropdown options={option} onFilter={setFilterStatus} />
       </div>
-
       <div className="mb-8 grid grid-cols-1 gap-6">
         <div className="overflow-x-auto">
           <table className="w-full border-collapse border text-left border-gray-300">
             <thead>
               <tr className="bg-gray-200">
                 <th>S/N</th>
-                <th className="p-3 border">First Name</th>
-                <th className="p-3 border">Last Name</th>
-                <th className="p-3 border">Email</th>
-                <th className="p-3 border">Department</th>
-                <th className="p-3 border">Position</th>
-                <th className="p-3 border">Approve</th>
+                <th className="p-3 border">Department Name</th>
+
                 <th className="p-3 border">Action</th>
               </tr>
             </thead>
@@ -137,23 +141,7 @@ const EmployeeList = () => {
               {currentTransactions.map((txn, index) => (
                 <tr key={txn._id}>
                   <td className="p-3 border">{index + 1}</td>
-                  <td className="p-3 border">{txn.firstName}</td>
-                  <td className="p-3 border">{txn.lastName}</td>
-                  <td className="p-3 border">{txn.email}</td>
-                  <td className="p-3 border">{txn.department}</td>
-                  <td className="p-3 border">{txn.position}</td>
-                  <td>
-                    <span
-                      className={`p-3 border flex items-center rounded-full gap-2 ${
-                        txn.isApproved
-                          ? "bg-green-200 text-green-600"
-                          : "bg-gray-200 text-gray-600"
-                      }`}
-                    >
-                      {txn.isApproved ? "Approved" : "Not Approved"}
-                    </span>
-                  </td>
-
+                  <td className="p-3 border">{txn.name}</td>
                   <td className="p-3 border text-center relative ">
                     <button
                       className=" px-1 py-1 border border-[#E4E7EC] bg-white text-brandColor-1 rounded"
@@ -169,12 +157,10 @@ const EmployeeList = () => {
                             className="text-left py-2 hover:bg-gray-100 hover:text-color-1 cursor-pointer text-active-color text-xs"
                             onClick={() => {
                               setIsOpen(false);
-                              if (option === "Approve") {
-                                handleApprove(txn._id); // Pass user ID directly
+                              if (option === "Edit") {
+                                handleEdit(txn); // Pass the whole txn object to handleEdit
                               } else if (option === "Delete") {
-                                handleDelete(txn._id); // Pass user ID directly
-                              } else if (option === "View") {
-                                handleView(txn._id); // Pass user ID directly
+                                handleDelete(txn._id);
                               }
                             }}
                           >
@@ -225,8 +211,30 @@ const EmployeeList = () => {
           </button>
         </div>
       </div>
+      {openEdit && (
+        <EditDepartment
+          department={selectedDepartment}
+          toggleEditComponent={handleOpenEdit}
+          name={name}
+          setName={setName}
+          updateComponent={handleUpdate}
+        />
+      )}
+
+      {openDelete && (
+        <DeleteAppraisalBox
+          text="Department"
+          commentId={selectedDepartment}
+          deleteapppraise={handleDeleteFunc}
+          toggleDeleteapppraise={handleOpenDelete}
+        />
+      )}
     </>
   );
 };
 
-export default EmployeeList;
+PositionList.propTypes = {
+  departments: PropTypes.array.isRequired,
+};
+
+export default PositionList;

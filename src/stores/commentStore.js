@@ -6,17 +6,26 @@ export const fetchComments = createAsyncThunk(
   "comment/fetchComments",
   async () => {
     const response = await api.get("/comment");
-    return response.data;
+    console.log(response.data);
+    return response.data.data.comments;
   }
 );
 
 // Async thunk to add a new comment
 export const addComment = createAsyncThunk(
   "comment/addComment",
-  async (comment) => {
-    const response = await api.post("/comment", comment);
-    // console.log(response);
-    return response.data;
+  async (comment, thunkAPI) => {
+    try {
+      const response = await api.post("/comment", comment);
+      console.log(response.data);
+      // After adding the comment, dispatch fetchComments to get the updated list
+      thunkAPI.dispatch(fetchComments());
+      thunkAPI.dispatch(fetchCommentsByCurrentUser());
+
+      return response.data; // This will be the result of the addComment action
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message); // In case of error
+    }
   }
 );
 
@@ -43,8 +52,8 @@ export const fetchCommentsByCurrentUser = createAsyncThunk(
   "comment/fetchCommentsByCurrentUser",
   async (userId) => {
     const response = await api.get(`/comment/sender/${userId}`);
-    console.log(response.data);
-    return response.data;
+    // console.log(response.data.data.comments);
+    return response.data.data.comments;
   }
 );
 

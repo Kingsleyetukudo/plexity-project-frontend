@@ -7,8 +7,8 @@ export const getAllStaffAppraisal = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get("/appraised");
-      console.log(response.data);
-      return response.data; // Assuming the response contains user data and token
+      console.log(response.data.data.appraisals);
+      return response.data.data.appraisals; // Assuming the response contains user data and token
     } catch (error) {
       return rejectWithValue(
         error.response?.data || "Getting all staff appraisal failed"
@@ -75,7 +75,7 @@ const calculateAppraisal = (appraisal) => {
 const staffAppraisalSlice = createSlice({
   name: "staffAppraisal",
   initialState: {
-    getAllStaffAppraisal: [], // To store all users
+    allStaffAppraisal: [], // To store all users
     appraisalByUser: [],
     individualAppraisal: {},
     userTotalRating: 0,
@@ -98,7 +98,7 @@ const staffAppraisalSlice = createSlice({
       })
       .addCase(getAllStaffAppraisal.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.getAllStaffAppraisal = action.payload;
+        state.allStaffAppraisal = action.payload;
         // state.token = action.payload.token;
       })
       .addCase(getAllStaffAppraisal.rejected, (state, action) => {

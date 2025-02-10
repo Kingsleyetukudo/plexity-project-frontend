@@ -2,16 +2,27 @@
 import AppraisalBox from "../components/appraisalBox";
 import RatingSystem from "../components/ratingSystem";
 import TitleBar from "../components/titleBar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { getAppraisalByUser } from "../stores/staffAppraisalStore";
 
 const Appraisal = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [title] = useState("My Apprisals");
+  const { user } = useSelector((state) => state.auth);
+  const { appraisalByUser } = useSelector((state) => state.staffAppraisal);
+
+  const dispatch = useDispatch();
 
   const closePopup = () => {
     setShowPopup(false);
     // setTimeout(() => Navigate("/login"), 500);
   };
+
+  useEffect(() => {
+    dispatch(getAppraisalByUser(user._id));
+    console.log(appraisalByUser);
+  }, [dispatch]);
 
   const handleAppraisal = () => {
     setShowPopup(true);
@@ -32,7 +43,7 @@ const Appraisal = () => {
             </button>
           </div>
         </div>
-        <AppraisalBox />
+        <AppraisalBox appraisals={appraisalByUser} />
       </div>
       {showPopup && (
         <>

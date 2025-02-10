@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../api";
 
-// create appraisal thunk
+// get appraisal thunk
 export const getAllAppraisal = createAsyncThunk(
   "appraisal/getAllAppraisal",
   async (_, { rejectWithValue }) => {
@@ -17,16 +17,58 @@ export const getAllAppraisal = createAsyncThunk(
   }
 );
 
-// Get all appraisal thunk
-export const getAllUsers = createAsyncThunk(
-  "auth/getAllUsers",
-  async (_, { rejectWithValue }) => {
+// create addAppraise thunk
+export const addAppraise = createAsyncThunk(
+  "appraisal/addAppraise",
+  async (appraiseData, { dispatch, rejectWithValue }) => {
     try {
-      const res = await api.get("/user");
-      console.log(res.data.appraisals);
-      return res.data.appraisals; // Assuming res.data contains an array of users
+      const response = await api.post("/appraisal", appraiseData);
+      // After adding the new appraisal, call getAllAppraisal to refresh the list
+      dispatch(getAllAppraisal());
+      return response.data.data.appraisal;
     } catch (error) {
-      return rejectWithValue(error.response?.data || "Fetching users failed");
+      return rejectWithValue(
+        error.response?.data || "Adding new appraisal failed"
+      );
+    }
+  }
+);
+// create updateAppraisal thunk
+export const updateAppraisal = createAsyncThunk(
+  "appraisal/updateAppraisal",
+  async ({ id, appraiseData }, { dispatch, rejectWithValue }) => {
+    console.log("updateAppraisal Called with:", { id, appraiseData });
+
+    if (!id || !appraiseData) {
+      console.error("❌ Missing id or appraiseData in updateAppraisal!");
+      return rejectWithValue("Invalid request: Missing required fields");
+    }
+
+    try {
+      const response = await api.put(`/appraisal/${id}`, appraiseData);
+      dispatch(getAllAppraisal());
+      return response.data.data.appraisal;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || "Updating appraisal failed"
+      );
+    }
+  }
+);
+
+// create deleteAppraisal thunk
+export const deleteAppraisal = createAsyncThunk(
+  "appraisal/deleteAppraisal",
+  async (id, { dispatch, rejectWithValue }) => {
+    try {
+      await api.delete(`/appraisal/${id}`);
+      // After deleting the appraisal, call getAllAppraisal to refresh the list
+      dispatch(getAllAppraisal());
+      return id;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || "Deleting appraisal failed"
+      );
     }
   }
 );
@@ -36,42 +78,14 @@ const appraisalSlice = createSlice({
   name: "staffAppraisal",
   initialState: {
     appraisals: [], // To store all users
-    user: null, // To store logged-in user
-    token: null, // Authentication token
     status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
     error: null, // Error messages
-    toggleBar: false, // Toggle state
   },
-  reducers: {
-    logout: (state) => {
-      state.user = null;
-      state.token = null;
-      state.toggleBar = false;
-      // Clear persisted data if redux-persist is used
-      localStorage.removeItem("persist:auth");
-    },
-    toggleBar: (state) => {
-      state.toggleBar = !state.toggleBar;
-      console.log(state.toggleBar);
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
-      // Handle login
-      //   .addCase(getAllAppraisal.pending, (state) => {
-      //     state.status = "loading";
-      //     state.error = null;
-      //   })
-      //   .addCase(getAllAppraisal.fulfilled, (state, action) => {
-      //     state.status = "succeeded";
-      //     state.user = action.payload.user; // Assuming API sends user data
-      //     state.token = action.payload.token; // Assuming API sends a token
-      //   })
-      //   .addCase(getAllAppraisal.rejected, (state, action) => {
-      //     state.status = "failed";
-      //     state.error = action.payload;
-      //   })
-      // Handle getAllUsers
+
+      // Handle getAllAppraisals
       .addCase(getAllAppraisal.pending, (state) => {
         state.status = "loading";
         state.error = null;
@@ -87,5 +101,5 @@ const appraisalSlice = createSlice({
   },
 });
 
-export const { logout, toggleBar } = appraisalSlice.actions;
+// export const { logout, toggleBar } = appraisalSlice.actions;
 export default appraisalSlice.reducer;

@@ -16,56 +16,63 @@ const RatingComponent = ({ closePopup }) => {
   const [comment, setComment] = useState("");
   const [improveComment, setImproveComment] = useState("");
   const [isWithinOneMonth, setIsWithinOneMonth] = useState(false);
-  const [message] = useState(
-    "You can't appraise this member for the month again!"
-  );
+  const [itYou, setItYou] = useState(false);
+  const [message, setMessage] = useState("");
+  const [openSuccessBox, setOpenSuccessBox] = useState(false);
 
   const dispatch = useDispatch();
 
   // When a user is selected, initialize their ratings
   const handleUserSelect = async (selectUser) => {
+    // Prevent the current user from appraising themselves
+    if (selectUser._id === user._id) {
+      setItYou(true);
+      // Show an alert or a message, or simply return without setting the user
+      setMessage("You cannot appraise yourself.");
+      return;
+    }
+
     const clickUser = await dispatch(
       getAllAppraisalByClickUser(selectUser._id)
     );
 
-    const openUser = clickUser.payload;
-    const allDates = openUser.map((d) => {
-      if (d.appraisedBy == user._id) {
-        return d.date;
+    // Ensure payload is an array
+    const openUser = Array.isArray(clickUser.payload) ? clickUser.payload : [];
+
+    // Check if the current user has already appraised this employee in the current month
+    const allDates = openUser
+      .filter((d) => d.appraisedBy === user._id) // Filter for appraisals by the current user
+      .map((d) => d.date); // Get the dates of those appraisals
+
+    // If there are appraisals by the current user
+    if (allDates.length) {
+      const getMostRecentDate = (dates) =>
+        new Date(Math.max(...dates.map((date) => new Date(date).getTime())));
+
+      // Get the most recent appraisal date
+      const mostRecentDate = getMostRecentDate(allDates);
+
+      // Check if the most recent appraisal was within the last month
+      const checkIfWithinOneMonth = (recentDate) => {
+        const oneMonthAgo = new Date();
+        oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+        return recentDate > oneMonthAgo;
+      };
+
+      const withinOneMonth = checkIfWithinOneMonth(mostRecentDate);
+
+      // If the user has already appraised the employee within the month, show the message and exit
+      if (withinOneMonth) {
+        setIsWithinOneMonth(true); // Show the popup message
+        setMessage("You can't appraise this member for the month again!");
+        setSelectedUser(null); // Deselect the user
+        return;
       }
-    });
+    }
 
-    // Function to find the most recent date in the array
-    const getMostRecentDate = (dates) => {
-      const recentDate = new Date(
-        Math.max(...dates.map((date) => new Date(date).getTime()))
-      );
-      return recentDate;
-    };
-
-    // Function to check if the most recent date is within one month from the current date
-    const checkIfWithinOneMonth = (recentDate) => {
-      const currentDate = new Date();
-
-      // Get the difference in months
-      const diffInMonths =
-        (currentDate.getFullYear() - recentDate.getFullYear()) * 12 +
-        (currentDate.getMonth() - recentDate.getMonth());
-
-      return diffInMonths <= 1 && currentDate.getDate() >= recentDate.getDate();
-    };
-
-    // Find the most recent date
-    const mostRecentDate = getMostRecentDate(allDates);
-
-    // Check if the most recent date is within one month from the current date
-    const withinOneMonth = checkIfWithinOneMonth(mostRecentDate);
-    setIsWithinOneMonth(withinOneMonth);
-    console.log("found", isWithinOneMonth);
-
-    setSelectedUser(user);
-
-    console.log("Selected user:", selectUser._id, openUser);
+    // If no appraisal exists within the month, proceed with the normal appraisal flow
+    setIsWithinOneMonth(false);
+    setSelectedUser(selectUser);
     setRatings(
       appraisals.map((set) => ({
         title: set.title,
@@ -75,7 +82,7 @@ const RatingComponent = ({ closePopup }) => {
         })),
       }))
     );
-    setCurrentIndex(0);
+    setCurrentIndex(0); // Start from the first question
   };
 
   const handleRate = (questionIndex, stars) => {
@@ -115,8 +122,19 @@ const RatingComponent = ({ closePopup }) => {
     try {
       const response = await api.post("/appraised", payload);
       console.log("Appraisal submitted:", response.data);
-      closePopup();
-      setSelectedUser(null); // Reset the state after submission
+      setOpenSuccessBox(true);
+      if (response.data.status === "success") {
+        setTimeout(() => {
+          setMessage("Appraise not add...");
+          setSelectedUser(null); // Reset the state after submission
+          closePopup();
+          setOpenSuccessBox(false);
+
+          // dispatch(fetchCommentsByCurrentUser(user._id));
+        }, 3000);
+      } else {
+        setMessage("Appraise not add...");
+      }
     } catch (error) {
       console.error("Error submitting appraisal:", error);
       closePopup();
@@ -125,6 +143,7 @@ const RatingComponent = ({ closePopup }) => {
 
   const noAppraisePopup = () => {
     setIsWithinOneMonth(false);
+    setItYou(false);
     setSelectedUser(null);
   };
 
@@ -239,7 +258,7 @@ const RatingComponent = ({ closePopup }) => {
         </div>
       )}
 
-      {isWithinOneMonth && (
+      {(isWithinOneMonth || itYou || openSuccessBox) && (
         <PopUpBox note={message} closePopupNote={noAppraisePopup} />
       )}
     </div>
