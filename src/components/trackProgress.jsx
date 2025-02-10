@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 const TaskProgressCard = () => {
   const { userTotalRating } = useSelector((state) => state.staffAppraisal);
   const { users } = useSelector((state) => state.auth);
-  const comments = useSelector((state) => state.comment || {}); // Ensure default empty object
+  const { comments } = useSelector((state) => state.comment || []); // Ensure default empty object
   const [currentUser, setCurrentUser] = useState(null);
   const [unreadComments, setUnreadComments] = useState([]);
 
@@ -33,7 +33,7 @@ const TaskProgressCard = () => {
     if (!currentUser || !currentUser.role) return; // Prevents running when currentUser is null
     console.log(comments);
 
-    const anonymousComments = comments?.comments?.data?.comments || [];
+    const anonymousComments = comments || [];
     if (Array.isArray(anonymousComments)) {
       console.log(comments);
       const filteredComments = anonymousComments.filter((comment) => {

@@ -16,10 +16,13 @@ const EmployeePositionBox = ({ closePopupNote, employeeDetails, onUpdate }) => {
 
   // Function to handle updates
   const handleUpdate = () => {
-    onUpdate({
-      id: employeeDetails.id,
+    const pos = {
       department,
       position,
+    };
+    onUpdate({
+      id: employeeDetails._id,
+      pos,
     });
     closePopupNote();
   };

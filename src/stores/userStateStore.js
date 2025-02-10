@@ -63,9 +63,10 @@ export const updateUserByAdmin = createAsyncThunk(
 // User Update personal profile thunk
 export const updateUser = createAsyncThunk(
   "auth/updateUser",
-  async (userId, { rejectWithValue }) => {
+  async ({ userId, userData }, { rejectWithValue }) => {
     try {
-      const res = await api.put(`/user/updateUser/${userId}`);
+      console.log("click");
+      const res = await api.put(`/user/updateUser/${userId}`, userData);
       console.log(res.data);
       return res.data; // Assuming res.data contains an array of users
     } catch (error) {

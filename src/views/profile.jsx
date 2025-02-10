@@ -1,8 +1,11 @@
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { UserRoundPen } from "lucide-react";
 import EmployeePositionBox from "../components/employeePostionBox";
+import { getAllDepartments } from "../stores/departmentStore";
+import { getAllPositions } from "../stores/positionStore";
+import { updateUser } from "../stores/userStateStore";
 
 const Profile = () => {
   const [title] = useState("Profile");
@@ -24,21 +27,29 @@ const Profile = () => {
   const { id } = useParams(); // Get the userId from the URL
   const { users } = useSelector((state) => state.auth);
   const [employeeDetails, setEmployeeDetails] = useState();
+  const dispatch = useDispatch();
 
   // Find the user by userId
   const user = users.find((user) => user._id === id);
+
+  useEffect(() => {
+    dispatch(getAllDepartments());
+    dispatch(getAllPositions());
+  }, [dispatch]);
 
   if (!user) {
     return <p>User not found</p>;
   }
 
-  // useEffect(() => {
-  //   dispatch(getAllAppraisal());
-  // }, [dispatch]);
-
   const handlePositionChanger = (user) => {
     setDetails(!detail);
     setEmployeeDetails(user);
+    console.log(employeeDetails);
+  };
+
+  const handleUpdate = (id, userData) => {
+    console.log(id, userData);
+    dispatch(updateUser({ id, userData: { userData } }));
   };
 
   return (
@@ -129,7 +140,8 @@ const Profile = () => {
       {detail && (
         <EmployeePositionBox
           closePopupNote={handlePositionChanger}
-          employeeDetails={employeeDetails}
+          employeeDetails={user}
+          onUpdate={handleUpdate}
         />
       )}
     </>
