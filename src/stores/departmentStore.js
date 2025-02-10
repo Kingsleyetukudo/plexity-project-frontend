@@ -7,7 +7,8 @@ export const getAllDepartments = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const response = await api.get("/department");
-      return response.data;
+      console.log(response.data.data.departments);
+      return response.data.data.departments;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
     }

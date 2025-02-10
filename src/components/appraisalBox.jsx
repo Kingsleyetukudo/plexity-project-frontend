@@ -1,51 +1,63 @@
 import likeIcon from "../assets/images/like-icon.svg";
 import dislikeIcon from "../assets/images/commentImprove.svg";
-import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
-import { getAppraisalByUser } from "../stores/staffAppraisalStore";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-const AppraisalBox = () => {
-  const dispatch = useDispatch();
-  const { appraisalByUser } = useSelector((state) => state.staffAppraisal);
-  const { user } = useSelector((state) => state.auth);
-  const navigate = useNavigate();
+import { useNavigate, useLocation } from "react-router-dom";
+import PropTypes from "prop-types";
+import { useState } from "react";
 
-  useEffect(() => {
-    dispatch(getAppraisalByUser(user._id));
-    console.log(appraisalByUser);
-  }, [dispatch, user]);
+const AppraisalBox = ({ appraisals }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const [currentPage, setCurrentPage] = useState(1); // Current page state
+  const [appraisalsPerPage] = useState(5); // Number of appraisals per page
 
   const handleRoute = (id) => {
-    navigate(`/dashboard/appraisal/${id}`);
+    const isAppraisalRoute = location.pathname === "/dashboard/appraisal";
+
+    const details = !isAppraisalRoute;
+
+    if (details) {
+      navigate(`/dashboard/appraisal-details/${id}`);
+    } else {
+      navigate(`/dashboard/appraisal/${id}`);
+    }
   };
+
+  // Pagination logic: Get the slice of appraisals for the current page
+  const indexOfLastAppraisal = currentPage * appraisalsPerPage;
+  const indexOfFirstAppraisal = indexOfLastAppraisal - appraisalsPerPage;
+  const currentAppraisals = appraisals.slice(
+    indexOfFirstAppraisal,
+    indexOfLastAppraisal
+  );
+
+  // Handle page change
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Calculate the total number of pages
+  const totalPages = Math.ceil(appraisals.length / appraisalsPerPage);
 
   return (
     <>
       <div className="grid gap-6">
-        {appraisalByUser && appraisalByUser.length > 0 ? (
-          appraisalByUser.map((appraisal, index) => (
+        {currentAppraisals && currentAppraisals.length > 0 ? (
+          currentAppraisals.map((appraisal, index) => (
             <div
               key={index}
               onClick={() => handleRoute(appraisal._id)}
               className="grid gap-2 bg-slate-200 shadow-lg cursor-pointer"
             >
-              <div className="grid  md:grid-cols-2 md:p-4">
+              <div className="grid md:grid-cols-2 md:p-4">
                 <p>
                   <span className="font-bold">Reviewed:</span>{" "}
-                  {moment(appraisal.date).format("LL")}
+                  {moment(appraisal.createdAt).format("LL")}
                 </p>
                 <div className="md:flex justify-end">
                   <p>
                     <span className="font-bold">Rate:</span>{" "}
                     {appraisal.overallRating}
                   </p>
-                  {/* <p className=" ">
-                    <span className="font-bold text-base">
-                      Total Question Answered:
-                    </span>{" "}
-                    100
-                  </p> */}
                 </div>
               </div>
               <div className="grid grid-cols-1 gap-1.5">
@@ -74,8 +86,47 @@ const AppraisalBox = () => {
           <p>No appraisals found.</p>
         )}
       </div>
+
+      {/* Pagination Controls */}
+      {currentAppraisals && currentAppraisals.length > 0 ? (
+        <div className="flex justify-center items-center mt-4">
+          <button
+            onClick={() => paginate(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-4 py-2 bg-blue-500 text-white rounded-l-lg disabled:bg-gray-300"
+          >
+            Previous
+          </button>
+          {[...Array(totalPages)].map((_, index) => (
+            <button
+              key={index}
+              onClick={() => paginate(index + 1)}
+              className={`px-4 py-2 ${
+                currentPage === index + 1
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200 text-gray-700"
+              }`}
+            >
+              {index + 1}
+            </button>
+          ))}
+          <button
+            onClick={() => paginate(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 bg-blue-500 text-white rounded-r-lg disabled:bg-gray-300"
+          >
+            Next
+          </button>
+        </div>
+      ) : (
+        ""
+      )}
     </>
   );
+};
+
+AppraisalBox.propTypes = {
+  appraisals: PropTypes.array.isRequired,
 };
 
 export default AppraisalBox;

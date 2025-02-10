@@ -121,6 +121,15 @@ const SideBar = () => {
                     </NavLink>
                   </li>
                 )}
+                {(currentUser?.role === "admin" ||
+                  currentUser?.role === "mgt") && (
+                  <li>
+                    <NavLink to="allAppraisal" className="menuLinks">
+                      <FileText className="w-5" />
+                      All Appraisal
+                    </NavLink>
+                  </li>
+                )}
               </ul>
             </li>
           )}

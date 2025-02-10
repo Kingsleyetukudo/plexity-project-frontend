@@ -12,7 +12,8 @@ const DeleteAppraisalBox = ({
   };
 
   const handleDelete = () => {
-    deleteapppraise(commentId); // Call the delete function with the comment ID
+    deleteapppraise(commentId);
+    // Call the delete function with the comment ID
     toggleDeleteapppraise(); // Close the popup after deletion
   };
 

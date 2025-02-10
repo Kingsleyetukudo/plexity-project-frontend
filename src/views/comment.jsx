@@ -11,7 +11,7 @@ const Comment = () => {
   const [title] = useState("My Comments");
   const { userComments } = useSelector((state) => state.comment);
   const { user } = useSelector((state) => state.auth);
-  const [loadedComments, setLoadedComments] = useState([]);
+  // const [loadedComments, setLoadedComments] = useState([]);
   const [isLoading, setIsLoading] = useState(true); // Added loading state
   const dispatch = useDispatch();
 
@@ -21,11 +21,12 @@ const Comment = () => {
 
   useEffect(() => {
     dispatch(fetchCommentsByCurrentUser(user._id));
+    console.log(userComments);
   }, [dispatch, user._id]);
 
   useEffect(() => {
-    if (userComments?.data?.comments) {
-      setLoadedComments(userComments.data.comments);
+    if (userComments) {
+      // setLoadedComments(userComments);
       console.log(userComments);
       setIsLoading(false); // Set loading to false when data is available
     }
@@ -61,7 +62,7 @@ const Comment = () => {
         {isLoading ? (
           <p>Loading comments...</p>
         ) : (
-          <UserCommentList comments={loadedComments} />
+          <UserCommentList comments={userComments || []} />
         )}
       </div>
     </>

@@ -19,7 +19,7 @@ const Department = () => {
 
   useEffect(() => {
     dispatch(getAllDepartments());
-    setLoadedComments(departments?.data?.departments);
+    setLoadedComments(departments);
     setIsLoading(false);
     console.log(loadedComments);
   }, [dispatch, loadedComments]);

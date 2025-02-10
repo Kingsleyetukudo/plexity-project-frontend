@@ -3,28 +3,21 @@ import PropTypes from "prop-types";
 // import { useState, useEffect } from "react";
 
 const EditDepartment = ({
+  department,
   name,
   setName,
-  toggleEditComment,
-  updateComment,
+  toggleEditComponent,
+  updateComponent,
 }) => {
-  // Create a local state for comment to modify it
-  //   const [localComment, setLocalComment] = useState(comment);
-
-  // Update localComment when the prop `comment` changes
-  //   useEffect(() => {
-  //     setLocalComment(comment);
-  //   }, [comment]);
-
   const closePopup = () => {
-    toggleEditComment();
+    toggleEditComponent();
   };
 
   const handleUpdate = () => {
     // Update the parent component's comment using the updateComment function
     console.log("comment updated:", name);
-    updateComment(name);
-    toggleEditComment(); // Close the popup after updating
+    updateComponent(department._id, name);
+    toggleEditComponent(); // Close the popup after updating
   };
 
   return (
@@ -64,10 +57,11 @@ const EditDepartment = ({
 };
 
 EditDepartment.propTypes = {
+  department: PropTypes.object.isRequired, // comment prop is required and should be a string
   name: PropTypes.string.isRequired, // comment prop is required and should be a string
   setName: PropTypes.func.isRequired, // setComment is a function to update the comment state
-  toggleEditComment: PropTypes.func.isRequired, // toggleEditComment to close the popup
-  updateComment: PropTypes.func.isRequired, // updateComment to update the comment in the parent
+  toggleEditComponent: PropTypes.func.isRequired, // toggleEditComment to close the popup
+  updateComponent: PropTypes.func.isRequired, // updateComment to update the comment in the parent
 };
 
 export default EditDepartment;

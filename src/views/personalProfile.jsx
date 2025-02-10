@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import { UserRoundPen } from "lucide-react";
-import EmployeePositionBox from "../components/employeePostionBox";
 
-const Profile = () => {
+// import EmployeePositionBox from "../components/employeePostionBox";
+
+const PersonalProfile = () => {
   const [title] = useState("Profile");
-  const [detail, setDetails] = useState(false);
+  // const [detail, setDetails] = useState(false);
   // const dispatch = useDispatch();
   // const [user, setUser] = useState({
   //   fullName: "John Doe",
@@ -21,12 +20,11 @@ const Profile = () => {
   //   avatar: "https://via.placeholder.com/150",
   // });
 
-  const { id } = useParams(); // Get the userId from the URL
-  const { users } = useSelector((state) => state.auth);
-  const [employeeDetails, setEmployeeDetails] = useState();
+  // const { id } = useParams(); // Get the userId from the URL
+  const { user } = useSelector((state) => state.auth);
 
   // Find the user by userId
-  const user = users.find((user) => user._id === id);
+  // const user = users.find((user) => user._id === id);
 
   if (!user) {
     return <p>User not found</p>;
@@ -36,10 +34,9 @@ const Profile = () => {
   //   dispatch(getAllAppraisal());
   // }, [dispatch]);
 
-  const handlePositionChanger = (user) => {
-    setDetails(!detail);
-    setEmployeeDetails(user);
-  };
+  // const handlePositionChanger = (user) => {
+  //   setDetails(!detail);
+  // };
 
   return (
     <>
@@ -50,10 +47,10 @@ const Profile = () => {
             <p>
               Role: <span className="uppercase">{user.role}</span>
             </p>
-            <UserRoundPen
+            {/* <UserRoundPen
               className="cursor-pointer"
               onClick={() => handlePositionChanger(user)}
-            />
+            /> */}
           </div>
         </div>
         <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">
@@ -126,14 +123,9 @@ const Profile = () => {
         </div>
       </div>
 
-      {detail && (
-        <EmployeePositionBox
-          closePopupNote={handlePositionChanger}
-          employeeDetails={employeeDetails}
-        />
-      )}
+      {/* {detail && <EmployeePositionBox closePopupNote={handlePositionChanger} />} */}
     </>
   );
 };
 
-export default Profile;
+export default PersonalProfile;

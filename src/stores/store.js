@@ -6,6 +6,7 @@ import staffAppraisalSlice from "./staffAppraisalStore";
 import appraisal from "./appraisalStore";
 import comments from "./commentStore";
 import department from "./departmentStore";
+import position from "./positionStore";
 
 // Persist configuration
 const persistConfig = {
@@ -25,6 +26,7 @@ const store = configureStore({
     appraisal,
     comment: comments,
     department,
+    position,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

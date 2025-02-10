@@ -11,7 +11,6 @@ import Profile from "./views/profile";
 import Appraisal from "./views/appraisal";
 import Leaves from "./views/leave";
 import Settings from "./views/settings";
-import Goals from "./views/goals";
 import DashboardDefault from "./views/dashboardDefault";
 import AppraisalDetails from "./views/appraisalDetails";
 import AdminDashboard from "./views/AdminDashboard";
@@ -22,6 +21,9 @@ import Position from "./views/position";
 import AnonymousComments from "./views/anonymousComments";
 import AppraisalQuestionsView from "./views/appraisalQuestions";
 import { useMemo } from "react";
+import PersonalProfile from "./views/personalProfile";
+import AllAppraisal from "./views/allAppraisal";
+import AppraisalDetailsAdmin from "./views/appraisalDetailsAdmin";
 
 // Function to check if user is authenticated
 const getUser = () => {
@@ -63,18 +65,22 @@ function App() {
           element={user ? <Dashboard /> : <Navigate to="/login" />}
         >
           <Route index element={<DashboardDefault />} />
-          {/* <Route path="profile" element={<Profile />} /> */}
+          <Route path="profile" element={<PersonalProfile />} />
           <Route path="employees/profile/:id" element={<Profile />} />
           <Route path="appraisal" element={<Appraisal />} />
           <Route path="leave" element={<Leaves />} />
           <Route path="settings" element={<Settings />} />
-          <Route path="goals" element={<Goals />} />
           <Route path="appraisal/:id" element={<AppraisalDetails />} />
+          <Route
+            path="appraisal-details/:id"
+            element={<AppraisalDetailsAdmin />}
+          />
           <Route path="comment" element={<Comment />} />
           <Route path="employees" element={<Employees />} />
           <Route path="department" element={<Department />} />
           <Route path="position" element={<Position />} />
           <Route path="anonymous-comments" element={<AnonymousComments />} />
+          <Route path="allAppraisal" element={<AllAppraisal />} />
           <Route
             path="appraisal-questions"
             element={<AppraisalQuestionsView />}

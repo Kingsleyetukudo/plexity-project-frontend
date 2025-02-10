@@ -9,14 +9,15 @@ import { useState } from "react";
 import Dropdown from "./filterDropdown";
 import PropTypes from "prop-types";
 import EditDepartment from "./editDepartment";
-import {
-  updateDepartment,
-  deleteDepartment,
-  getAllDepartments,
-} from "../stores/departmentStore";
-import DeleteAppraisalBox from "./deleteAppraisalBox";
 
-const DepartmentList = ({ departments }) => {
+import DeleteAppraisalBox from "./deleteAppraisalBox";
+import {
+  deletePosition,
+  getAllPositions,
+  updatePosition,
+} from "../stores/positionStore";
+
+const PositionList = ({ departments }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const transactionsPerPage = 10;
   const [isOpen, setIsOpen] = useState(false);
@@ -52,18 +53,18 @@ const DepartmentList = ({ departments }) => {
       `Updating department ${departmentId} with new name: ${newName}`
     );
     dispatch(
-      updateDepartment({ id: departmentId, departmentData: { name: newName } })
+      updatePosition({ id: departmentId, departmentData: { name: newName } })
     );
   };
 
   const handleDeleteFunc = async (userId) => {
     try {
       console.log(userId);
-      const response = await dispatch(deleteDepartment(userId));
+      const response = await dispatch(deletePosition(userId));
       setSelectedDepartment(null);
       if (response.meta && response.meta.requestStatus === "fulfilled") {
         console.log("User deleted successfully", userId);
-        dispatch(getAllDepartments());
+        dispatch(getAllPositions());
       } else {
         console.log("Delete failed with status:", response);
       }
@@ -232,8 +233,8 @@ const DepartmentList = ({ departments }) => {
   );
 };
 
-DepartmentList.propTypes = {
+PositionList.propTypes = {
   departments: PropTypes.array.isRequired,
 };
 
-export default DepartmentList;
+export default PositionList;

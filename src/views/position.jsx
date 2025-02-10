@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCommentsByCurrentUser } from "../stores/commentStore";
-
-import UserCommentList from "../components/userCommentList";
+import { getAllPositions } from "../stores/positionStore";
 import TitleBar from "../components/titleBar";
-import CommentBox from "../components/commentbox";
+import AddPositionBox from "../components/createPosition";
+import PositionList from "../components/PositionList";
 
 const Position = () => {
   const [showPopup, setShowPopup] = useState(false);
-  const [title] = useState("My Comments");
-  const { userComments } = useSelector((state) => state.comment);
-  const { user } = useSelector((state) => state.auth);
+  const [title] = useState("Positions");
+  const { positions } = useSelector((state) => state.position);
   const [loadedComments, setLoadedComments] = useState([]);
   const [isLoading, setIsLoading] = useState(true); // Added loading state
   const dispatch = useDispatch();
@@ -20,16 +18,19 @@ const Position = () => {
   };
 
   useEffect(() => {
-    dispatch(fetchCommentsByCurrentUser(user._id));
-  }, [dispatch, user._id]);
+    dispatch(getAllPositions());
+    setLoadedComments(positions);
+    setIsLoading(false);
+    console.log(loadedComments);
+  }, [dispatch, loadedComments]);
 
-  useEffect(() => {
-    if (userComments?.data?.comments) {
-      setLoadedComments(userComments.data.comments);
-      console.log(userComments);
-      setIsLoading(false); // Set loading to false when data is available
-    }
-  }, [userComments]);
+  // useEffect(() => {
+  //   if (userComments?.data?.comments) {
+  //     setLoadedComments(userComments.data.comments);
+  //     console.log(userComments);
+  //     setIsLoading(false); // Set loading to false when data is available
+  //   }
+  // }, [userComments]);
 
   const handleAppraisal = () => {
     setShowPopup(true);
@@ -46,7 +47,7 @@ const Position = () => {
                 onClick={handleAppraisal}
                 className="text-sm md:text-xl font-semibold md:font-bold px-4 py-2 md:px-8 md:py-3 text-white bg-color-2 rounded-full hover:bg-color-1 focus:outline-none focus:ring-2 focus:ring-color-1"
               >
-                Send Comment
+                Add Position
               </button>
             </div>
           </div>
@@ -54,14 +55,14 @@ const Position = () => {
 
         {showPopup && (
           <>
-            <CommentBox closeCommentPopup={closePopup} />
+            <AddPositionBox closeDepartment={closePopup} />
           </>
         )}
 
         {isLoading ? (
-          <p>Loading comments...</p>
+          <p>Loading Positions...</p>
         ) : (
-          <UserCommentList comments={loadedComments} />
+          <PositionList departments={loadedComments} />
         )}
       </div>
     </>
