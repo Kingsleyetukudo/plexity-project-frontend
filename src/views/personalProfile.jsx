@@ -109,19 +109,19 @@ const PersonalProfile = () => {
               <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
                 <p className="text-gray-600 font-medium">Bank Name</p>
                 <p className="text-lg font-semibold">
-                  {user.accountDetails.bankName}
+                  {user?.accountDetails?.bankName}
                 </p>
               </div>
               <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
                 <p className="text-gray-600 font-medium">Account Name</p>
                 <p className="text-lg font-semibold">
-                  {user.accountDetails.accountNumber}
+                  {user?.accountDetails?.accountNumber}
                 </p>
               </div>
               <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
                 <p className="text-gray-600 font-medium">Account Number</p>
                 <p className="text-lg font-semibold">
-                  {user.accountDetails.bankName}
+                  {user?.accountDetails?.bankName}
                 </p>
               </div>
             </div>

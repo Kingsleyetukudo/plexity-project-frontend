@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 import UserDetails from "../components/userDetails";
 import SideBar from "../components/sideBar";
 import { Outlet } from "react-router-dom";
-import { getAllUsers } from "../stores/userStateStore";
+import { getAllUsers, getUserById } from "../stores/userStateStore";
 import { getAllAppraisal } from "../stores/appraisalStore";
 import { getAppraisalByUser } from "../stores/staffAppraisalStore";
 import { updateUser } from "../stores/userStateStore";
@@ -50,20 +50,28 @@ const Dashboard = () => {
   }, [dispatch, status, navigate]);
 
   useEffect(() => {
+    console.log("it okay");
+    // if (user?.profileCompleted === true) {
+    // }
+    setShowProfileModal(false);
+    dispatch(getUserById(user._id));
+  }, [dispatch, status, user]);
+
+  useEffect(() => {
     if (user?.profileCompleted === false) {
       setShowProfileModal(true); // Ensure modal stays open if profile is incomplete
     }
   }, [user]);
 
-  useEffect(() => {
-    if (user?.profileCompleted === true) {
+  const onSubmit = async (formData) => {
+    console.log(formData);
+    const result = await dispatch(
+      updateUser({ userId: user._id, userData: formData })
+    );
+    dispatch(getUserById(user._id));
+    if (result.message === "User updated successfully") {
       setShowProfileModal(false); // Close modal only if profile is successfully updated & completed
     }
-  }, [status, user]);
-
-  const onSubmit = (formData) => {
-    console.log(formData);
-    dispatch(updateUser({ userId: user._id, userData: formData }));
   };
 
   return (

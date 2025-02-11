@@ -11,7 +11,6 @@ export const login = createAsyncThunk(
         password,
         reCaptchatoken,
       });
-      console.log(response.data);
       return response.data; // Assuming the response contains user data and token
     } catch (error) {
       return rejectWithValue(error.response?.data || "Login failed");
@@ -25,23 +24,36 @@ export const getAllUsers = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const res = await api.get("/user");
-      console.log(res.data);
       return res.data.users; // Assuming res.data contains an array of users
     } catch (error) {
       return rejectWithValue(error.response?.data || "Fetching users failed");
     }
   }
 );
+
 // Create new users thunk
 export const createUsers = createAsyncThunk(
   "auth/createUsers",
   async (payload, { rejectWithValue }) => {
     try {
       const res = await api.post("/user", payload);
-      console.log(res.data);
-      return res.data; // Assuming res.data contains an array of users
+      return res.data; // Assuming res.data contains a single user object
     } catch (error) {
       return rejectWithValue(error.response?.data || "Fetching users failed");
+    }
+  }
+);
+
+// Get user by ID thunk
+export const getUserById = createAsyncThunk(
+  "auth/getUserById",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const res = await api.get(`/user/${userId}`);
+      console.log(res.data.user);
+      return res.data.user; // Assuming res.data contains the user object
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Fetching user failed");
     }
   }
 );
@@ -52,10 +64,10 @@ export const updateUserByAdmin = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
     try {
       const res = await api.put(`/user/approveUser/${userId}`);
-      console.log(res.data);
-      return res.data; // Assuming res.data contains an array of users
+      console.log(res.data.updatedUser);
+      return res.data.updatedUser;
     } catch (error) {
-      return rejectWithValue(error.response?.data || "Fetching users failed");
+      return rejectWithValue(error.response?.data || "Updating user failed");
     }
   }
 );
@@ -65,23 +77,21 @@ export const updateUser = createAsyncThunk(
   "auth/updateUser",
   async ({ userId, userData }, { rejectWithValue }) => {
     try {
-      console.log("click");
       const res = await api.put(`/user/updateUser/${userId}`, userData);
-      console.log(res.data);
-      return res.data; // Assuming res.data contains an array of users
+      return res.data; // Assuming res.data contains the updated user object
     } catch (error) {
       return rejectWithValue(error.response?.data || "Fetching users failed");
     }
   }
 );
+
 // Delete User thunk
 export const deleteUser = createAsyncThunk(
   "auth/deleteUser",
   async (userId, { rejectWithValue }) => {
     try {
       const res = await api.delete(`/user/${userId}`);
-      console.log(res.data);
-      return res.data; // Assuming res.data contains an array of users
+      return res.data; // Assuming res.data contains the result of the delete action
     } catch (error) {
       return rejectWithValue(error.response?.data || "Fetching users failed");
     }
@@ -105,7 +115,8 @@ const authSlice = createSlice({
       state.user = null;
       state.token = null;
       state.toggleBar = false;
-      // Clear persisted data if redux-persist is used
+      // Remove token from localStorage on logout
+      localStorage.removeItem("token");
       localStorage.removeItem("persist:auth");
     },
 
@@ -115,7 +126,6 @@ const authSlice = createSlice({
 
     toggleBar: (state) => {
       state.toggleBar = !state.toggleBar;
-      console.log(state.toggleBar);
     },
   },
   extraReducers: (builder) => {
@@ -147,16 +157,77 @@ const authSlice = createSlice({
         state.status = "failed";
         state.error = action.payload;
       })
-      //  Handle createUsers
+      // Handle createUsers
       .addCase(createUsers.pending, (state) => {
         state.status = "loading";
         state.error = null;
       })
-      .addCase(createUsers.fulfilled, (state) => {
+      .addCase(createUsers.fulfilled, (state, action) => {
         state.status = "succeeded";
-        // state.users = [...state.users, action.payload];
+        // If single user object is returned, add it to the users list
+        state.users = [...state.users, action.payload];
       })
       .addCase(createUsers.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+      // Handle updateUser
+      .addCase(updateUser.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      // .addCase(updateUser.fulfilled, (state, action) => {
+      //   state.status = "succeeded";
+      //   // Update the user in the list
+      //   const updatedUser = action.payload;
+      //   const index = state.users.findIndex(
+      //     (user) => user._id === updatedUser._id
+      //   );
+      //   if (index !== -1) {
+      //     state.users[index] = updatedUser;
+      //   }
+      //   state.user = updatedUser;
+      // })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+
+      // Handle getUserById
+      .addCase(getUserById.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      // .addCase(updateUser.fulfilled, (state, action) => {
+      //   console.log("User updated:", action.payload);
+      //   state.status = "succeeded";
+      //   const updatedUser = action.payload;
+      //   const index = state.users.findIndex(
+      //     (user) => user._id === updatedUser._id
+      //   );
+      //   if (index !== -1) {
+      //     state.users[index] = updatedUser;
+      //   }
+      //   state.user = updatedUser; // Ensure the user state is properly updated
+      //   console.log("Updated user state:", state.user);
+      // })
+      .addCase(getUserById.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+
+      // Handle deleteUser
+      .addCase(deleteUser.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(deleteUser.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.users = state.users.filter(
+          (user) => user._id !== action.payload._id
+        );
+      })
+      .addCase(deleteUser.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       });
