@@ -1,62 +1,82 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../api";
 
-// Async thunk to fetch comments
+// Fetch all comments
 export const fetchComments = createAsyncThunk(
   "comment/fetchComments",
-  async () => {
-    const response = await api.get("/comment");
-    console.log(response.data);
-    return response.data.data.comments;
-  }
-);
-
-// Async thunk to add a new comment
-export const addComment = createAsyncThunk(
-  "comment/addComment",
-  async (comment, thunkAPI) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await api.post("/comment", comment);
-      console.log(response.data);
-      // After adding the comment, dispatch fetchComments to get the updated list
-      thunkAPI.dispatch(fetchComments());
-      thunkAPI.dispatch(fetchCommentsByCurrentUser());
-
-      return response.data; // This will be the result of the addComment action
+      const response = await api.get("/comment");
+      return response.data.data.comments || [];
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message); // In case of error
+      return rejectWithValue(
+        error.response?.data || "Fetching comments failed"
+      );
     }
   }
 );
 
-// Async thunk to update a comment by id
+// Add a new comment
+export const addComment = createAsyncThunk(
+  "comment/addComment",
+  async ({ comment, userId }, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await api.post("/comment", comment);
+      dispatch(fetchComments());
+      dispatch(fetchCommentsByCurrentUser(userId));
+
+      console.log(response.data.data.comment);
+      return response.data.data.comment;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Adding comment failed");
+    }
+  }
+);
+
+// Update a comment by ID
 export const updateComment = createAsyncThunk(
   "comment/updateComment",
-  async ({ id, comment }) => {
-    const response = await api.put(`/comment/${id}`, { comment });
-    return response.data;
+  async ({ id, comment }, { rejectWithValue }) => {
+    try {
+      const response = await api.put(`/comment/${id}`, { comment });
+      return response.data.data.comment;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Updating comment failed");
+    }
   }
 );
 
-// Delete comment action
+// Delete a comment by ID
 export const deleteCommentById = createAsyncThunk(
   "comment/deleteCommentById",
-  async (id) => {
-    await api.delete(`/comment/${id}`);
-    return id; // Return the ID of the deleted comment
+  async (id, { dispatch, rejectWithValue }) => {
+    try {
+      await api.delete(`/comment/${id}`);
+      dispatch(fetchComments());
+      return id;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Deleting comment failed");
+    }
   }
 );
 
-// Async thunk to fetch comments by current user
+// Fetch comments by current user
 export const fetchCommentsByCurrentUser = createAsyncThunk(
   "comment/fetchCommentsByCurrentUser",
-  async (userId) => {
-    const response = await api.get(`/comment/sender/${userId}`);
-    // console.log(response.data.data.comments);
-    return response.data.data.comments;
+  async (userId, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/comment/sender/${userId}`);
+      console.log(response.data.data.comments);
+      return response.data.data.comments || [];
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || "Fetching user comments failed"
+      );
+    }
   }
 );
 
+// Comment slice
 const commentSlice = createSlice({
   name: "comments",
   initialState: {
@@ -65,9 +85,7 @@ const commentSlice = createSlice({
     status: "idle",
     error: null,
   },
-  reducers: {
-    // You can add synchronous actions here if needed
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchComments.pending, (state) => {
@@ -79,43 +97,18 @@ const commentSlice = createSlice({
       })
       .addCase(fetchComments.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
-      })
-
-      .addCase(fetchCommentsByCurrentUser.pending, (state) => {
-        state.status = "loading";
+        state.error = action.payload;
       })
       .addCase(fetchCommentsByCurrentUser.fulfilled, (state, action) => {
-        state.status = "succeeded";
         state.userComments = action.payload;
       })
-      .addCase(fetchCommentsByCurrentUser.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.error.message;
-      })
-
       .addCase(addComment.fulfilled, (state, action) => {
-        if (Array.isArray(state.comments)) {
-          state.comments.push(action.payload);
-        } else {
-          state.comments = [action.payload]; // Reset if undefined
-        }
+        state.comments.push(action.payload);
       })
-
-      .addCase(deleteCommentById.pending, (state) => {
-        state.loading = true;
-      })
-
       .addCase(deleteCommentById.fulfilled, (state, action) => {
-        state.loading = false;
-        // Remove the deleted comment from the state
         state.comments = state.comments.filter(
           (comment) => comment._id !== action.payload
         );
-      })
-      .addCase(deleteCommentById.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message;
       });
   },
 });

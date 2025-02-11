@@ -9,7 +9,6 @@ const Department = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [title] = useState("Departments");
   const { departments } = useSelector((state) => state.department);
-  const [loadedComments, setLoadedComments] = useState([]);
   const [isLoading, setIsLoading] = useState(true); // Added loading state
   const dispatch = useDispatch();
 
@@ -19,18 +18,8 @@ const Department = () => {
 
   useEffect(() => {
     dispatch(getAllDepartments());
-    setLoadedComments(departments);
     setIsLoading(false);
-    console.log(loadedComments);
-  }, [dispatch, loadedComments]);
-
-  // useEffect(() => {
-  //   if (userComments?.data?.comments) {
-  //     setLoadedComments(userComments.data.comments);
-  //     console.log(userComments);
-  //     setIsLoading(false); // Set loading to false when data is available
-  //   }
-  // }, [userComments]);
+  }, [dispatch]);
 
   const handleAppraisal = () => {
     setShowPopup(true);
@@ -45,7 +34,7 @@ const Department = () => {
             <div>
               <button
                 onClick={handleAppraisal}
-                className="text-sm md:text-xl font-semibold md:font-bold px-4 py-2 md:px-8 md:py-3 text-white bg-color-2 rounded-full hover:bg-color-1 focus:outline-none focus:ring-2 focus:ring-color-1"
+                className="md:text-base font-normal px-4 py-1 md:px-5 md:py-3 text-white bg-color-2 rounded-full hover:bg-color-1 focus:outline-none focus:ring-2 focus:ring-color-1"
               >
                 Add Department
               </button>
@@ -62,7 +51,7 @@ const Department = () => {
         {isLoading ? (
           <p>Loading Deparments...</p>
         ) : (
-          <DepartmentList departments={loadedComments} />
+          <DepartmentList departments={departments} />
         )}
       </div>
     </>

@@ -9,7 +9,6 @@ const Position = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [title] = useState("Positions");
   const { positions } = useSelector((state) => state.position);
-  const [loadedComments, setLoadedComments] = useState([]);
   const [isLoading, setIsLoading] = useState(true); // Added loading state
   const dispatch = useDispatch();
 
@@ -19,10 +18,8 @@ const Position = () => {
 
   useEffect(() => {
     dispatch(getAllPositions());
-    setLoadedComments(positions);
     setIsLoading(false);
-    console.log(loadedComments);
-  }, [dispatch, loadedComments]);
+  }, [dispatch]);
 
   // useEffect(() => {
   //   if (userComments?.data?.comments) {
@@ -45,7 +42,7 @@ const Position = () => {
             <div>
               <button
                 onClick={handleAppraisal}
-                className="text-sm md:text-xl font-semibold md:font-bold px-4 py-2 md:px-8 md:py-3 text-white bg-color-2 rounded-full hover:bg-color-1 focus:outline-none focus:ring-2 focus:ring-color-1"
+                className="md:text-base font-normal px-4 py-1 md:px-5 md:py-3 text-white bg-color-2 rounded-full hover:bg-color-1 focus:outline-none focus:ring-2 focus:ring-color-1"
               >
                 Add Position
               </button>
@@ -62,7 +59,7 @@ const Position = () => {
         {isLoading ? (
           <p>Loading Positions...</p>
         ) : (
-          <PositionList departments={loadedComments} />
+          <PositionList departments={positions} />
         )}
       </div>
     </>

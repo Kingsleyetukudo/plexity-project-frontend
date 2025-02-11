@@ -24,10 +24,15 @@ const AppraisalBox = ({ appraisals }) => {
     }
   };
 
+  // Sort the filtered comments by date
+  const sortedComments = [...appraisals].sort((a, b) => {
+    return new Date(b.createdAt) - new Date(a.createdAt);
+  });
+
   // Pagination logic: Get the slice of appraisals for the current page
   const indexOfLastAppraisal = currentPage * appraisalsPerPage;
   const indexOfFirstAppraisal = indexOfLastAppraisal - appraisalsPerPage;
-  const currentAppraisals = appraisals.slice(
+  const currentAppraisals = sortedComments.slice(
     indexOfFirstAppraisal,
     indexOfLastAppraisal
   );
@@ -36,7 +41,7 @@ const AppraisalBox = ({ appraisals }) => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   // Calculate the total number of pages
-  const totalPages = Math.ceil(appraisals.length / appraisalsPerPage);
+  const totalPages = Math.ceil(sortedComments.length / appraisalsPerPage);
 
   return (
     <>
@@ -48,10 +53,15 @@ const AppraisalBox = ({ appraisals }) => {
               onClick={() => handleRoute(appraisal._id)}
               className="grid gap-2 bg-slate-200 shadow-lg cursor-pointer"
             >
-              <div className="grid md:grid-cols-2 md:p-4">
+              <div className="grid md:grid-cols-3 md:p-4">
                 <p>
                   <span className="font-bold">Reviewed:</span>{" "}
-                  {moment(appraisal.createdAt).format("LL")}
+                  {moment(appraisal.date).format("LL")}
+                </p>
+                <p>
+                  <span className="font-bold">Appraised:</span>{" "}
+                  {appraisal?.appraisedEmployee?.firstName}{" "}
+                  {appraisal?.appraisedEmployee?.lastName}
                 </p>
                 <div className="md:flex justify-end">
                   <p>

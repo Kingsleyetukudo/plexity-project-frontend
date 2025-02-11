@@ -3,7 +3,8 @@ import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { getAppraisalById } from "../stores/staffAppraisalStore";
 import moment from "moment";
-import Star from "../assets/images/star-rating.svg";
+import { Star } from "lucide-react";
+// import Star from "../assets/images/star-rating.svg";
 
 const AppraisalDetails = () => {
   const { id } = useParams();
@@ -27,9 +28,10 @@ const AppraisalDetails = () => {
       <>
         {Array.from({ length: fullStars }, (_, i) => (
           //   <FaStar key={`full-${i}`} className="text-yellow-400" />
-          <img src={Star} alt="" key={`full-${i}`} className="w-5" />
+          // <img src={Star} alt=""  className="w-5" />
+          <Star key={`full-${i}`} />
         ))}
-        {hasHalfStar && <img src={Star} alt="" className="w-5" />}
+        {hasHalfStar && <Star />}
         {/* {Array.from({ length: emptyStars }, (_, i) => (
           //   <FaRegStar key={`empty-${i}`} className="text-yellow-400" />
           <img src={Star} alt="" key={`empty-${i}`} className="w-5" />

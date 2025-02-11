@@ -5,6 +5,7 @@ import TitleBar from "../components/titleBar";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getAppraisalByUser } from "../stores/staffAppraisalStore";
+import { X } from "lucide-react";
 
 const Appraisal = () => {
   const [showPopup, setShowPopup] = useState(false);
@@ -33,11 +34,10 @@ const Appraisal = () => {
       <div className="grid gap-8 ">
         <div className="flex justify-between items-center md:my-5">
           <TitleBar title={title} />
-          {/* <h1 className="font-extrabold text-xl md:text-3xl">My Apprisals</h1> */}
           <div>
             <button
               onClick={handleAppraisal}
-              className="md:text-xl font-semibold md:font-bold px-4 py-2 md:px-8 md:py-3 text-white bg-color-2 rounded-full hover:bg-color-1 focus:outline-none focus:ring-2 focus:ring-color-1"
+              className="md:text-base font-normal px-4 py-1 md:px-5 md:py-3 text-white bg-color-2 rounded-full hover:bg-color-1 focus:outline-none focus:ring-2 focus:ring-color-1"
             >
               Appriase
             </button>
@@ -53,13 +53,8 @@ const Appraisal = () => {
             aria-labelledby="modal-title"
             aria-describedby="modal-description"
           >
-            <div className="text-right">
-              <button
-                onClick={closePopup}
-                className="bg-indigo-600 text-white px-4 py-2 rounded-full hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-semibold"
-              >
-                Close
-              </button>
+            <div className="flex items-center justify-end">
+              <X onClick={closePopup} className="cursor-pointer" />
             </div>
             <RatingSystem closePopup={closePopup} />
           </div>
