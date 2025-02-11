@@ -45,7 +45,7 @@ const Comment = () => {
             <div>
               <button
                 onClick={handleAppraisal}
-                className="text-sm md:text-xl font-semibold md:font-bold px-4 py-2 md:px-8 md:py-3 text-white bg-color-2 rounded-full hover:bg-color-1 focus:outline-none focus:ring-2 focus:ring-color-1"
+                className="md:text-base font-normal px-4 py-1 md:px-5 md:py-3 text-white bg-color-2 rounded-full hover:bg-color-1 focus:outline-none focus:ring-2 focus:ring-color-1"
               >
                 Send Comment
               </button>
@@ -59,11 +59,7 @@ const Comment = () => {
           </>
         )}
 
-        {isLoading ? (
-          <p>Loading comments...</p>
-        ) : (
-          <UserCommentList comments={userComments || []} />
-        )}
+        {isLoading ? <p>Loading comments...</p> : <UserCommentList />}
       </div>
     </>
   );

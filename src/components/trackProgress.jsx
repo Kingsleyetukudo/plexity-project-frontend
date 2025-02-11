@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 const TaskProgressCard = () => {
   const { userTotalRating } = useSelector((state) => state.staffAppraisal);
   const { users } = useSelector((state) => state.auth);
-  const comments = useSelector((state) => state.comment || {}); // Ensure default empty object
+  const { comments } = useSelector((state) => state.comment || []); // Ensure default empty object
   const [currentUser, setCurrentUser] = useState(null);
   const [unreadComments, setUnreadComments] = useState([]);
 
@@ -33,15 +33,15 @@ const TaskProgressCard = () => {
     if (!currentUser || !currentUser.role) return; // Prevents running when currentUser is null
     console.log(comments);
 
-    const anonymousComments = comments?.comments?.data?.comments || [];
+    const anonymousComments = comments || [];
     if (Array.isArray(anonymousComments)) {
       console.log(comments);
       const filteredComments = anonymousComments.filter((comment) => {
-        if (currentUser.role === "admin") {
+        if (currentUser.role === "Admin") {
           console.log(currentUser);
           return !comment.readByAdmin;
         }
-        if (currentUser.role === "mgt") return !comment.readByMgt;
+        if (currentUser.role === "Mgt") return !comment.readByMgt;
         return false;
       });
       setUnreadComments(filteredComments);
@@ -70,7 +70,9 @@ const TaskProgressCard = () => {
       </div>
 
       {/* Members Card */}
-      {(currentUser?.role === "admin" || currentUser?.role === "mgt") && (
+      {(currentUser?.role === "Admin" ||
+        currentUser?.role === "Mgt" ||
+        currentUser?.role === "Sub-Admin") && (
         <div className="p-4 bg-white rounded-lg shadow-md w-full">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-bold text-color-1 uppercase">
@@ -87,7 +89,7 @@ const TaskProgressCard = () => {
       )}
 
       {/* Pending Comments Card */}
-      {(currentUser?.role === "admin" || currentUser?.role === "mgt") && (
+      {(currentUser?.role === "Admin" || currentUser?.role === "Mgt") && (
         <div className="p-4 bg-white rounded-lg shadow-md w-full">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-bold text-color-1 uppercase">

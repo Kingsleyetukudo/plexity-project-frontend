@@ -1,25 +1,26 @@
 import { X } from "lucide-react";
 import PropTypes from "prop-types";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 
 const EmployeePositionBox = ({ closePopupNote, employeeDetails, onUpdate }) => {
   // Get departments and positions from Redux store
-  const { departments } = useSelector((state) => state.department);
-  const { positions } = useSelector((state) => state.position);
+  // const { departments } = useSelector((state) => state.department);
+  // const { positions } = useSelector((state) => state.position);
+  const roles = ["Admin", "Sub-Admin", "Mgt"];
 
   // State for selected department & position
-  const [department, setDepartment] = useState(
-    employeeDetails.department || ""
-  );
-  const [position, setPosition] = useState(employeeDetails.position || "");
+  // const [department, setDepartment] = useState(
+  //   employeeDetails.department || ""
+  // );
+  const [role, setRole] = useState(employeeDetails.role || "");
 
   // Function to handle updates
   const handleUpdate = () => {
+    console.log(employeeDetails._id);
     onUpdate({
-      id: employeeDetails.id,
-      department,
-      position,
+      id: employeeDetails._id,
+      role,
     });
     closePopupNote();
   };
@@ -35,31 +36,29 @@ const EmployeePositionBox = ({ closePopupNote, employeeDetails, onUpdate }) => {
         <div className="flex justify-end">
           <X onClick={closePopupNote} className="cursor-pointer" />
         </div>
-        <p id="modal-description">
-          You can assign a new position and department to this user
-        </p>
+        <p id="modal-description">You can assign a new role to this user</p>
         <div className="grid grid-cols-1 gap-5">
           {/* Select Department */}
           <div className="form-group text-left relative w-full">
-            <h2 className="font-bold">Select Department</h2>
+            <h2 className="font-bold">Select Role</h2>
             <select
-              value={department}
-              onChange={(e) => setDepartment(e.target.value)}
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 outline-none text-input"
             >
               <option value="" disabled>
-                Select a department
+                Select a Role
               </option>
-              {departments.map((dept) => (
-                <option key={dept.id} value={dept.name}>
-                  {dept.name}
+              {roles.map((dept, index) => (
+                <option key={index} value={dept}>
+                  {dept}
                 </option>
               ))}
             </select>
           </div>
 
           {/* Select Position */}
-          <div className="form-group text-left relative w-full">
+          {/* <div className="form-group text-left relative w-full">
             <h2 className="font-bold">Select Position</h2>
             <select
               value={position}
@@ -75,7 +74,7 @@ const EmployeePositionBox = ({ closePopupNote, employeeDetails, onUpdate }) => {
                 </option>
               ))}
             </select>
-          </div>
+          </div> */}
         </div>
 
         {/* Update Button */}

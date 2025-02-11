@@ -130,41 +130,44 @@ const PositionList = ({ departments }) => {
         <div className="overflow-x-auto">
           <table className="w-full border-collapse border text-left border-gray-300">
             <thead>
-              <tr className="bg-gray-200">
-                <th>S/N</th>
-                <th className="p-3 border">Department Name</th>
-
-                <th className="p-3 border">Action</th>
+              <tr className="bg-gray-200 text-gray-700">
+                <th className="p-3 border w-16">S/N</th>
+                <th className="p-3 border w-3/5">Position Name</th>
+                <th className="p-3 border w-24 text-center">Action</th>
               </tr>
             </thead>
             <tbody>
               {currentTransactions.map((txn, index) => (
-                <tr key={txn._id}>
+                <tr
+                  key={txn._id}
+                  className="border border-gray-300 hover:bg-gray-50"
+                >
                   <td className="p-3 border">{index + 1}</td>
                   <td className="p-3 border">{txn.name}</td>
-                  <td className="p-3 border text-center relative ">
+                  <td className="p-3 border text-center relative">
+                    {/* Action Button */}
                     <button
-                      className=" px-1 py-1 border border-[#E4E7EC] bg-white text-brandColor-1 rounded"
+                      className="px-2 py-1 border border-gray-300 bg-white text-gray-700 rounded-md hover:bg-gray-100"
                       onClick={() => toggleAction(txn._id)}
                     >
-                      <EllipsisVertical className="w-4 " />
+                      <EllipsisVertical className="w-4 h-4" />
                     </button>
+
+                    {/* Dropdown Menu */}
                     {isOpen === txn._id && (
-                      <div className="absolute right-5 mt-2 w-16 bg-white shadow-md rounded-xl border border-gray-200 z-10">
-                        {tableOptions.map((option, index) => (
+                      <div className="absolute right-0 mt-2 w-24 bg-white shadow-md rounded-md border border-gray-200 z-10">
+                        {tableOptions.map((option, i) => (
                           <div
-                            key={index}
-                            className="text-left py-2 hover:bg-gray-100 hover:text-color-1 cursor-pointer text-active-color text-xs"
+                            key={i}
+                            className="text-left px-3 py-2 hover:bg-gray-100 hover:text-gray-900 cursor-pointer text-sm"
                             onClick={() => {
                               setIsOpen(false);
-                              if (option === "Edit") {
-                                handleEdit(txn); // Pass the whole txn object to handleEdit
-                              } else if (option === "Delete") {
+                              if (option === "Edit") handleEdit(txn);
+                              else if (option === "Delete")
                                 handleDelete(txn._id);
-                              }
                             }}
                           >
-                            <span className="px-2">{option}</span>
+                            {option}
                           </div>
                         ))}
                       </div>

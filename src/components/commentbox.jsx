@@ -36,8 +36,11 @@ const CommentBox = ({ closeCommentPopup }) => {
     };
     console.log(comment);
 
-    const commentNew = await dispatch(addComment(newComment));
-    if (commentNew.payload.status === "success") {
+    const commentNew = await dispatch(
+      addComment({ comment: newComment, userId: user._id })
+    );
+    console.log(commentNew);
+    if (commentNew.meta.requestStatus === "fulfilled") {
       setMessage("Comment submitted successfully.");
       setOpenSuccessBox(true);
 

@@ -1,19 +1,22 @@
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import UserDetails from "../components/userDetails";
 import SideBar from "../components/sideBar";
 import { Outlet } from "react-router-dom";
-import { getAllUsers } from "../stores/userStateStore";
+import { getAllUsers, getUserById } from "../stores/userStateStore";
 import { getAllAppraisal } from "../stores/appraisalStore";
 import { getAppraisalByUser } from "../stores/staffAppraisalStore";
+import { updateUser } from "../stores/userStateStore";
 import {
   fetchCommentsByCurrentUser,
   fetchComments,
 } from "../stores/commentStore";
+import StaffBiodataForm from "../components/StaffBiodataForm";
 
 const Dashboard = () => {
-  const { toggleBar, status } = useSelector((state) => state.auth);
+  const { toggleBar, status, user } = useSelector((state) => state.auth);
+  const [showProfileModal, setShowProfileModal] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate(); // Initialize useNavigate
 
@@ -46,6 +49,31 @@ const Dashboard = () => {
     }
   }, [dispatch, status, navigate]);
 
+  useEffect(() => {
+    console.log("it okay");
+    // if (user?.profileCompleted === true) {
+    // }
+    setShowProfileModal(false);
+    dispatch(getUserById(user._id));
+  }, [dispatch, status, user]);
+
+  useEffect(() => {
+    if (user?.profileCompleted === false) {
+      setShowProfileModal(true); // Ensure modal stays open if profile is incomplete
+    }
+  }, [user]);
+
+  const onSubmit = async (formData) => {
+    console.log(formData);
+    const result = await dispatch(
+      updateUser({ userId: user._id, userData: formData })
+    );
+    dispatch(getUserById(user._id));
+    if (result.message === "User updated successfully") {
+      setShowProfileModal(false); // Close modal only if profile is successfully updated & completed
+    }
+  };
+
   return (
     <div
       className={`grid-layout grid-rows-[auto_1fr_auto] md:grid-cols-[200px_1fr] transition-grid-cols duration-300 ease-in-out ${
@@ -64,6 +92,12 @@ const Dashboard = () => {
       </div>
       <div className="mx-2 md:mx-4 pb-8 main-area">
         <Outlet />
+        {showProfileModal && (
+          <StaffBiodataForm
+            setShowProfileModal={setShowProfileModal}
+            onSubmit={onSubmit}
+          />
+        )}
       </div>
       <div className="footer-area">
         <footer className="bg-white p-4 text-center">

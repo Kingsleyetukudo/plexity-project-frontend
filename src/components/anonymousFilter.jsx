@@ -31,11 +31,13 @@ const FilterAnonymous = ({ options, onFilter }) => {
         <div className="absolute right-0 mt-2 w-36 bg-white shadow-md rounded-xl border border-gray-200 z-10">
           {options.map((option) => (
             <div
-              key={option._id}
+              key={option._id || option.name}
               className="px-4 py-2 hover:bg-gray-100 hover:text-gray-700 cursor-pointer text-active-color text-sm"
               onClick={() => handleSelection(option)}
             >
-              {option.firstName} {option.lastName}
+              {option.firstName
+                ? `${option.firstName} ${option.lastName || ""}`
+                : option.name}
             </div>
           ))}
         </div>

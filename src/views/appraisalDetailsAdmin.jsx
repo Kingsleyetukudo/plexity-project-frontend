@@ -3,7 +3,8 @@ import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { getAppraisalById } from "../stores/staffAppraisalStore";
 import moment from "moment";
-import Star from "../assets/images/star-rating.svg";
+import { Star } from "lucide-react";
+// import Star from "../assets/images/star-rating.svg";
 
 const AppraisalDetailsAdmin = () => {
   const { id } = useParams();
@@ -27,9 +28,10 @@ const AppraisalDetailsAdmin = () => {
       <>
         {Array.from({ length: fullStars }, (_, i) => (
           //   <FaStar key={`full-${i}`} className="text-yellow-400" />
-          <img src={Star} alt="" key={`full-${i}`} className="w-5" />
+          // <img src={Star} alt="" key={`full-${i}`} className="w-5" />
+          <Star key={`full-${i}`} className="text-color-2" />
         ))}
-        {hasHalfStar && <img src={Star} alt="" className="w-5" />}
+        {hasHalfStar && <Star />}
         {/* {Array.from({ length: emptyStars }, (_, i) => (
           //   <FaRegStar key={`empty-${i}`} className="text-yellow-400" />
           <img src={Star} alt="" key={`empty-${i}`} className="w-5" />
@@ -41,7 +43,7 @@ const AppraisalDetailsAdmin = () => {
   return (
     <div>
       <div className="grid grid-cols-1 gap-5">
-        <h2 className="font-extrabold text-xl md:text-3xl mb-5">
+        <h2 className="font-extrabold text-xl md:text-2xl mb-5 text-gray-500">
           Appraisal Details of {appraisal?.appraisedEmployee?.firstName}{" "}
           {appraisal?.appraisedEmployee?.lastName}
         </h2>

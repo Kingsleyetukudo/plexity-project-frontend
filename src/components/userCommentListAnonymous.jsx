@@ -1,34 +1,39 @@
 import { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 import EditCommentBox from "./editCommentBox";
-import { EllipsisVertical, Trash2, X } from "lucide-react";
+import { EllipsisVertical, Search, Trash2, X } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   updateComment as updateCommentAction,
   deleteCommentById,
-  fetchCommentsByCurrentUser,
+  fetchComments,
 } from "../stores/commentStore";
 import DeleteCommentBox from "./deleteCommentBox";
 import moment from "moment";
 import DOMPurify from "dompurify"; // Import DOMPurify for sanitization
+import FilterAnonymous from "./anonymousFilter";
 
-const UserCommentList = () => {
+const UserCommentListAnonymous = () => {
   const [openOption, setOpenOption] = useState(null);
   const [editCommentId, setEditCommentId] = useState(null);
   const [deleteCommentId, setDeleteCommentId] = useState(null);
-  // const [commentList, setCommentList] = useState(comments);
+  const { comments } = useSelector((state) => state.comment);
+  const [commentList, setCommentList] = useState(comments);
   const { user } = useSelector((state) => state.auth);
   const [localComment, setLocalComment] = useState("");
   const [popupContent, setPopupContent] = useState(""); // For full comment in the popup
   const [showPopup, setShowPopup] = useState(false); // Control the popup visibility
   const [currentPage, setCurrentPage] = useState(1); // Current page state
   const [commentsPerPage] = useState(9); // Number of comments per page (adjust as needed)
-  const { userComments } = useSelector((state) => state.comment);
+
+  const { users } = useSelector((state) => state.auth);
+  const [filter, setFilter] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
+  // const [loadedComments, setLoadedComments] = useState([]);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchCommentsByCurrentUser(user._id));
+    dispatch(fetchComments());
   }, [dispatch]);
 
   const toggleOpenOption = (commentId) => {
@@ -44,20 +49,20 @@ const UserCommentList = () => {
 
   const openDeleteComment = (commentId) => {
     setDeleteCommentId(commentId);
-    const commentToDelete = userComments.find((c) => c._id === commentId);
+    const commentToDelete = commentList.find((c) => c._id === commentId);
     if (commentToDelete) {
       setLocalComment(commentToDelete.comment);
     }
   };
 
   const updateComment = (commentId, newComment) => {
-    // setCommentList((prevComments) =>
-    //   prevComments.map((comment) =>
-    //     comment._id === commentId
-    //       ? { ...comment, comment: newComment }
-    //       : comment
-    //   )
-    // );
+    setCommentList((prevComments) =>
+      prevComments.map((comment) =>
+        comment._id === commentId
+          ? { ...comment, comment: newComment }
+          : comment
+      )
+    );
 
     dispatch(updateCommentAction({ id: commentId, comment: newComment }));
     setEditCommentId(null);
@@ -65,9 +70,9 @@ const UserCommentList = () => {
 
   const deleteComment = async (commentId) => {
     dispatch(deleteCommentById(commentId));
-    // setCommentList((prevComments) =>
-    //   prevComments.filter((comment) => comment._id !== commentId)
-    // );
+    setCommentList((prevComments) =>
+      prevComments.filter((comment) => comment._id !== commentId)
+    );
     setDeleteCommentId(null);
   };
 
@@ -92,7 +97,34 @@ const UserCommentList = () => {
     return text;
   };
 
-  const sortedComments = [...userComments].sort((a, b) => {
+  const handleOptionSelect = (selectedUserId) => {
+    console.log("Selected User ID:", selectedUserId); // Debugging
+    setFilter(selectedUserId);
+  };
+
+  // Filter & Search logic
+  const filteredComments = (comments || []).filter((comment) => {
+    const recipientFirstName =
+      comment.recipient?.firstName?.toLowerCase() || "";
+    const recipientLastName = comment.recipient?.lastName?.toLowerCase() || "";
+    const commentText = comment.text?.toLowerCase() || ""; // Ensure search includes comment text
+    const searchQuery = searchTerm.toLowerCase();
+
+    // Apply Search Filter
+    const matchesSearch =
+      recipientFirstName.includes(searchQuery) ||
+      recipientLastName.includes(searchQuery) ||
+      commentText.includes(searchQuery);
+
+    // Apply Recipient ID Filter
+    const matchesUserFilter =
+      filter === "All" || comment.recipient?._id === filter;
+
+    return matchesSearch && matchesUserFilter;
+  });
+
+  // Sort the filtered comments by date
+  const sortedComments = [...filteredComments].sort((a, b) => {
     return new Date(b.createdAt) - new Date(a.createdAt);
   });
 
@@ -111,7 +143,24 @@ const UserCommentList = () => {
   const totalPages = Math.ceil(sortedComments.length / commentsPerPage);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-8">
+      <div className="flex justify-between items-center">
+        <span className=" md:w-[350px] flex items-center gap-2 bg-white shadow-md px-4 py-2 rounded-xl">
+          <Search className="text-active-color" size="18px" />
+          <input
+            type="text"
+            placeholder="Search here"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full text-brandColor-1 text-base outline-none p-0 border-none bg-transparent focus:ring-0"
+          />
+        </span>
+
+        <FilterAnonymous
+          options={[{ _id: "All", name: "All" }, ...users]}
+          onFilter={handleOptionSelect} // Handle the selected user
+        />
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 flex-1">
         {Array.isArray(currentComments) && currentComments.length > 0 ? (
           currentComments.map((comment) => (
@@ -128,7 +177,7 @@ const UserCommentList = () => {
                   <p className="text-sm font-semibold">
                     Date: {moment(comment.createdAt).format("ll")}
                   </p>
-                  {user.role === "admin" && (
+                  {(user.role === "Admin" || user.role === "Mgt") && (
                     <span className="bg-gray-200 rounded-full p-1 cursor-pointer relative">
                       <EllipsisVertical
                         className="w-5"
@@ -266,8 +315,4 @@ const UserCommentList = () => {
   );
 };
 
-UserCommentList.propTypes = {
-  comments: PropTypes.array.isRequired,
-};
-
-export default UserCommentList;
+export default UserCommentListAnonymous;

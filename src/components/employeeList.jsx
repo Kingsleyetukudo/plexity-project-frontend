@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 
 const EmployeeList = () => {
   const { users } = useSelector((state) => state.auth);
-  const [setSelectedUser] = useState(null);
+  // const [setSelectedUser] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const transactionsPerPage = 10;
   const [isOpen, setIsOpen] = useState(false);
@@ -32,10 +32,11 @@ const EmployeeList = () => {
   //   setSelectedUser((prevId) => (prevId === userId ? null : userId));
   // };
 
-  const handleApprove = async (e, userId) => {
+  const handleApprove = async (userId) => {
+    console.log(userId);
     try {
       const response = await dispatch(updateUserByAdmin(userId));
-      setSelectedUser(null);
+      // setSelectedUser(null);
       if (response.meta && response.meta.requestStatus === "fulfilled") {
         console.log("User approved successfully", userId);
         dispatch(getAllUsers());
@@ -52,10 +53,10 @@ const EmployeeList = () => {
     navigate(`profile/${userId}`);
   };
 
-  const handleDelete = async (e, userId) => {
+  const handleDelete = async (userId) => {
     try {
       const response = await dispatch(deleteUser(userId));
-      setSelectedUser(null);
+      // setSelectedUser(null);
       if (response.meta && response.meta.requestStatus === "fulfilled") {
         console.log("User deleted successfully", userId);
         dispatch(getAllUsers());

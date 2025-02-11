@@ -1,4 +1,3 @@
-// import { Navigate } from "react-router-dom";
 import AppraisalBox from "../components/appraisalBox";
 import TitleBar from "../components/titleBar";
 import { useEffect, useState } from "react";
@@ -25,7 +24,7 @@ const AllAppraisal = () => {
 
   useEffect(() => {
     dispatch(getAllStaffAppraisal());
-    console.log(allStaffAppraisal);
+    // console.log(allStaffAppraisal);
   }, [dispatch]);
 
   return (
@@ -46,9 +45,6 @@ const AllAppraisal = () => {
               className="w-full text-brandColor-1 text-base outline-none p-0 border-none bg-transparent focus:ring-0"
             />
           </span>
-
-          {/* Filter Dropdown */}
-          {/* <Dropdown options={option} onFilter={setFilterStatus} /> */}
         </div>
         <AppraisalBox appraisals={filteredUsers} />
       </div>
