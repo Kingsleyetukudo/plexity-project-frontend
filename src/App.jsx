@@ -1,30 +1,36 @@
+import React, { useMemo, Suspense } from "react";
 import {
   BrowserRouter as Router,
   Route,
   Routes,
   Navigate,
 } from "react-router-dom";
-import Login from "./views/login";
-import Dashboard from "./views/Dashboard";
-import Signin from "./views/Signin";
-import Profile from "./views/profile";
-import Appraisal from "./views/appraisal";
-import Leaves from "./views/leave";
-import Settings from "./views/settings";
-import DashboardDefault from "./views/dashboardDefault";
-import AppraisalDetails from "./views/appraisalDetails";
-import AdminDashboard from "./views/AdminDashboard";
-import Employees from "./views/employee";
-import Comment from "./views/comment";
-import Department from "./views/department";
-import Position from "./views/position";
-import AnonymousComments from "./views/anonymousComments";
-import Form from "./components/StaffBiodataForm";
-import AppraisalQuestionsView from "./views/appraisalQuestions";
-import { useMemo } from "react";
-import PersonalProfile from "./views/personalProfile";
-import AllAppraisal from "./views/allAppraisal";
-import AppraisalDetailsAdmin from "./views/appraisalDetailsAdmin";
+
+// Lazy-loaded components
+const Login = React.lazy(() => import("./views/login"));
+const Dashboard = React.lazy(() => import("./views/Dashboard"));
+const Signin = React.lazy(() => import("./views/Signin"));
+const Profile = React.lazy(() => import("./views/profile"));
+const Appraisal = React.lazy(() => import("./views/appraisal"));
+const Leaves = React.lazy(() => import("./views/leave"));
+const Settings = React.lazy(() => import("./views/settings"));
+const DashboardDefault = React.lazy(() => import("./views/dashboardDefault"));
+const AppraisalDetails = React.lazy(() => import("./views/appraisalDetails"));
+const AdminDashboard = React.lazy(() => import("./views/AdminDashboard"));
+const Employees = React.lazy(() => import("./views/employee"));
+const Comment = React.lazy(() => import("./views/comment"));
+const Department = React.lazy(() => import("./views/department"));
+const Position = React.lazy(() => import("./views/position"));
+const AnonymousComments = React.lazy(() => import("./views/anonymousComments"));
+const Form = React.lazy(() => import("./components/StaffBiodataForm"));
+const AppraisalQuestionsView = React.lazy(() =>
+  import("./views/appraisalQuestions")
+);
+const PersonalProfile = React.lazy(() => import("./views/personalProfile"));
+const AllAppraisal = React.lazy(() => import("./views/allAppraisal"));
+const AppraisalDetailsAdmin = React.lazy(() =>
+  import("./views/appraisalDetailsAdmin")
+);
 
 // Function to check if user is authenticated
 const getUser = () => {
@@ -45,54 +51,56 @@ function App() {
 
   return (
     <Router>
-      <Routes>
-        {/* If user is not authenticated, redirect to login */}
-        <Route
-          path="/"
-          element={
-            user ? <Navigate to="/dashboard" /> : <Navigate to="/login" />
-          }
-        />
-
-        {/* Admin dashboard route */}
-        <Route
-          path="/admin-dashboard"
-          element={user ? <AdminDashboard /> : <Navigate to="/login" />}
-        />
-
-        {/* Regular dashboard routes (Protected) */}
-        <Route
-          path="/dashboard"
-          element={user ? <Dashboard /> : <Navigate to="/login" />}
-        >
-          <Route index element={<DashboardDefault />} />
-          <Route path="profile" element={<PersonalProfile />} />
-          <Route path="employees/profile/:id" element={<Profile />} />
-          <Route path="appraisal" element={<Appraisal />} />
-          <Route path="leave" element={<Leaves />} />
-          <Route path="settings" element={<Settings />} />
-          <Route path="appraisal/:id" element={<AppraisalDetails />} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          {/* If user is not authenticated, redirect to login */}
           <Route
-            path="appraisal-details/:id"
-            element={<AppraisalDetailsAdmin />}
+            path="/"
+            element={
+              user ? <Navigate to="/dashboard" /> : <Navigate to="/login" />
+            }
           />
-          <Route path="comment" element={<Comment />} />
-          <Route path="employees" element={<Employees />} />
-          <Route path="department" element={<Department />} />
-          <Route path="position" element={<Position />} />
-          <Route path="anonymous-comments" element={<AnonymousComments />} />
-          <Route path="form" element={<Form />} />
-          <Route path="allAppraisal" element={<AllAppraisal />} />
-          <Route
-            path="appraisal-questions"
-            element={<AppraisalQuestionsView />}
-          />
-        </Route>
 
-        {/* Auth Routes */}
-        <Route path="/signin" element={<Signin />} />
-        <Route path="/login" element={<Login />} />
-      </Routes>
+          {/* Admin dashboard route */}
+          <Route
+            path="/admin-dashboard"
+            element={user ? <AdminDashboard /> : <Navigate to="/login" />}
+          />
+
+          {/* Regular dashboard routes (Protected) */}
+          <Route
+            path="/dashboard"
+            element={user ? <Dashboard /> : <Navigate to="/login" />}
+          >
+            <Route index element={<DashboardDefault />} />
+            <Route path="profile" element={<PersonalProfile />} />
+            <Route path="employees/profile/:id" element={<Profile />} />
+            <Route path="appraisal" element={<Appraisal />} />
+            <Route path="leave" element={<Leaves />} />
+            <Route path="settings" element={<Settings />} />
+            <Route path="appraisal/:id" element={<AppraisalDetails />} />
+            <Route
+              path="appraisal-details/:id"
+              element={<AppraisalDetailsAdmin />}
+            />
+            <Route path="comment" element={<Comment />} />
+            <Route path="employees" element={<Employees />} />
+            <Route path="department" element={<Department />} />
+            <Route path="position" element={<Position />} />
+            <Route path="anonymous-comments" element={<AnonymousComments />} />
+            <Route path="form" element={<Form />} />
+            <Route path="allAppraisal" element={<AllAppraisal />} />
+            <Route
+              path="appraisal-questions"
+              element={<AppraisalQuestionsView />}
+            />
+          </Route>
+
+          {/* Auth Routes */}
+          <Route path="/signin" element={<Signin />} />
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </Suspense>
     </Router>
   );
 }
