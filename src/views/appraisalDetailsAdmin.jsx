@@ -51,7 +51,7 @@ const AppraisalDetailsAdmin = () => {
           <div className="flex justify-between w-full bg-gray-800 text-white px-4 md:px-8 py-4 shadow-lg rounded-xl">
             <p className="text-lg">
               <span className="font-bold">Reviewed:</span>{" "}
-              {moment(appraisal.date).format("LL")}
+              {moment(appraisal?.date).format("LL")}
             </p>
             <p className="text-lg flex items-center">
               <span className="font-bold mr-2">By:</span>{" "}
@@ -60,7 +60,7 @@ const AppraisalDetailsAdmin = () => {
             </p>
             <p className="text-lg flex items-center">
               <span className="font-bold mr-2">Rating:</span>{" "}
-              {appraisal.overallRating}
+              {appraisal?.overallRating}
             </p>
           </div>
 

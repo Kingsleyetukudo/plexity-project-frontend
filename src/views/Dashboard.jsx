@@ -4,10 +4,9 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 import UserDetails from "../components/userDetails";
 import SideBar from "../components/sideBar";
 import { Outlet } from "react-router-dom";
-import { getAllUsers, getUserById } from "../stores/userStateStore";
+import { getAllUsers, getUserById, updateUser } from "../stores/userStateStore";
 import { getAllAppraisal } from "../stores/appraisalStore";
 import { getAppraisalByUser } from "../stores/staffAppraisalStore";
-import { updateUser } from "../stores/userStateStore";
 import {
   fetchCommentsByCurrentUser,
   fetchComments,
@@ -18,10 +17,9 @@ const Dashboard = () => {
   const { toggleBar, status, user } = useSelector((state) => state.auth);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if user exists in localStorage and parse it
     const storedUser = localStorage.getItem("persist:auth");
     let userDetails = null;
 
@@ -34,7 +32,7 @@ const Dashboard = () => {
     }
 
     if (userDetails && userDetails._id) {
-      console.log(userDetails._id); // Now this should work fine
+      console.log(userDetails._id);
 
       if (status === "idle") {
         dispatch(getAllUsers());
@@ -42,37 +40,57 @@ const Dashboard = () => {
         dispatch(fetchCommentsByCurrentUser(userDetails._id));
         dispatch(fetchComments());
       }
-      dispatch(getAppraisalByUser(userDetails._id));
     } else {
       console.warn("User details not found! Redirecting to login...");
-      navigate("/login"); // Redirect to login page if no user found
+      navigate("/login");
     }
   }, [dispatch, status, navigate]);
 
   useEffect(() => {
-    console.log("it okay");
-    // if (user?.profileCompleted === true) {
-    // }
-    setShowProfileModal(false);
     dispatch(getUserById(user._id));
+    dispatch(getAppraisalByUser(user._id));
   }, [dispatch, status, user]);
 
+  // useEffect(() => {
+  //   if (user?.profileCompleted === false) {
+  //     setShowProfileModal(true);
+  //   }
+  // }, [user]);
+
+  // Poll for profile updates every 5 seconds
   useEffect(() => {
     if (user?.profileCompleted === false) {
-      setShowProfileModal(true); // Ensure modal stays open if profile is incomplete
+      setShowProfileModal(true); // Open the modal if profile is incomplete
+
+      const interval = setInterval(() => {
+        console.log(user);
+        dispatch(getUserById(user._id));
+      }, 5000);
+
+      return () => clearInterval(interval);
+    } else {
+      setShowProfileModal(false); // Close modal when profile is completed
     }
-  }, [user]);
+  }, [dispatch, user?.profileCompleted, user?._id, user]);
 
   const onSubmit = async (formData) => {
-    console.log(formData);
     const result = await dispatch(
       updateUser({ userId: user._id, userData: formData })
     );
-    dispatch(getUserById(user._id));
+    console.log(result);
+
     if (result.message === "User updated successfully") {
-      setShowProfileModal(false); // Close modal only if profile is successfully updated & completed
+      dispatch(getUserById(user._id)); // Refresh user data
     }
   };
+
+  // Close modal automatically when profile is completed
+  useEffect(() => {
+    if (user?.profileCompleted) {
+      console.log("checking...");
+      setShowProfileModal(false);
+    }
+  }, [user]);
 
   return (
     <div

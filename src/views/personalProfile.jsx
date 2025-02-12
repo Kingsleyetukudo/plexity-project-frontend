@@ -1,16 +1,24 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import avatar from "../assets/images/user-icon.svg";
+import AddNewPassword from "../components/addNewPassword";
 
 // import EmployeePositionBox from "../components/employeePostionBox";
 
 const PersonalProfile = () => {
   const [title] = useState("Profile");
+  const [openPassword, setOpenPassword] = useState(false);
 
   // const { id } = useParams(); // Get the userId from the URL
   const { user } = useSelector((state) => state.auth);
 
   // Find the user by userId
   // const user = users.find((user) => user._id === id);
+
+  const handlePasswordToggle = () => {
+    setOpenPassword(!openPassword);
+    console.log("click");
+  };
 
   if (!user) {
     return <p>User not found</p>;
@@ -32,28 +40,38 @@ const PersonalProfile = () => {
         </h2>
         <div className="flex flex-col items-center mb-4 w-full">
           <img
-            src={user.avatar}
+            src={avatar}
             alt="User Avatar"
             className="w-32 h-32 sm:w-40 sm:h-40 rounded-full border-2 border-gray-300"
           />
+
           {/* <input
-          type="file"
-          accept="image/*"
-          className="mt-2 text-sm text-gray-600"
-          onChange={(e) => {
-            const file = e.target.files[0];
-            if (file) {
-              const reader = new FileReader();
-              reader.onload = (event) => {
-                setUser((prevUser) => ({
-                  ...prevUser,
-                  avatar: event.target.result,
-                }));
-              };
-              reader.readAsDataURL(file);
-            }
-          }}
-        /> */}
+            type="file"
+            accept="image/*"
+            className="mt-2 text-sm text-gray-600"
+            onChange={(e) => {
+              const file = e.target.files[0];
+              if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                  setUser((prevUser) => ({
+                    ...prevUser,
+                    avatar: event.target.result,
+                  }));
+                };
+                reader.readAsDataURL(file);
+              }
+            }}
+          /> */}
+
+          <div>
+            <button
+              onClick={handlePasswordToggle}
+              className="md:text-base font-normal px-4 py-1 md:px-5 md:py-3 text-white bg-color-2 rounded-full hover:bg-color-1 focus:outline-none focus:ring-2 focus:ring-color-1"
+            >
+              Change Password
+            </button>
+          </div>
         </div>
         <div className="grid grid-cols-1  gap-4 w-full overflow-x-hidden">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full overflow-x-hidden">
@@ -143,6 +161,10 @@ const PersonalProfile = () => {
           </div>
         </div>
       </div>
+
+      {openPassword && (
+        <AddNewPassword handlePasswordToggle={handlePasswordToggle} />
+      )}
     </>
   );
 };

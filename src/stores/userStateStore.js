@@ -24,6 +24,7 @@ export const getAllUsers = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const res = await api.get("/user");
+      console.log(res.data.users);
       return res.data.users; // Assuming res.data contains an array of users
     } catch (error) {
       return rejectWithValue(error.response?.data || "Fetching users failed");
@@ -78,7 +79,8 @@ export const updateUser = createAsyncThunk(
   async ({ userId, userData }, { rejectWithValue }) => {
     try {
       const res = await api.put(`/user/updateUser/${userId}`, userData);
-      return res.data; // Assuming res.data contains the updated user object
+      console.log(res.data.updatedUser);
+      return res.data.updatedUser; // Assuming res.data contains the updated user object
     } catch (error) {
       return rejectWithValue(error.response?.data || "Fetching users failed");
     }
@@ -176,18 +178,18 @@ const authSlice = createSlice({
         state.status = "loading";
         state.error = null;
       })
-      // .addCase(updateUser.fulfilled, (state, action) => {
-      //   state.status = "succeeded";
-      //   // Update the user in the list
-      //   const updatedUser = action.payload;
-      //   const index = state.users.findIndex(
-      //     (user) => user._id === updatedUser._id
-      //   );
-      //   if (index !== -1) {
-      //     state.users[index] = updatedUser;
-      //   }
-      //   state.user = updatedUser;
-      // })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        // Update the user in the list
+        const updatedUser = action.payload;
+        const index = state.users.findIndex(
+          (user) => user._id === updatedUser._id
+        );
+        if (index !== -1) {
+          state.users[index] = updatedUser;
+        }
+        state.user = updatedUser;
+      })
       .addCase(updateUser.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
@@ -198,19 +200,12 @@ const authSlice = createSlice({
         state.status = "loading";
         state.error = null;
       })
-      // .addCase(updateUser.fulfilled, (state, action) => {
-      //   console.log("User updated:", action.payload);
+
+      // .addCase(getUserById.fulfilled, (state, action) => {
       //   state.status = "succeeded";
-      //   const updatedUser = action.payload;
-      //   const index = state.users.findIndex(
-      //     (user) => user._id === updatedUser._id
-      //   );
-      //   if (index !== -1) {
-      //     state.users[index] = updatedUser;
-      //   }
-      //   state.user = updatedUser; // Ensure the user state is properly updated
-      //   console.log("Updated user state:", state.user);
+      //   state.user = action.payload; // ✅ This updates the user state
       // })
+
       .addCase(getUserById.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;

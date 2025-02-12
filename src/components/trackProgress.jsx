@@ -1,6 +1,7 @@
 import { MessageSquareText, Star, Users } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllUsers } from "../stores/userStateStore";
 
 const TaskProgressCard = () => {
   const { userTotalRating } = useSelector((state) => state.staffAppraisal);
@@ -8,6 +9,8 @@ const TaskProgressCard = () => {
   const { comments } = useSelector((state) => state.comment || []); // Ensure default empty object
   const [currentUser, setCurrentUser] = useState(null);
   const [unreadComments, setUnreadComments] = useState([]);
+
+  const dispatch = useDispatch();
 
   const progress = userTotalRating || 0; // Handle undefined rating
   const maxRating = 5;
@@ -20,6 +23,7 @@ const TaskProgressCard = () => {
         const user = JSON.parse(storedUser);
         const userDetails = user?.user ? JSON.parse(user.user) : null;
         setCurrentUser(userDetails || { role: "" });
+        dispatch(getAllUsers());
       } else {
         setCurrentUser({ role: "" });
       }
@@ -27,7 +31,7 @@ const TaskProgressCard = () => {
       console.error("Error parsing user data:", error);
       setCurrentUser({ role: "" });
     }
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (!currentUser || !currentUser.role) return; // Prevents running when currentUser is null

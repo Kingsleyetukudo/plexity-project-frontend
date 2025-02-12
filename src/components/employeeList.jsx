@@ -10,7 +10,7 @@ import {
   getAllUsers,
   deleteUser,
 } from "../stores/userStateStore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Dropdown from "./filterDropdown";
 import { useNavigate } from "react-router-dom";
 
@@ -47,6 +47,10 @@ const EmployeeList = () => {
       console.error("Error approving user:", error);
     }
   };
+
+  useEffect(() => {
+    dispatch(getAllUsers());
+  }, [dispatch]);
 
   const handleView = (userId) => {
     // Navigate to the user's profile page
