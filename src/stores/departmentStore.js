@@ -7,7 +7,7 @@ export const getAllDepartments = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const response = await api.get("/department");
-      console.log(response.data.data.departments);
+      //   console.log(response.data.data.departments);
       return response.data.data.departments;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
@@ -40,7 +40,7 @@ export const updateDepartment = createAsyncThunk(
   "departments/update",
   async ({ id, departmentData }, thunkAPI) => {
     try {
-      console.log("Updating department:", { id, departmentData });
+      //   console.log("Updating department:", { id, departmentData });
       const response = await api.put(`/department/${id}`, departmentData);
 
       // ✅ Dispatch only if update is successful

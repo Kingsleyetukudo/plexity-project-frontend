@@ -21,18 +21,12 @@ const SideBar = () => {
   useEffect(() => {
     const storedUser = localStorage.getItem("persist:auth");
     const user = storedUser ? JSON.parse(storedUser) : null;
-
     const userDetails = user?.user ? JSON.parse(user.user) : null;
-
-    console.log(userDetails);
-
     setCurrentUser(userDetails);
   }, []);
 
-  console.log(currentUser);
   const dispatch = useDispatch();
   const handleLogout = () => {
-    console.log("logout");
     dispatch(logout());
   };
   return (

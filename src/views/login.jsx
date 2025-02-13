@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
 import { useState } from "react";
 import img from "../assets/images/login-image.svg";
 import logo from "../assets/images/site-logo.png";
@@ -6,64 +5,71 @@ import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { login } from "../stores/userStateStore";
-// import StaffBiodataForm from "../components/StaffBiodataForm";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  // const [showProfileModal, setShowProfileModal] = useState(false);
-  // const { user, token } = useSelector((state) => state.auth);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); // New loading state
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Set loading to true when the login button is clicked
 
-    if (!window.grecaptcha) {
+    if (!window.grecaptcha || !window.grecaptcha.execute) {
       console.error("reCAPTCHA not loaded!");
+      setError("reCAPTCHA failed to load. Please try again.");
+      setLoading(false); // Set loading to false if an error occurs
       return;
     }
 
     try {
+      console.log("Executing reCAPTCHA...");
       const reCaptchatoken = await window.grecaptcha.execute(
         import.meta.env.VITE_RECAPTCHA_SITE_KEY,
-        {
-          action: "submit",
-        }
+        { action: "submit" }
       );
 
-      const result = await dispatch(login({ email, password, reCaptchatoken }));
+      if (!reCaptchatoken) {
+        setError("Failed to generate reCAPTCHA token.");
+        setLoading(false); // Set loading to false if an error occurs
+        return;
+      }
 
-      console.log(result.payload);
+      const result = await dispatch(
+        login({ email, password, reCaptchatoken })
+      ).unwrap();
 
-      if (result?.payload?.message === "Email not found!") {
+      if (result?.message === "Email not found!") {
         setError("This email is not registered.");
-        return; // Prevent navigation to the dashboard
+        setLoading(false); // Set loading to false if an error occurs
+        return;
       }
 
-      if (result?.payload?.message === "Incorrect password") {
-        setError("Password incorrect");
-        return; // Prevent navigation to the dashboard
+      if (result?.message === "Incorrect password") {
+        setError("Incorrect password");
+        setLoading(false); // Set loading to false if an error occurs
+        return;
       }
 
-      // Check if the user is approved
-      if (result?.payload?.isApproved === false) {
+      if (!result?.isApproved) {
         setError("Your account is pending approval by the admin.");
-        return; // Prevent navigation to the dashboard if not approved
+        setLoading(false); // Set loading to false if an error occurs
+        return;
       }
-      // Check if profile is completed
-      if (result?.payload?.user?.profileCompleted === false) {
-        navigate("/dashboard"); // Redirect to dashboard if profile is complete
-        // setTimeout(() => setShowProfileModal(true), 1000); // Show profile form popup
-      } else {
-        navigate("/dashboard"); // Redirect to dashboard if profile is complete
+
+      if (result?.message === "Login successful") {
+        navigate("/dashboard");
+        return;
       }
     } catch (err) {
       console.error("Login failed:", err);
       setError(err.message || "Invalid email or password");
+      setLoading(false); // Set loading to false if an error occurs
     }
   };
 
@@ -134,13 +140,17 @@ const Login = () => {
               <div className="flex justify-end">
                 <button
                   type="submit"
-                  className="text-xl font-bold px-16 py-4 text-white bg-color-2 rounded-full hover:bg-color-1 focus:outline-none focus:ring-2 focus:ring-color-1"
+                  disabled={loading} // Disable the button when loading
+                  className={`text-xl font-bold px-16 py-4 text-white bg-color-2 rounded-full hover:bg-color-1 focus:outline-none focus:ring-2 focus:ring-color-1 ${
+                    loading ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
                 >
-                  Login
+                  {loading ? "Logging in..." : "Login"}{" "}
+                  {/* Change text when loading */}
                 </button>
               </div>
               <p className="text-sm text-center">
-                I don't have an account?&nbsp;
+                I don&#39;t have an account?&nbsp;
                 <Link
                   to="/signin"
                   className="font-bold text-lg underline text-indigo-600"

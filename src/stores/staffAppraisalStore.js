@@ -23,7 +23,7 @@ export const getAllAppraisalByClickUser = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
     try {
       const res = await api.get(`/appraised/currentUser/${userId}`);
-      console.log(res.data.data);
+      // console.log(res.data.data);
       calculateAppraisal(res.data.data);
       return res.data.data;
     } catch (error) {
@@ -37,7 +37,7 @@ export const getAppraisalByUser = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
     try {
       const res = await api.get(`/appraised/currentUser/${userId}`);
-      console.log(res.data.data);
+      // console.log(res.data.data);
       calculateAppraisal(res.data.data);
       return res.data.data;
     } catch (error) {
@@ -51,7 +51,7 @@ export const getAppraisalById = createAsyncThunk(
   async (appraisalId, { rejectWithValue }) => {
     try {
       const res = await api.get(`/appraised/appraisal/${appraisalId}`);
-      console.log(res.data);
+      // console.log(res.data);
       return res.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Fetching users failed");

@@ -24,7 +24,7 @@ export const getAllUsers = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const res = await api.get("/user");
-      console.log(res.data.users);
+      // console.log(res.data.users);
       return res.data.users; // Assuming res.data contains an array of users
     } catch (error) {
       return rejectWithValue(error.response?.data || "Fetching users failed");
@@ -51,7 +51,7 @@ export const getUserById = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
     try {
       const res = await api.get(`/user/${userId}`);
-      console.log(res.data.user);
+      // console.log(res.data.user);
       return res.data.user; // Assuming res.data contains the user object
     } catch (error) {
       return rejectWithValue(error.response?.data || "Fetching user failed");
@@ -65,7 +65,7 @@ export const updateUserByAdmin = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
     try {
       const res = await api.put(`/user/approveUser/${userId}`);
-      console.log(res.data.updatedUser);
+      // console.log(res.data.updatedUser);
       return res.data.updatedUser;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Updating user failed");
@@ -79,7 +79,7 @@ export const updateUser = createAsyncThunk(
   async ({ userId, userData }, { rejectWithValue }) => {
     try {
       const res = await api.put(`/user/updateUser/${userId}`, userData);
-      console.log(res.data.updatedUser);
+      // console.log(res.data.updatedUser);
       return res.data.updatedUser; // Assuming res.data contains the updated user object
     } catch (error) {
       return rejectWithValue(error.response?.data || "Fetching users failed");

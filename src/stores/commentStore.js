@@ -25,7 +25,7 @@ export const addComment = createAsyncThunk(
       dispatch(fetchComments());
       dispatch(fetchCommentsByCurrentUser(userId));
 
-      console.log(response.data.data.comment);
+      // console.log(response.data.data.comment);
       return response.data.data.comment;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Adding comment failed");
@@ -66,7 +66,7 @@ export const fetchCommentsByCurrentUser = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
     try {
       const response = await api.get(`/comment/sender/${userId}`);
-      console.log(response.data.data.comments);
+      // console.log(response.data.data.comments);
       return response.data.data.comments || [];
     } catch (error) {
       return rejectWithValue(

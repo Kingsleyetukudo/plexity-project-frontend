@@ -32,7 +32,7 @@ const Dashboard = () => {
     }
 
     if (userDetails && userDetails._id) {
-      console.log(userDetails._id);
+      // console.log(userDetails._id);
 
       if (status === "idle") {
         dispatch(getAllUsers());
@@ -63,7 +63,7 @@ const Dashboard = () => {
       setShowProfileModal(true); // Open the modal if profile is incomplete
 
       const interval = setInterval(() => {
-        console.log(user);
+        // console.log(user);
         dispatch(getUserById(user._id));
       }, 5000);
 
@@ -77,7 +77,7 @@ const Dashboard = () => {
     const result = await dispatch(
       updateUser({ userId: user._id, userData: formData })
     );
-    console.log(result);
+    // console.log(result);
 
     if (result.message === "User updated successfully") {
       dispatch(getUserById(user._id)); // Refresh user data
@@ -87,7 +87,7 @@ const Dashboard = () => {
   // Close modal automatically when profile is completed
   useEffect(() => {
     if (user?.profileCompleted) {
-      console.log("checking...");
+      // console.log("checking...");
       setShowProfileModal(false);
     }
   }, [user]);

@@ -164,7 +164,6 @@ AppraisalQuestionsList.propTypes = {
   apppraises: PropTypes.arrayOf(
     PropTypes.shape({
       _id: PropTypes.string.isRequired,
-      apppraise: PropTypes.string.isRequired,
       recipient: PropTypes.shape({
         firstName: PropTypes.string.isRequired,
       }).isRequired,

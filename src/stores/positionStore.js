@@ -39,7 +39,7 @@ export const updatePosition = createAsyncThunk(
   "positions/update",
   async ({ id, departmentData }, thunkAPI) => {
     try {
-      console.log("Updating position:", { id, departmentData });
+      // console.log("Updating position:", { id, departmentData });
       const response = await api.put(`/position/${id}`, departmentData);
 
       // ✅ Dispatch only if update is successful

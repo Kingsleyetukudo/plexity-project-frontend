@@ -21,13 +21,13 @@ const Comment = () => {
 
   useEffect(() => {
     dispatch(fetchCommentsByCurrentUser(user._id));
-    console.log(userComments);
+    // console.log(userComments);
   }, [dispatch, user._id]);
 
   useEffect(() => {
     if (userComments) {
       // setLoadedComments(userComments);
-      console.log(userComments);
+      // console.log(userComments);
       setIsLoading(false); // Set loading to false when data is available
     }
   }, [userComments]);

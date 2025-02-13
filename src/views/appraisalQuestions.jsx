@@ -10,7 +10,6 @@ const AppraisalQuestionsView = () => {
   // const [isLoading, setIsLoading] = useState(true); // Added loading state
 
   const closePopup = () => {
-    console.log("clico");
     setShowPopup(false);
   };
 

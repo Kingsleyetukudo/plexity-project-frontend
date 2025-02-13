@@ -7,7 +7,7 @@ export const getAllAppraisal = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get("/appraisal");
-      console.log(response.data.data.appraisals);
+      // console.log(response.data.data.appraisals);
       return response.data.data.appraisals || [];
     } catch (error) {
       return rejectWithValue(
@@ -40,7 +40,7 @@ export const updateAppraisal = createAsyncThunk(
     console.log("updateAppraisal Called with:", { id, appraiseData });
 
     if (!id || !appraiseData) {
-      console.error("❌ Missing id or appraiseData in updateAppraisal!");
+      console.error("Missing id or appraiseData in updateAppraisal!");
       return rejectWithValue("Invalid request: Missing required fields");
     }
 
@@ -101,5 +101,4 @@ const appraisalSlice = createSlice({
   },
 });
 
-// export const { logout, toggleBar } = appraisalSlice.actions;
 export default appraisalSlice.reducer;

@@ -7,7 +7,6 @@ const Dropdown = ({ options, onFilter }) => {
   const [selected, setSelected] = useState("Filter");
 
   const handleSelection = (option) => {
-    console.log(option);
     setSelected(option);
     setIsOpen(false);
     onFilter(option); // Callback to send the selected value back to the parent

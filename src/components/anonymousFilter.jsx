@@ -7,7 +7,6 @@ const FilterAnonymous = ({ options, onFilter }) => {
   const [selected, setSelected] = useState("Filter");
 
   const handleSelection = (option) => {
-    console.log(option);
     setSelected(option.firstName); // Set the name to be displayed in the dropdown
     setIsOpen(false);
     onFilter(option._id); // Send the selected user's ID to the parent

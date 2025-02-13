@@ -22,7 +22,7 @@ const Appraisal = () => {
 
   useEffect(() => {
     dispatch(getAppraisalByUser(user._id));
-    console.log(appraisalByUser);
+    // console.log(appraisalByUser);
   }, [dispatch]);
 
   const handleAppraisal = () => {

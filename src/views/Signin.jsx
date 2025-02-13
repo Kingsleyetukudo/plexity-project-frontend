@@ -76,7 +76,7 @@ const Signin = () => {
       if (result.meta.requestStatus === "fulfilled") {
         setShowPopup(true);
       } else {
-        setError("Registration failed. Please try again.");
+        setError(result?.payload?.message);
       }
     } catch (error) {
       console.error("Error executing reCAPTCHA:", error);
