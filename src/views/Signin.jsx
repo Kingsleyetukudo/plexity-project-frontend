@@ -255,18 +255,16 @@ const Signin = () => {
                   <CircleCheckBig className="text-5xl text-green-600" />
                 </div>
                 <h2 id="modal-title" className="font-bold">
-                  Congratulations!
+                  Thank you for registering!
                 </h2>
                 <p id="modal-description">
-                  Your registration has been successfully accepted.
+                  Your account is currently <span>pending approval.</span> We
+                  will review your information shortly, and once your account is
+                  approved, you will receive an email notification with your
+                  login details. After approval, you will be able to proceed
+                  with full personal information.{" "}
                 </p>
-                <p>
-                  Please check your email inbox (and spam/junk folder, if
-                  necessary) for the approval message, which contains important
-                  details and next steps to complete your process. If you have
-                  any questions or encounter issues, feel free to contact our
-                  support team.
-                </p>
+
                 <div className="mt-6">
                   <button
                     onClick={closePopup}

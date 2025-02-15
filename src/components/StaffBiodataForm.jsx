@@ -33,9 +33,23 @@ const StaffBiodataForm = ({ onSubmit }) => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
+
+    setFormData((prev) => {
+      if (["bankName", "accountName", "accountNumber"].includes(name)) {
+        // Update nested accountDetails
+        return {
+          ...prev,
+          accountDetails: {
+            ...prev.accountDetails,
+            [name]: value,
+          },
+        };
+      }
+
+      return {
+        ...prev,
+        [name]: type === "checkbox" ? checked : value,
+      };
     });
   };
 

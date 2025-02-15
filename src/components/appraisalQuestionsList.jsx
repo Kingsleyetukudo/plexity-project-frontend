@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 import EditApppraiseBox from "./editAppraisalBox";
 import { EllipsisVertical, Pencil, Trash2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -158,17 +157,6 @@ const AppraisalQuestionsList = () => {
       )}
     </div>
   );
-};
-
-AppraisalQuestionsList.propTypes = {
-  apppraises: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      recipient: PropTypes.shape({
-        firstName: PropTypes.string.isRequired,
-      }).isRequired,
-    })
-  ).isRequired,
 };
 
 export default AppraisalQuestionsList;
