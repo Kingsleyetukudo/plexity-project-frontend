@@ -2,6 +2,7 @@ import { MessageSquareText, Star, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllUsers } from "../stores/userStateStore";
+import { fetchComments } from "../stores/commentStore";
 
 const TaskProgressCard = () => {
   const { userTotalRating } = useSelector((state) => state.staffAppraisal);
@@ -24,6 +25,7 @@ const TaskProgressCard = () => {
         const userDetails = user?.user ? JSON.parse(user.user) : null;
         setCurrentUser(userDetails || { role: "" });
         dispatch(getAllUsers());
+        dispatch(fetchComments());
       } else {
         setCurrentUser({ role: "" });
       }
