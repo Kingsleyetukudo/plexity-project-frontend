@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import avatar from "../assets/images/user-icon.svg";
 import AddNewPassword from "../components/addNewPassword";
+import moment from "moment";
 
 // import EmployeePositionBox from "../components/employeePostionBox";
 
@@ -83,7 +84,9 @@ const PersonalProfile = () => {
             </div>
             <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
               <p className="text-gray-600 font-medium">Date of Birth</p>
-              <p className="text-lg font-semibold">{user.dob}</p>
+              <p className="text-lg font-semibold">
+                {moment(user.dob).format("MMM Do YYYY")}
+              </p>
             </div>
             <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
               <p className="text-gray-600 font-medium">Location</p>
@@ -116,8 +119,8 @@ const PersonalProfile = () => {
               <p className="text-lg font-semibold">{user.phone}</p>
             </div>
             <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
-              <p className="text-gray-600 font-medium">StaffID</p>
-              <p className="text-lg font-semibold">{user.staffId}</p>
+              <p className="text-gray-600 font-medium">Sex</p>
+              <p className="text-lg font-semibold">{user.sex}</p>
             </div>
           </div>
 

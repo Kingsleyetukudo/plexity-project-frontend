@@ -14,7 +14,7 @@ const StaffBiodataForm = ({ onSubmit }) => {
     email: user?.email || "",
     phone: user?.phone || "",
     dob: user?.dob || "",
-    gender: user?.gender || "",
+    sex: user?.sex || "",
     maritalStatus: user?.maritalStatus || "",
     address: user?.address || "",
     stateOfOrigin: user?.stateOfOrigin || "",
@@ -22,7 +22,7 @@ const StaffBiodataForm = ({ onSubmit }) => {
     position: user?.position || "",
     employmentYear: user?.employmentYear || "",
     profileCompleted: true,
-    hasDisability: user?.hasDisability || false,
+    disability: user?.disability || false,
     disabilityType: user?.disabilityType || "",
     accountDetails: {
       bankName: user?.accountDetails?.bankName || "",
@@ -139,20 +139,20 @@ const StaffBiodataForm = ({ onSubmit }) => {
                 <input
                   type="date"
                   name="dob"
-                  value={formData.dob}
+                  value={formData.dob ? formData.dob.split("T")[0] : ""}
                   onChange={handleChange}
                   required
                   className="w-full mb-4 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-600"
                 />
                 <select
-                  name="gender"
-                  value={formData.gender}
+                  name="sex"
+                  value={formData.sex}
                   onChange={handleChange}
                   required
                   className="w-full mb-4 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-600"
                 >
                   <option value="" disabled>
-                    Select Gender
+                    Select Sex
                   </option>
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
@@ -235,14 +235,14 @@ const StaffBiodataForm = ({ onSubmit }) => {
                     <input
                       type="checkbox"
                       name="hasDisability"
-                      checked={formData.hasDisability}
+                      checked={formData.disability}
                       onChange={handleChange}
                       className="mr-2"
                     />
                     Do you have a disability?
                   </label>
                 </div>
-                {formData.hasDisability && (
+                {formData.disability && (
                   <input
                     type="text"
                     name="disabilityType"
