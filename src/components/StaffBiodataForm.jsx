@@ -1,4 +1,6 @@
 /* eslint-disable react/prop-types */
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
@@ -13,7 +15,7 @@ const StaffBiodataForm = ({ onSubmit }) => {
     lastName: user?.lastName || "",
     email: user?.email || "",
     phone: user?.phone || "",
-    dob: user?.dob || "",
+    dob: user?.dob ? new Date(user?.dob) : null,
     sex: user?.sex || "",
     maritalStatus: user?.maritalStatus || "",
     address: user?.address || "",
@@ -31,8 +33,17 @@ const StaffBiodataForm = ({ onSubmit }) => {
     },
   });
 
+  const handleDateChange = (date) => {
+    setFormData((prev) => ({
+      ...prev,
+      dob: date,
+    }));
+  };
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+
+    console.log(formData.disability);
 
     setFormData((prev) => {
       if (["bankName", "accountName", "accountNumber"].includes(name)) {
@@ -96,7 +107,7 @@ const StaffBiodataForm = ({ onSubmit }) => {
             {/* Step 1: Personal Information */}
             {step === 1 && (
               <>
-                <div className="flex gap-5">
+                <div className="flex max-sm:flex-col md:gap-5">
                   <input
                     type="text"
                     name="firstName"
@@ -136,27 +147,42 @@ const StaffBiodataForm = ({ onSubmit }) => {
                   required
                   className="w-full mb-4 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-600"
                 />
-                <input
+                {/* <input
                   type="date"
                   name="dob"
                   value={formData.dob ? formData.dob.split("T")[0] : ""}
                   onChange={handleChange}
                   required
                   className="w-full mb-4 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-600"
-                />
-                <select
-                  name="sex"
-                  value={formData.sex}
-                  onChange={handleChange}
-                  required
-                  className="w-full mb-4 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-600"
-                >
-                  <option value="" disabled>
-                    Select Sex
-                  </option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                </select>
+                  data-placeholder="Select Date of Birth"
+                /> */}
+                <div className="flex max-sm:flex-col gap-5 ">
+                  <DatePicker
+                    selected={formData.dob}
+                    onChange={handleDateChange}
+                    dateFormat="yyyy-MM-dd"
+                    showYearDropdown
+                    scrollableYearDropdown
+                    yearDropdownItemNumber={100} // Show 100 years in the dropdown
+                    minDate={new Date(1900, 0, 1)} // Minimum selectable date
+                    maxDate={new Date(2030, 11, 31)} // Maximum selectable date
+                    className=" your-datepicker-class"
+                    placeholderText="Select Date of Birth"
+                  />
+                  <select
+                    name="sex"
+                    value={formData.sex}
+                    onChange={handleChange}
+                    required
+                    className="md:w-1/2 w-full mb-4 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-600"
+                  >
+                    <option value="" disabled>
+                      Select Sex
+                    </option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </select>
+                </div>
                 <select
                   name="maritalStatus"
                   value={formData.maritalStatus}
@@ -231,16 +257,16 @@ const StaffBiodataForm = ({ onSubmit }) => {
                   className="w-full mb-4 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-600"
                 />
                 <div className="mb-4 flex items-center">
-                  <label className="text-gray-700">
-                    <input
-                      type="checkbox"
-                      name="hasDisability"
-                      checked={formData.disability}
-                      onChange={handleChange}
-                      className="mr-2"
-                    />
-                    Do you have a disability?
-                  </label>
+                  {/* <label className="text-gray-700"> */}
+                  <input
+                    type="checkbox"
+                    name="disability"
+                    checked={formData.disability}
+                    onChange={handleChange}
+                    className="mr-2"
+                  />
+                  Do you have a disability?
+                  {/* </label> */}
                 </div>
                 {formData.disability && (
                   <input

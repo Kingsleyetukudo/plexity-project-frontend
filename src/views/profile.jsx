@@ -100,27 +100,16 @@ const Profile = () => {
               </p>
             </div>
             <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
-              <p className="text-gray-600 font-medium">Location</p>
-              <p className="text-lg font-semibold">{user.stateOfOrigin}</p>
+              <p className="text-gray-600 font-medium">Sex</p>
+              <p className="text-lg font-semibold">{user.sex}</p>
             </div>
           </div>
 
           <div className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full overflow-x-hidden">
-            <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
-              <p className="text-gray-600 font-medium">Department</p>
-              <p className="text-lg font-semibold">{user.department}</p>
-            </div>
-            <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
-              <p className="text-gray-600 font-medium">Year of Employment</p>
-              <p className="text-lg font-semibold">{user.employmentYear}</p>
-            </div>
             <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
               <p className="text-gray-600 font-medium">Marital Status</p>
               <p className="text-lg font-semibold">{user.maritalStatus}</p>
             </div>
-          </div>
-
-          <div className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full overflow-x-hidden">
             <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
               <p className="text-gray-600 font-medium">Email</p>
               <p className="text-lg font-semibold">{user.email}</p>
@@ -129,9 +118,24 @@ const Profile = () => {
               <p className="text-gray-600 font-medium">Phone Number</p>
               <p className="text-lg font-semibold">{user.phone}</p>
             </div>
+          </div>
+
+          <div className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full overflow-x-hidden">
             <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
-              <p className="text-gray-600 font-medium">Sex</p>
-              <p className="text-lg font-semibold">{user.sex}</p>
+              <p className="text-gray-600 font-medium">Home Address</p>
+              <p className="text-lg font-semibold">{user.address}</p>
+            </div>
+            <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
+              <p className="text-gray-600 font-medium">Location</p>
+              <p className="text-lg font-semibold">{user.stateOfOrigin}</p>
+            </div>
+            <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
+              <p className="text-gray-600 font-medium">Disablities</p>
+              {user.disabilityType ? (
+                <p className="text-lg font-semibold">{user.disabilityType}</p>
+              ) : (
+                <p className="text-lg font-semibold">Null</p>
+              )}
             </div>
           </div>
 
@@ -147,30 +151,32 @@ const Profile = () => {
               <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
                 <p className="text-gray-600 font-medium">Account Name</p>
                 <p className="text-lg font-semibold">
-                  {user?.accountDetails?.accountName}
+                  {user?.accountDetails?.accountNumber}
                 </p>
               </div>
               <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
                 <p className="text-gray-600 font-medium">Account Number</p>
                 <p className="text-lg font-semibold">
-                  {user?.accountDetails?.accountNumber}
+                  {user?.accountDetails?.bankName}
                 </p>
               </div>
             </div>
           </div>
-
-          <div className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full overflow-x-hidden">
-            <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
-              <p className="text-gray-600 font-medium">Home Address</p>
-              <p className="text-lg font-semibold">{user?.address}</p>
-            </div>
-            <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
-              <p className="text-gray-600 font-medium">Position</p>
-              <p className="text-lg font-semibold">{user?.position}</p>
-            </div>
-            <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
-              <p className="text-gray-600 font-medium">Position</p>
-              <p className="text-lg font-semibold">{user?.position}</p>
+          <div>
+            <p className="text-gray-600 font-medium">Work Details</p>
+            <div className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full overflow-x-hidden">
+              <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
+                <p className="text-gray-600 font-medium">Department</p>
+                <p className="text-lg font-semibold">{user.department}</p>
+              </div>
+              <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
+                <p className="text-gray-600 font-medium">Position</p>
+                <p className="text-lg font-semibold">{user.position}</p>
+              </div>
+              <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
+                <p className="text-gray-600 font-medium">Year of Employment</p>
+                <p className="text-lg font-semibold">{user.employmentYear}</p>
+              </div>
             </div>
           </div>
         </div>

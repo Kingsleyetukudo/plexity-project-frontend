@@ -48,3 +48,7 @@ input:not(:placeholder-shown) + label {
 .text-input {
   @apply border-t-0 border-r-0 border-l-0 bg-transparent border-b-[1px] focus:ring-0 focus:bg-transparent;
 }
+
+.your-datepicker-class {
+  @apply w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-600 !important;
+}
