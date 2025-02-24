@@ -5,6 +5,7 @@ import App from "./App.jsx";
 import { Provider } from "react-redux";
 import { store, persistor } from "./stores/store.js";
 import { PersistGate } from "redux-persist/integration/react";
+import { register } from "./serviceWorkerRegistration.js";
 
 const loadRecaptchaScript = () => {
   const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
@@ -41,3 +42,5 @@ createRoot(document.getElementById("root")).render(
     </PersistGate>
   </Provider>
 );
+
+register();
