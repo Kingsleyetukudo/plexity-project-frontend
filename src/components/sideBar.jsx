@@ -30,8 +30,8 @@ const SideBar = () => {
     dispatch(logout());
   };
   return (
-    <div className="md:h-screen flex flex-col shadow-md sticky top-0">
-      <img src={Logo} alt="" className="w-24 md:w-40" />
+    <div className="md:h-screen flex flex-col shadow-md sticky top-0 gap-4">
+      <img src={Logo} alt="" className="w-24 md:w-full h-28 object-cover" />
       <div className=" h-full flex flex-col justify-between">
         <ul className="flex flex-col justify-between gap-1">
           <li>

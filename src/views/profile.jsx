@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { UserRoundPen } from "lucide-react";
+import avatar from "../assets/images/user-icon.svg";
 import EmployeePositionBox from "../components/employeePostionBox";
 import { getAllDepartments } from "../stores/departmentStore";
 import { getAllPositions } from "../stores/positionStore";
@@ -62,30 +63,12 @@ const Profile = () => {
         </h2>
         <div className="flex flex-col items-center mb-4 w-full">
           <img
-            src={user.avatar}
+            src={avatar}
             alt="User Avatar"
             className="w-32 h-32 sm:w-40 sm:h-40 rounded-full border-2 border-gray-300"
           />
-          {/* <input
-          type="file"
-          accept="image/*"
-          className="mt-2 text-sm text-gray-600"
-          onChange={(e) => {
-            const file = e.target.files[0];
-            if (file) {
-              const reader = new FileReader();
-              reader.onload = (event) => {
-                setUser((prevUser) => ({
-                  ...prevUser,
-                  avatar: event.target.result,
-                }));
-              };
-              reader.readAsDataURL(file);
-            }
-          }}
-        /> */}
         </div>
-        <div className="grid grid-cols-1  gap-4 w-full overflow-x-hidden">
+        <div className="grid grid-cols-1 gap-4 w-full overflow-x-hidden">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full overflow-x-hidden">
             <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
               <p className="text-gray-600 font-medium">Full Name</p>
@@ -105,14 +88,14 @@ const Profile = () => {
             </div>
           </div>
 
-          <div className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full overflow-x-hidden">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full overflow-x-hidden">
             <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
               <p className="text-gray-600 font-medium">Marital Status</p>
               <p className="text-lg font-semibold">{user.maritalStatus}</p>
             </div>
             <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
               <p className="text-gray-600 font-medium">Email</p>
-              <p className="text-lg font-semibold">{user.email}</p>
+              <p className="text-lg font-semibold break-words">{user.email}</p>
             </div>
             <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
               <p className="text-gray-600 font-medium">Phone Number</p>
@@ -120,7 +103,7 @@ const Profile = () => {
             </div>
           </div>
 
-          <div className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full overflow-x-hidden">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full overflow-x-hidden">
             <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
               <p className="text-gray-600 font-medium">Home Address</p>
               <p className="text-lg font-semibold">{user.address}</p>
@@ -130,7 +113,7 @@ const Profile = () => {
               <p className="text-lg font-semibold">{user.stateOfOrigin}</p>
             </div>
             <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
-              <p className="text-gray-600 font-medium">Disablities</p>
+              <p className="text-gray-600 font-medium">Disabilities</p>
               {user.disabilityType ? (
                 <p className="text-lg font-semibold">{user.disabilityType}</p>
               ) : (
@@ -141,7 +124,7 @@ const Profile = () => {
 
           <div>
             <p className="text-gray-600 font-medium">Bank Account Details</p>
-            <div className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full overflow-x-hidden">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full overflow-x-hidden">
               <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
                 <p className="text-gray-600 font-medium">Bank Name</p>
                 <p className="text-lg font-semibold">
@@ -151,20 +134,20 @@ const Profile = () => {
               <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
                 <p className="text-gray-600 font-medium">Account Name</p>
                 <p className="text-lg font-semibold">
-                  {user?.accountDetails?.accountNumber}
+                  {user?.accountDetails?.accountName}
                 </p>
               </div>
               <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
                 <p className="text-gray-600 font-medium">Account Number</p>
                 <p className="text-lg font-semibold">
-                  {user?.accountDetails?.bankName}
+                  {user?.accountDetails?.accountNumber}
                 </p>
               </div>
             </div>
           </div>
           <div>
             <p className="text-gray-600 font-medium">Work Details</p>
-            <div className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full overflow-x-hidden">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full overflow-x-hidden">
               <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
                 <p className="text-gray-600 font-medium">Department</p>
                 <p className="text-lg font-semibold">{user.department}</p>

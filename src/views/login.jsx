@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import img from "../assets/images/login-image.svg";
 import logo from "../assets/images/site-logo.png";
 import { Link } from "react-router-dom";
@@ -13,8 +13,33 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false); // New loading state
+  const [reCaptchaReady, setReCaptchaReady] = useState(false); // New reCAPTCHA ready state
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const loadRecaptchaScript = () => {
+      const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+      return new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = `https://www.google.com/recaptcha/api.js?render=${recaptchaSiteKey}`;
+        script.async = true;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+    };
+
+    loadRecaptchaScript()
+      .then(() => {
+        console.log("reCAPTCHA script loaded successfully");
+        setReCaptchaReady(true); // Set reCAPTCHA ready state to true
+      })
+      .catch((error) => {
+        console.error("Failed to load reCAPTCHA script:", error);
+        setError("reCAPTCHA failed to load. Please try again.");
+      });
+  }, []); // Empty dependency array ensures this runs only once, when the component mounts
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -140,9 +165,11 @@ const Login = () => {
               <div className="flex justify-end">
                 <button
                   type="submit"
-                  disabled={loading} // Disable the button when loading
+                  disabled={loading || !reCaptchaReady} // Disable the button when loading or reCAPTCHA is not ready
                   className={`text-xl font-bold px-16 py-4 text-white bg-color-2 rounded-full hover:bg-color-1 focus:outline-none focus:ring-2 focus:ring-color-1 ${
-                    loading ? "opacity-50 cursor-not-allowed" : ""
+                    loading || !reCaptchaReady
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
                   }`}
                 >
                   {loading ? "Logging in..." : "Login"}{" "}
