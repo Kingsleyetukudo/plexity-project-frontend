@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 import EditCommentBox from "./editCommentBox";
 import { EllipsisVertical, Trash2, X } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -268,10 +267,6 @@ const UserCommentList = () => {
       )}
     </div>
   );
-};
-
-UserCommentList.propTypes = {
-  comments: PropTypes.array.isRequired,
 };
 
 export default UserCommentList;

@@ -81,9 +81,9 @@ const PositionList = ({ departments }) => {
 
   // Filter & Search logic
   const filteredUsers = departments.filter((user) => {
-    const matchesSearch = user.name
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
+    const matchesSearch = user?.name
+      ?.toLowerCase()
+      ?.includes(searchTerm?.toLowerCase());
 
     const matchesFilter =
       filterStatus === "All"

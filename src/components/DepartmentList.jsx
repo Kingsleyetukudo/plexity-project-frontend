@@ -32,7 +32,6 @@ const DepartmentList = ({ departments }) => {
   const tableOptions = ["Edit", "Delete"];
 
   const handleEdit = (department) => {
-    console.log("Edit Department:", department);
     setSelectedDepartment(department);
 
     setName(department.name); // Set the current name to state
@@ -62,7 +61,6 @@ const DepartmentList = ({ departments }) => {
       const response = await dispatch(deleteDepartment(userId));
       setSelectedDepartment(null);
       if (response.meta && response.meta.requestStatus === "fulfilled") {
-        console.log("User deleted successfully", userId);
         dispatch(getAllDepartments());
       } else {
         console.log("Delete failed with status:", response);
@@ -74,15 +72,14 @@ const DepartmentList = ({ departments }) => {
 
   const handleDelete = (userId) => {
     setSelectedDepartment(userId);
-    console.log(selectedDepartment);
     handleOpenDelete();
   };
 
   // Filter & Search logic
   const filteredUsers = departments.filter((user) => {
-    const matchesSearch = user.name
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
+    const matchesSearch = user?.name
+      ?.toLowerCase()
+      ?.includes(searchTerm?.toLowerCase());
 
     const matchesFilter =
       filterStatus === "All"

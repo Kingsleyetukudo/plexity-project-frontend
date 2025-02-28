@@ -13,36 +13,33 @@ const AddDepartmentBox = ({ closeDepartment }) => {
 
   const dispatch = useDispatch();
 
-  // const handleUserSelect = (user) => {
-  //   setSelectedUser(user);
-  //   console.log("Selected User:", user);
-  // };
-
   const handleAddAppraisal = async () => {
     if (!title) {
       setError("Please enter a department name.");
       return;
     }
-    // if (!questionOne) {
-    //   setError("Please enter a comment.");
-    //   return;
-    // }
 
-    const newAddAppraisal = await dispatch(createDepartment(title));
-    console.log(newAddAppraisal);
-    if (newAddAppraisal.meta.requestStatus === "fulfilled") {
-      setMessage("Department added successfully.");
-      setOpenSuccessBox(true);
+    try {
+      const newAddAppraisal = await dispatch(createDepartment(title)).unwrap();
+      console.log(newAddAppraisal, "Department creation response");
 
-      // Delay closing popup so success message is visible
-      setTimeout(() => {
-        setOpenSuccessBox(false);
-        closeDepartment(); // Close after success message is shown
-        setTitle("");
-        dispatch(getAllDepartments());
-      }, 3000); // 2 seconds delay
-    } else {
-      setMessage("Department not added...");
+      if (newAddAppraisal) {
+        setMessage("Department added successfully.");
+        setOpenSuccessBox(true);
+
+        // Delay closing popup so success message is visible
+        setTimeout(() => {
+          setOpenSuccessBox(false);
+          closeDepartment(); // Close after success message is shown
+          setTitle("");
+          dispatch(getAllDepartments());
+        }, 2000); // 2 seconds delay
+      } else {
+        setMessage("Department not added...");
+      }
+    } catch (error) {
+      console.error("Department creation failed:", error);
+      setError("Department creation failed. Please try again.");
     }
   };
 
