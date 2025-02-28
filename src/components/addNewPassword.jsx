@@ -44,9 +44,9 @@ const AddNewPassword = ({ handlePasswordToggle }) => {
     }
 
     const newPassword = await dispatch(
-      updateUser({ userId: user._id, password })
+      updateUser({ userId: user._id, userData: { password } })
     );
-    console.log(newPassword, "hi");
+    console.log(password, "hi");
     if (newPassword.meta.requestStatus === "fulfilled") {
       setMessage("Password updated successfully...");
       setOpenSuccessBox(true);
