@@ -33,7 +33,6 @@ const PositionList = ({ departments }) => {
   const tableOptions = ["Edit", "Delete"];
 
   const handleEdit = (department) => {
-    console.log("Edit Department:", department);
     setSelectedDepartment(department);
 
     setName(department.name); // Set the current name to state
@@ -63,7 +62,6 @@ const PositionList = ({ departments }) => {
       const response = await dispatch(deletePosition(userId));
       setSelectedDepartment(null);
       if (response.meta && response.meta.requestStatus === "fulfilled") {
-        console.log("User deleted successfully", userId);
         dispatch(getAllPositions());
       } else {
         console.log("Delete failed with status:", response);
@@ -75,7 +73,6 @@ const PositionList = ({ departments }) => {
 
   const handleDelete = (userId) => {
     setSelectedDepartment(userId);
-    console.log(selectedDepartment);
     handleOpenDelete();
   };
 

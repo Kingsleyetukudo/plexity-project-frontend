@@ -150,7 +150,7 @@ const Signin = () => {
                   className="w-full px-3 py-2 border border-gray-300 outline-none text-input"
                 >
                   <option value="" disabled>
-                    Select a position
+                    Select a Department
                   </option>
                   {departments.map((pos) => (
                     <option key={pos.id} value={pos.name}>
