@@ -56,7 +56,7 @@ const AppraisalBox = ({ appraisals }) => {
               <div className="grid md:grid-cols-3 md:p-4">
                 <p>
                   <span className="font-bold">Reviewed:</span>{" "}
-                  {moment(appraisal.date).format("LL")}
+                  {moment(appraisal.createdAt).format("LL")}
                 </p>
                 <p>
                   <span className="font-bold">Appraised:</span>{" "}

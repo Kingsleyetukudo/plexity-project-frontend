@@ -75,7 +75,7 @@ export const deleteAppraisal = createAsyncThunk(
 
 // slice
 const appraisalSlice = createSlice({
-  name: "staffAppraisal",
+  name: "appraisals",
   initialState: {
     appraisals: [], // To store all users
     status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'

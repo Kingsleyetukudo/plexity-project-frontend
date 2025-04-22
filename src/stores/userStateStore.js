@@ -11,6 +11,7 @@ export const login = createAsyncThunk(
         password,
         reCaptchatoken,
       });
+      console.log(response.data);
       return response.data; // Assuming the response contains user data and token
     } catch (error) {
       return rejectWithValue(error.response?.data || "Login failed");
@@ -77,12 +78,27 @@ export const updateUserByAdmin = createAsyncThunk(
 export const updateUser = createAsyncThunk(
   "auth/updateUser",
   async ({ userId, userData }, { rejectWithValue }) => {
+    console.log(userId, userData);
     try {
       const res = await api.put(`/user/updateUser/${userId}`, userData);
       // console.log(res.data.updatedUser);
       return res.data.updatedUser; // Assuming res.data contains the updated user object
     } catch (error) {
       return rejectWithValue(error.response?.data || "Fetching users failed");
+    }
+  }
+);
+
+export const updateUserRoleByAdmin = createAsyncThunk(
+  "auth/updateUserRoleByAdmin",
+  async ({ userId, userData }, { rejectWithValue }) => {
+    try {
+      const res = await api.put(`/user/updateUser/${userId}`, userData); // Adjust endpoint as needed
+      return res.data.updatedUser; // Assuming the API returns the updated user object
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || "Updating user role failed"
+      );
     }
   }
 );
@@ -122,12 +138,20 @@ const authSlice = createSlice({
       localStorage.removeItem("persist:auth");
     },
 
+    resetStatus: (state) => {
+      state.status = "idle"; // Reset status to idle
+    },
+
     openPopup: (state) => {
       state.openPopup = !state.openPopup;
     },
 
     toggleBar: (state) => {
       state.toggleBar = !state.toggleBar;
+    },
+
+    setToggleBar: (state, action) => {
+      state.toggleBar = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -225,9 +249,29 @@ const authSlice = createSlice({
       .addCase(deleteUser.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
+      })
+      .addCase(updateUserRoleByAdmin.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(updateUserRoleByAdmin.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        const updatedUser = action.payload;
+
+        // Update the specific user's role in the users array
+        const index = state.users.findIndex(
+          (user) => user._id === updatedUser._id
+        );
+        if (index !== -1) {
+          state.users[index] = updatedUser;
+        }
+      })
+      .addCase(updateUserRoleByAdmin.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
       });
   },
 });
 
-export const { logout, toggleBar, openPopup } = authSlice.actions;
+export const { logout, toggleBar, openPopup, resetStatus } = authSlice.actions;
 export default authSlice.reducer;

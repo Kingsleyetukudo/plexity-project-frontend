@@ -12,12 +12,25 @@ import {
   fetchComments,
 } from "../stores/commentStore";
 import StaffBiodataForm from "../components/StaffBiodataForm";
+import { usePageToggle } from "../components/ToggleSettings";
 
 const Dashboard = () => {
-  const { toggleBar, status, user } = useSelector((state) => state.auth);
+  const { status, user } = useSelector((state) => state.auth);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { isSideBarOpen, toggleSideBar } = usePageToggle();
+
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     const isLargeScreen = window.innerWidth >= 768;
+  //     dispatch({ type: "SET_TOGGLEBAR", payload: isLargeScreen });
+  //   };
+
+  //   handleResize();
+  //   window.addEventListener("resize", handleResize);
+  //   return () => window.removeEventListener("resize", handleResize);
+  // }, [dispatch]);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("persist:auth");
@@ -49,6 +62,7 @@ const Dashboard = () => {
   useEffect(() => {
     dispatch(getUserById(user._id));
     dispatch(getAppraisalByUser(user._id));
+    dispatch(getAllAppraisal);
   }, [dispatch, status, user]);
 
   // useEffect(() => {
@@ -94,16 +108,16 @@ const Dashboard = () => {
 
   return (
     <div
-      className={`grid-layout grid-rows-[auto_1fr_auto] md:grid-cols-[200px_1fr] transition-grid-cols duration-300 ease-in-out ${
-        toggleBar ? "md:grid-cols-[200px_1fr]" : "grid-cols-[0px_1fr]"
+      className={`grid-layout h-screen grid-rows-[auto_1fr_auto] transition-all duration-300 ease-in-out ${
+        isSideBarOpen ? "md:grid-cols-[200px_1fr]" : "grid-cols-[0px_1fr]"
       }`}
     >
-      <div className="header-area my-3 mb-5 md:m-4 z-10 sticky top-1 md:top-4 bg-white">
-        <UserDetails />
+      <div className="header-area my-3 mb-5 md:m-4 z-30 sticky top-1 md:top-4 bg-white">
+        <UserDetails toggleSideBar={toggleSideBar} />
       </div>
       <div
-        className={`sidebar-area sticky top-0 ${
-          toggleBar ? "block" : "max-sm:hidden"
+        className={`sidebar-area sticky top-0 transition-all duration-300 ease-in-out ${
+          isSideBarOpen ? "w-[200px]" : "w-0 max-sm:hidden"
         }`}
       >
         <SideBar />
@@ -119,7 +133,9 @@ const Dashboard = () => {
       </div>
       <div className="footer-area">
         <footer className="bg-white p-4 text-center">
-          <p className="text-gray-400">© 2021 Plexity. All rights reserved</p>
+          <p className="text-gray-400">
+            © {new Date().getFullYear()} Plexity. All rights reserved
+          </p>
         </footer>
       </div>
     </div>

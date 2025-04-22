@@ -7,7 +7,6 @@ export const getAllStaffAppraisal = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get("/appraised");
-      console.log(response.data.data.appraisals);
       return response.data.data.appraisals; // Assuming the response contains user data and token
     } catch (error) {
       return rejectWithValue(

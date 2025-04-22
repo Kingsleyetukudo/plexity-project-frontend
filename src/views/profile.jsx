@@ -6,7 +6,7 @@ import avatar from "../assets/images/user-icon.svg";
 import EmployeePositionBox from "../components/employeePostionBox";
 import { getAllDepartments } from "../stores/departmentStore";
 import { getAllPositions } from "../stores/positionStore";
-import { updateUser } from "../stores/userStateStore";
+import { updateUserRoleByAdmin } from "../stores/userStateStore";
 import moment from "moment";
 
 const Profile = () => {
@@ -39,7 +39,10 @@ const Profile = () => {
   const handleUpdate = (userData) => {
     console.log(userData);
     dispatch(
-      updateUser({ userId: userData.id, userData: { role: userData.role } })
+      updateUserRoleByAdmin({
+        userId: userData.id,
+        userData: { role: userData.role },
+      })
     );
   };
 

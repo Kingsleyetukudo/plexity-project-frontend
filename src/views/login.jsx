@@ -33,22 +33,22 @@ const Login = () => {
     loadRecaptchaScript()
       .then(() => {
         console.log("reCAPTCHA script loaded successfully");
-        setReCaptchaReady(true); // Set reCAPTCHA ready state to true
+        setReCaptchaReady(true);
       })
       .catch((error) => {
         console.error("Failed to load reCAPTCHA script:", error);
         setError("reCAPTCHA failed to load. Please try again.");
       });
-  }, []); // Empty dependency array ensures this runs only once, when the component mounts
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // Set loading to true when the login button is clicked
+    setLoading(true);
 
     if (!window.grecaptcha || !window.grecaptcha.execute) {
       console.error("reCAPTCHA not loaded!");
       setError("reCAPTCHA failed to load. Please try again.");
-      setLoading(false); // Set loading to false if an error occurs
+      setLoading(false);
       return;
     }
 
@@ -61,40 +61,41 @@ const Login = () => {
 
       if (!reCaptchatoken) {
         setError("Failed to generate reCAPTCHA token.");
-        setLoading(false); // Set loading to false if an error occurs
+        setLoading(false);
         return;
       }
 
       const result = await dispatch(
         login({ email, password, reCaptchatoken })
-      ).unwrap();
+      ).unwrap(); // Ensure the result is resolved properly
 
       if (result?.message === "Email not found!") {
         setError("This email is not registered.");
-        setLoading(false); // Set loading to false if an error occurs
+        setLoading(false);
         return;
       }
 
       if (result?.message === "Incorrect password") {
         setError("Incorrect password");
-        setLoading(false); // Set loading to false if an error occurs
+        setLoading(false);
         return;
       }
 
       if (!result?.isApproved) {
         setError("Your account is pending approval by the admin.");
-        setLoading(false); // Set loading to false if an error occurs
+        setLoading(false);
         return;
       }
 
       if (result?.message === "Login successful") {
-        navigate("/dashboard");
+        navigate("/dashboard"); // Navigate to the dashboard
         return;
       }
     } catch (err) {
       console.error("Login failed:", err);
       setError(err.message || "Invalid email or password");
-      setLoading(false); // Set loading to false if an error occurs
+    } finally {
+      setLoading(false); // Ensure loading is stopped in all cases
     }
   };
 

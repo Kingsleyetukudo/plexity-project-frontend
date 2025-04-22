@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import BG from "../assets/images/sign-up-bg.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { CircleCheckBig } from "lucide-react";
-import { createUsers } from "../stores/userStateStore";
+import { createUsers, resetStatus } from "../stores/userStateStore";
 import { getAllDepartments } from "../stores/departmentStore";
 import { getAllPositions } from "../stores/positionStore";
 
@@ -33,6 +33,7 @@ const Signin = () => {
   useEffect(() => {
     dispatch(getAllDepartments());
     dispatch(getAllPositions());
+    dispatch(resetStatus());
   }, [dispatch]);
 
   const handleSubmit = async (e) => {

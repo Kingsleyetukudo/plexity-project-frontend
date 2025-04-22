@@ -12,7 +12,7 @@ import {
 } from "../stores/userStateStore";
 import { useEffect, useState } from "react";
 import Dropdown from "./filterDropdown";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const EmployeeList = () => {
   const { users } = useSelector((state) => state.auth);
@@ -124,7 +124,7 @@ const EmployeeList = () => {
       </div>
 
       <div className="mb-8 grid grid-cols-1 gap-6">
-        <div className="overflow-x-auto">
+        <div className="">
           <table className="w-full border-collapse border text-left border-gray-300">
             <thead>
               <tr className="bg-gray-200">
@@ -138,15 +138,26 @@ const EmployeeList = () => {
                 <th className="p-3 border">Action</th>
               </tr>
             </thead>
+
             <tbody>
               {currentTransactions.map((txn, index) => (
                 <tr key={txn._id}>
                   <td className="p-3 border">{index + 1}</td>
-                  <td className="p-3 border">{txn.firstName}</td>
-                  <td className="p-3 border">{txn.lastName}</td>
-                  <td className="p-3 border">{txn.email}</td>
-                  <td className="p-3 border">{txn.department}</td>
-                  <td className="p-3 border">{txn.position}</td>
+                  <td className="p-3 border">
+                    <Link to={`profile/${txn._id}`}>{txn.firstName}</Link>
+                  </td>
+                  <td className="p-3 border">
+                    <Link to={`profile/${txn._id}`}>{txn.lastName}</Link>
+                  </td>
+                  <td className="p-3 border">
+                    <Link to={`profile/${txn._id}`}>{txn.email}</Link>
+                  </td>
+                  <td className="p-3 border">
+                    <Link to={`profile/${txn._id}`}>{txn.department}</Link>
+                  </td>
+                  <td className="p-3 border">
+                    <Link to={`profile/${txn._id}`}>{txn.position}</Link>
+                  </td>
                   <td>
                     <span
                       className={`p-3 border flex items-center rounded-full gap-2 ${
@@ -158,7 +169,6 @@ const EmployeeList = () => {
                       {txn.isApproved ? "Approved" : "Not Approved"}
                     </span>
                   </td>
-
                   <td className="p-3 border text-center relative ">
                     <button
                       className=" px-1 py-1 border border-[#E4E7EC] bg-white text-brandColor-1 rounded"
@@ -175,11 +185,11 @@ const EmployeeList = () => {
                             onClick={() => {
                               setIsOpen(false);
                               if (option === "Approve") {
-                                handleApprove(txn._id); // Pass user ID directly
+                                handleApprove(txn._id);
                               } else if (option === "Delete") {
-                                handleDelete(txn._id); // Pass user ID directly
+                                handleDelete(txn._id);
                               } else if (option === "View") {
-                                handleView(txn._id); // Pass user ID directly
+                                handleView(txn._id);
                               }
                             }}
                           >

@@ -14,6 +14,7 @@ import {
   FileText,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { usePageToggle } from "./ToggleSettings";
 
 const SideBar = () => {
   const [currentUser, setCurrentUser] = useState({});
@@ -25,12 +26,18 @@ const SideBar = () => {
     setCurrentUser(userDetails);
   }, []);
 
+  const { isSideBarOpen } = usePageToggle();
+
   const dispatch = useDispatch();
   const handleLogout = () => {
     dispatch(logout());
   };
   return (
-    <div className="md:h-screen flex flex-col shadow-md sticky top-0 gap-4">
+    <div
+      className={`md:h-screen flex flex-col shadow-md sticky top-0 gap-4 ${
+        isSideBarOpen ? "block" : "hidden"
+      } transition-all duration-300`}
+    >
       <img src={Logo} alt="" className="w-24 md:w-full h-28 object-cover" />
       <div className=" h-full flex flex-col justify-between">
         <ul className="flex flex-col justify-between gap-1">

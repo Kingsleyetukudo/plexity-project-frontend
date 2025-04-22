@@ -5,6 +5,7 @@ import TitleBar from "../components/titleBar";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getAppraisalByUser } from "../stores/staffAppraisalStore";
+import { getAllAppraisal } from "../stores/appraisalStore";
 import { X } from "lucide-react";
 
 const Appraisal = () => {
@@ -22,6 +23,7 @@ const Appraisal = () => {
 
   useEffect(() => {
     dispatch(getAppraisalByUser(user._id));
+    dispatch(getAllAppraisal());
     // console.log(appraisalByUser);
   }, [dispatch]);
 
