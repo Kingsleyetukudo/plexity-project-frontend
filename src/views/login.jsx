@@ -12,33 +12,43 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false); // New loading state
-  const [reCaptchaReady, setReCaptchaReady] = useState(false); // New reCAPTCHA ready state
+  const [loading, setLoading] = useState(false);
+  const [reCaptchaReady, setReCaptchaReady] = useState(false);
+  const [pageReady, setPageReady] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const loadRecaptchaScript = () => {
+    const loadPage = async () => {
       const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
-      return new Promise((resolve, reject) => {
+
+      try {
+        // ⏳ Simulate a short silent page "refresh"
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        // Load reCAPTCHA
         const script = document.createElement("script");
         script.src = `https://www.google.com/recaptcha/api.js?render=${recaptchaSiteKey}`;
         script.async = true;
-        script.onload = resolve;
-        script.onerror = reject;
+        script.onload = () => {
+          console.log("reCAPTCHA loaded silently.");
+          setReCaptchaReady(true);
+          setPageReady(true);
+        };
+        script.onerror = () => {
+          console.error("Failed to load reCAPTCHA script.");
+          setError("reCAPTCHA failed to load. Please try again.");
+          setPageReady(true); // allow retry
+        };
         document.head.appendChild(script);
-      });
+      } catch (err) {
+        console.error("Silent init failed", err);
+        setError("Unexpected error occurred during initialization.");
+        setPageReady(true); // fail gracefully
+      }
     };
 
-    loadRecaptchaScript()
-      .then(() => {
-        console.log("reCAPTCHA script loaded successfully");
-        setReCaptchaReady(true);
-      })
-      .catch((error) => {
-        console.error("Failed to load reCAPTCHA script:", error);
-        setError("reCAPTCHA failed to load. Please try again.");
-      });
+    loadPage();
   }, []);
 
   const handleSubmit = async (e) => {
@@ -67,7 +77,7 @@ const Login = () => {
 
       const result = await dispatch(
         login({ email, password, reCaptchatoken })
-      ).unwrap(); // Ensure the result is resolved properly
+      ).unwrap();
 
       if (result?.message === "Email not found!") {
         setError("This email is not registered.");
@@ -88,14 +98,14 @@ const Login = () => {
       }
 
       if (result?.message === "Login successful") {
-        navigate("/dashboard"); // Navigate to the dashboard
+        navigate("/dashboard");
         return;
       }
     } catch (err) {
       console.error("Login failed:", err);
       setError(err.message || "Invalid email or password");
     } finally {
-      setLoading(false); // Ensure loading is stopped in all cases
+      setLoading(false);
     }
   };
 
@@ -166,15 +176,14 @@ const Login = () => {
               <div className="flex justify-end">
                 <button
                   type="submit"
-                  disabled={loading || !reCaptchaReady} // Disable the button when loading or reCAPTCHA is not ready
+                  disabled={!pageReady || loading || !reCaptchaReady}
                   className={`text-xl font-bold px-16 py-4 text-white bg-color-2 rounded-full hover:bg-color-1 focus:outline-none focus:ring-2 focus:ring-color-1 ${
-                    loading || !reCaptchaReady
+                    !pageReady || loading || !reCaptchaReady
                       ? "opacity-50 cursor-not-allowed"
                       : ""
                   }`}
                 >
-                  {loading ? "Logging in..." : "Login"}{" "}
-                  {/* Change text when loading */}
+                  {loading ? "Logging in..." : "Login"}
                 </button>
               </div>
               <p className="text-sm text-center">
@@ -193,6 +202,11 @@ const Login = () => {
           </div>
         </div>
       </div>
+      {!pageReady && (
+        <div className="text-center text-gray-500 text-sm">
+          Preparing login...
+        </div>
+      )}
     </>
   );
 };
