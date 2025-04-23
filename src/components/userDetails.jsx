@@ -38,9 +38,9 @@ const UserDetails = () => {
           <span>
             <Link to="/dashboard/profile">
               <img
-                src={userProfile}
+                src={user.userProfileImage || userProfile}
                 alt="User"
-                className="w-8 md:w-10 rounded-full border-2"
+                className="w-10 md:w-10 h-10 rounded-full border-2 object-scale-down"
               />
             </Link>
           </span>

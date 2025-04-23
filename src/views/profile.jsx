@@ -66,7 +66,7 @@ const Profile = () => {
         </h2>
         <div className="flex flex-col items-center mb-4 w-full">
           <img
-            src={avatar}
+            src={user.userProfileImage || avatar}
             alt="User Avatar"
             className="w-32 h-32 sm:w-40 sm:h-40 rounded-full border-2 border-gray-300"
           />

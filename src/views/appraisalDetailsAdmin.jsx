@@ -14,7 +14,6 @@ const AppraisalDetailsAdmin = () => {
   useEffect(() => {
     dispatch(getAppraisalById(id)).then((data) => {
       setAppraisal(data.payload.appraisal);
-      console.log(data.payload.appraisal);
     });
   }, [id, dispatch]);
 
@@ -44,8 +43,10 @@ const AppraisalDetailsAdmin = () => {
     <div>
       <div className="grid grid-cols-1 gap-5">
         <h2 className="font-extrabold text-xl md:text-2xl mb-5 text-gray-500">
-          Appraisal Details of {appraisal?.appraisedEmployee?.firstName}{" "}
-          {appraisal?.appraisedEmployee?.lastName}
+          Appraisal Details of{" "}
+          {appraisal?.appraisedEmployee
+            ? `${appraisal?.appraisedEmployee?.firstName} ${appraisal?.appraisedEmployee?.lastName}`
+            : "Null"}
         </h2>
         <div className="grid grid-cols-1 gap-5">
           <div className="flex justify-between w-full bg-gray-800 text-white px-4 md:px-8 py-4 shadow-lg rounded-xl">
