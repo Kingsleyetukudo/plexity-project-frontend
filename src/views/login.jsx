@@ -9,7 +9,7 @@ import { login } from "../stores/userStateStore";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
+
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -163,14 +163,8 @@ const Login = () => {
                 </button>
               </div>
               <div className="form-group flex items-center">
-                <input
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  className="h-5 w-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-                />
                 <span className="ml-2 block text-sm text-gray-900">
-                  Remember Me
+                  <Link to="/forgetpassword">Forget Password?</Link>
                 </span>
               </div>
               <div className="flex justify-end">

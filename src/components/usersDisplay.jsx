@@ -46,13 +46,13 @@ const UserDisplay = () => {
                 <img
                   src={URL.createObjectURL(uploadedFile)}
                   alt="Uploaded"
-                  className="w-[200px] h-auto  cursor-pointer"
+                  className="w-[200px] h-auto  cursor-pointer object-fill "
                 />
               ) : (
                 <img
                   src={userDefualt}
                   alt="defualt image"
-                  className="w-[200px] h-auto"
+                  className="w-[200px] h-auto object-fill cursor-pointer"
                 />
               )}
               <input

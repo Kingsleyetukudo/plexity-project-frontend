@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllUsers } from "../stores/userStateStore";
 import { fetchComments } from "../stores/commentStore";
+import { Link } from "react-router-dom";
 
 const TaskProgressCard = () => {
   const { userTotalRating } = useSelector((state) => state.staffAppraisal);
@@ -80,34 +81,38 @@ const TaskProgressCard = () => {
         currentUser?.role === "Mgt" ||
         currentUser?.role === "Sub-Admin") && (
         <div className="p-4 bg-white rounded-lg shadow-md w-full">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-bold text-color-1 uppercase">
-              Members
-            </h3>
-            <div className="flex items-center justify-center rounded-full bg-color-2 p-2">
-              <Users className="text-white w-8 h-8" />
+          <Link to={"/dashboard/employees"}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-color-1 uppercase">
+                Members
+              </h3>
+              <div className="flex items-center justify-center rounded-full bg-color-2 p-2">
+                <Users className="text-white w-8 h-8" />
+              </div>
             </div>
-          </div>
-          <div className="text-4xl font-bold text-gray-800 mb-4">
-            {users?.length || 0}
-          </div>
+            <div className="text-4xl font-bold text-gray-800 mb-4">
+              {users?.length || 0}
+            </div>
+          </Link>
         </div>
       )}
 
       {/* Pending Comments Card */}
       {(currentUser?.role === "Admin" || currentUser?.role === "Mgt") && (
         <div className="p-4 bg-white rounded-lg shadow-md w-full">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-bold text-color-1 uppercase">
-              Pending Comments
-            </h3>
-            <div className="flex items-center justify-center rounded-full bg-color-2 p-2">
-              <MessageSquareText className="text-white w-8 h-8" />
+          <Link to={"/dashboard/anonymous-comments"}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-color-1 uppercase">
+                Pending Comments
+              </h3>
+              <div className="flex items-center justify-center rounded-full bg-color-2 p-2">
+                <MessageSquareText className="text-white w-8 h-8" />
+              </div>
             </div>
-          </div>
-          <div className="text-4xl font-bold text-gray-800 mb-4">
-            {unreadComments.length}
-          </div>
+            <div className="text-4xl font-bold text-gray-800 mb-4">
+              {unreadComments.length}
+            </div>
+          </Link>
         </div>
       )}
     </div>

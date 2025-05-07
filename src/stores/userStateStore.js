@@ -12,9 +12,35 @@ export const login = createAsyncThunk(
         reCaptchatoken,
       });
       console.log(response.data);
-      return response.data; // Assuming the response contains user data and token
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Login failed");
+    }
+  }
+);
+
+export const forgetPassword = createAsyncThunk(
+  "auth/forgetPassword",
+  async (email, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/user/forgotPassword", { email });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Forget password failed");
+    }
+  }
+);
+
+export const resetPassword = createAsyncThunk(
+  "auth/resetPassword",
+  async ({ token, password }, { rejectWithValue }) => {
+    try {
+      const response = await api.post(`/user/resetPassword/${token}`, {
+        password,
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Reset password failed");
     }
   }
 );

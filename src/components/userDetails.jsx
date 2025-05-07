@@ -40,7 +40,7 @@ const UserDetails = () => {
               <img
                 src={user.userProfileImage || userProfile}
                 alt="User"
-                className="w-10 md:w-10 h-10 rounded-full border-2 object-scale-down"
+                className="w-10 md:w-10 h-10 rounded-full border-2 object-fill cursor-pointer"
               />
             </Link>
           </span>

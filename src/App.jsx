@@ -6,6 +6,8 @@ import {
   Navigate,
 } from "react-router-dom";
 import { ToggletSettings } from "./components/ToggleSettings";
+import ForgetPassword from "./views/ForgetPassword";
+import AddNewPassword from "./views/AddPassword";
 
 // Lazy-loaded components
 const Login = React.lazy(() => import("./views/login"));
@@ -104,6 +106,8 @@ function App() {
             {/* Auth Routes */}
             <Route path="/signin" element={<Signin />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/forgetpassword" element={<ForgetPassword />} />
+            <Route path="/reset-password/:token" element={<AddNewPassword />} />
           </Routes>
         </Suspense>
       </Router>

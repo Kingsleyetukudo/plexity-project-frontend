@@ -166,7 +166,7 @@ const PersonalProfile = () => {
             </div>
             <div className="p-4 border rounded-lg shadow-sm text-center sm:text-left">
               <p className="text-gray-600 font-medium">Location</p>
-              {user.stataeOfOrigin ? (
+              {user.stateOfOrigin ? (
                 <p className="text-lg font-semibold">{user.stateOfOrigin}</p>
               ) : (
                 <p className="text-lg font-semibold">Null</p>
