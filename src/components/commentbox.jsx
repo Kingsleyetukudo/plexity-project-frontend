@@ -34,12 +34,11 @@ const CommentBox = ({ closeCommentPopup }) => {
       sender: user._id,
       recipient: selectedUser._id,
     };
-    console.log(comment);
 
     const commentNew = await dispatch(
       addComment({ comment: newComment, userId: user._id })
     );
-    console.log(commentNew);
+
     if (commentNew.meta.requestStatus === "fulfilled") {
       setMessage("Comment submitted successfully.");
       setOpenSuccessBox(true);
@@ -76,20 +75,22 @@ const CommentBox = ({ closeCommentPopup }) => {
             </div>
             <h2 className="text-xl font-bold mb-4">Select a Member</h2>
             <ul className="overflow-auto max-h-[300px]">
-              {users.map((user) => (
-                <li
-                  key={user._id}
-                  onClick={() => handleUserSelect(user)}
-                  className="cursor-pointer p-3 border-b border-gray-300 hover:bg-gray-100 flex items-center justify-between"
-                >
-                  <p>
-                    {user.firstName} {user.lastName}
-                  </p>
-                  <button className="text-sm px-2 py-1 text-white bg-blue-500 rounded-full hover:bg-blue-600">
-                    Comment
-                  </button>
-                </li>
-              ))}
+              {users
+                .filter((u) => u._id !== user._id)
+                .map((user) => (
+                  <li
+                    key={user._id}
+                    onClick={() => handleUserSelect(user)}
+                    className="cursor-pointer p-3 border-b border-gray-300 hover:bg-gray-100 flex items-center justify-between"
+                  >
+                    <p>
+                      {user.firstName} {user.lastName}
+                    </p>
+                    <button className="text-sm px-2 py-1 text-white bg-blue-500 rounded-full hover:bg-blue-600">
+                      Comment
+                    </button>
+                  </li>
+                ))}
             </ul>
           </div>
           {/* Background overlay */}
