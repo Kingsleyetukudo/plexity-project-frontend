@@ -60,8 +60,8 @@ const Dashboard = () => {
   }, [dispatch, status, navigate]);
 
   useEffect(() => {
-    dispatch(getUserById(user._id));
-    dispatch(getAppraisalByUser(user._id));
+    dispatch(getUserById(user?._id));
+    dispatch(getAppraisalByUser(user?._id));
     dispatch(getAllAppraisal);
   }, [dispatch, status, user]);
 

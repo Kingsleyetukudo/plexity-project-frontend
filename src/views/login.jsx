@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import img from "../assets/images/login-image.svg";
 import logo from "../assets/images/site-logo.png";
 import { Link } from "react-router-dom";
@@ -13,71 +13,68 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [reCaptchaReady, setReCaptchaReady] = useState(false);
-  const [pageReady, setPageReady] = useState(false);
+  // const [reCaptchaReady, setReCaptchaReady] = useState(false);
+  // const [pageReady, setPageReady] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const loadPage = async () => {
-      const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+  // useEffect(() => {
+  //   const loadPage = async () => {
+  //     const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 
-      try {
-        // ⏳ Simulate a short silent page "refresh"
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+  //     try {
+  //       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        // Load reCAPTCHA
-        const script = document.createElement("script");
-        script.src = `https://www.google.com/recaptcha/api.js?render=${recaptchaSiteKey}`;
-        script.async = true;
-        script.onload = () => {
-          console.log("reCAPTCHA loaded silently.");
-          setReCaptchaReady(true);
-          setPageReady(true);
-        };
-        script.onerror = () => {
-          console.error("Failed to load reCAPTCHA script.");
-          setError("reCAPTCHA failed to load. Please try again.");
-          setPageReady(true); // allow retry
-        };
-        document.head.appendChild(script);
-      } catch (err) {
-        console.error("Silent init failed", err);
-        setError("Unexpected error occurred during initialization.");
-        setPageReady(true); // fail gracefully
-      }
-    };
+  //       // Load reCAPTCHA
+  //       const script = document.createElement("script");
+  //       script.src = `https://www.google.com/recaptcha/api.js?render=${recaptchaSiteKey}`;
+  //       script.async = true;
+  //       script.onload = () => {
+  //         console.log("reCAPTCHA loaded silently.");
+  //         setReCaptchaReady(true);
+  //         setPageReady(true);
+  //       };
+  //       script.onerror = () => {
+  //         console.error("Failed to load reCAPTCHA script.");
+  //         setError("reCAPTCHA failed to load. Please try again.");
+  //         setPageReady(true);
+  //       };
+  //       document.head.appendChild(script);
+  //     } catch (err) {
+  //       console.error("Silent init failed", err);
+  //       setError("Unexpected error occurred during initialization.");
+  //       setPageReady(true);
+  //     }
+  //   };
 
-    loadPage();
-  }, []);
+  //   loadPage();
+  // }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    if (!window.grecaptcha || !window.grecaptcha.execute) {
-      console.error("reCAPTCHA not loaded!");
-      setError("reCAPTCHA failed to load. Please try again.");
-      setLoading(false);
-      return;
-    }
+    // if (!window.grecaptcha || !window.grecaptcha.execute) {
+    //   console.error("reCAPTCHA not loaded!");
+    //   setError("reCAPTCHA failed to load. Please try again.");
+    //   setLoading(false);
+    //   return;
+    // }
 
     try {
-      console.log("Executing reCAPTCHA...");
-      const reCaptchatoken = await window.grecaptcha.execute(
-        import.meta.env.VITE_RECAPTCHA_SITE_KEY,
-        { action: "submit" }
-      );
+      // console.log("Executing reCAPTCHA...");
+      // const reCaptchatoken = await window.grecaptcha.execute(
+      //   import.meta.env.VITE_RECAPTCHA_SITE_KEY,
+      //   { action: "submit" }
+      // );
 
-      if (!reCaptchatoken) {
-        setError("Failed to generate reCAPTCHA token.");
-        setLoading(false);
-        return;
-      }
+      // if (!reCaptchatoken) {
+      //   setError("Failed to generate reCAPTCHA token.");
+      //   setLoading(false);
+      //   return;
+      // }
 
-      const result = await dispatch(
-        login({ email, password, reCaptchatoken })
-      ).unwrap();
+      const result = await dispatch(login({ email, password })).unwrap();
 
       if (result?.message === "Email not found!") {
         setError("This email is not registered.");
@@ -170,9 +167,9 @@ const Login = () => {
               <div className="flex justify-end">
                 <button
                   type="submit"
-                  disabled={!pageReady || loading || !reCaptchaReady}
+                  disabled={loading || !email || !password}
                   className={`text-xl font-bold px-16 py-4 text-white bg-color-2 rounded-full hover:bg-color-1 focus:outline-none focus:ring-2 focus:ring-color-1 ${
-                    !pageReady || loading || !reCaptchaReady
+                    loading || !email || !password
                       ? "opacity-50 cursor-not-allowed"
                       : ""
                   }`}
@@ -196,11 +193,6 @@ const Login = () => {
           </div>
         </div>
       </div>
-      {!pageReady && (
-        <div className="text-center text-gray-500 text-sm">
-          Preparing login...
-        </div>
-      )}
     </>
   );
 };

@@ -4,14 +4,13 @@ import api from "../api";
 // Login thunk
 export const login = createAsyncThunk(
   "auth/login",
-  async ({ email, password, reCaptchatoken }, { rejectWithValue }) => {
+  async ({ email, password }, { rejectWithValue }) => {
     try {
       const response = await api.post("/user/login", {
         email,
         password,
-        reCaptchatoken,
       });
-      console.log(response.data);
+      // console.log(response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Login failed");

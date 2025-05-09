@@ -85,7 +85,7 @@ const staffAppraisalSlice = createSlice({
   reducers: {
     toggleBar: (state) => {
       state.toggleBar = !state.toggleBar;
-      console.log(state.toggleBar);
+      // console.log(state.toggleBar);
     },
   },
   extraReducers: (builder) => {

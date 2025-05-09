@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import PropTypes from "prop-types";
 import { CheckCircle, X } from "lucide-react";
 import { resetPassword } from "../stores/userStateStore";
 import { useNavigate } from "react-router-dom";
@@ -232,10 +231,6 @@ const AddNewPassword = () => {
       )}
     </>
   );
-};
-
-AddNewPassword.propTypes = {
-  handlePasswordToggle: PropTypes.func.isRequired,
 };
 
 export default AddNewPassword;

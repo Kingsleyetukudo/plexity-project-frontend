@@ -26,7 +26,7 @@ const PersonalProfile = () => {
 
   const handlePasswordToggle = () => {
     setOpenPassword(!openPassword);
-    console.log("click");
+    // console.log("click");
   };
 
   const handleShowEditBox = () => {
@@ -34,19 +34,19 @@ const PersonalProfile = () => {
   };
 
   const handleUpdate = (id, userData) => {
-    console.log(id, userData);
+    // console.log(id, userData);
     dispatch(updateUser({ userId: id, userData }));
   };
 
   const handleImageUpload = async (e) => {
-    console.log("Image upload triggered");
+    // console.log("Image upload triggered");
     const file = e.target.files[0];
     if (!file) return;
 
     try {
       setUploading(true);
       const imageUrl = await uploadToCloudinary(file);
-      console.log("Image uploaded successfully:", imageUrl);
+      // console.log("Image uploaded successfully:", imageUrl);
 
       dispatch(
         updateUser({

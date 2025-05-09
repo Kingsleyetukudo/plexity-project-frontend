@@ -19,7 +19,7 @@ const UserDetails = () => {
     <div className="flex flex-col gap-3 md:flex-row justify-between items-center p-5 rounded-md shadow-md">
       <div className="max-sm:w-full flex items-center gap-4">
         <h1 className="font-semibold">Welcome Back!</h1>
-        <p className="text-lg font-extrabold">{user.firstName}</p>
+        <p className="text-lg font-extrabold">{user?.firstName}</p>
       </div>
       <div className="max-sm:w-full flex gap-4 items-center justify-between">
         <div className="user-image">
@@ -38,7 +38,7 @@ const UserDetails = () => {
           <span>
             <Link to="/dashboard/profile">
               <img
-                src={user.userProfileImage || userProfile}
+                src={user?.userProfileImage || userProfile}
                 alt="User"
                 className="w-10 md:w-10 h-10 rounded-full border-2 object-fill cursor-pointer"
               />
