@@ -117,11 +117,9 @@ const RatingComponent = ({ closePopup }) => {
       improveComment,
     };
 
-    console.log(payload);
-
     try {
       const response = await api.post("/appraised", payload);
-      console.log("Appraisal submitted:", response.data);
+      // console.log("Appraisal submitted:", response.data);
       setOpenSuccessBox(true);
       if (response.data.status === "success") {
         setTimeout(() => {

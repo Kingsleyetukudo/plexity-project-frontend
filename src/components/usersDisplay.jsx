@@ -14,7 +14,6 @@ const UserDisplay = () => {
     }
   };
 
-  console.table(user);
   return (
     <>
       <div className="flex justify-between flex-col gap-4 p-5">

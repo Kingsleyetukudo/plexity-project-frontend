@@ -37,7 +37,7 @@ export const addAppraise = createAsyncThunk(
 export const updateAppraisal = createAsyncThunk(
   "appraisal/updateAppraisal",
   async ({ id, appraiseData }, { dispatch, rejectWithValue }) => {
-    console.log("updateAppraisal Called with:", { id, appraiseData });
+    // console.log("updateAppraisal Called with:", { id, appraiseData });
 
     if (!id || !appraiseData) {
       console.error("Missing id or appraiseData in updateAppraisal!");

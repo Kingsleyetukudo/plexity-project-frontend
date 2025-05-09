@@ -66,7 +66,7 @@ const calculateAppraisal = (appraisal) => {
     total += element.overallRating;
   });
   const ratingTotal = total / totalAppraisalRating;
-  console.log("Rating", total / totalAppraisalRating);
+  // console.log("Rating", total / totalAppraisalRating);
   return ratingTotal;
 };
 
