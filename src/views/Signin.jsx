@@ -39,39 +39,16 @@ const Signin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Ensure the reCAPTCHA script is loaded
-    if (!window.grecaptcha) {
-      setError("reCAPTCHA not loaded, check connection!");
-      console.error("reCAPTCHA not loaded!");
-      return;
-    }
-
+    const payload = {
+      firstName,
+      lastName,
+      email,
+      isApproved: false,
+      position,
+      department,
+    };
+    setError("");
     try {
-      // Generate reCAPTCHA token
-      const token = await window.grecaptcha.execute(
-        import.meta.env.VITE_RECAPTCHA_SITE_KEY,
-        {
-          action: "submit",
-        }
-      );
-
-      const payload = {
-        firstName,
-        lastName,
-        email,
-        isApproved: false,
-        position,
-        department,
-        token,
-      };
-
-      // if (password !== confirmPassword) {
-      //   setError("Passwords do not match!");
-      //   return;
-      // }
-
-      setError("");
-
       const result = await dispatch(createUsers(payload));
 
       if (result.meta.requestStatus === "fulfilled") {
@@ -80,8 +57,8 @@ const Signin = () => {
         setError(result?.payload?.message);
       }
     } catch (error) {
-      console.error("Error executing reCAPTCHA:", error);
-      setError("reCAPTCHA verification failed.");
+      console.error("Error during registration:", error);
+      setError("An error occurred during registration. Please try again.");
     }
   };
 
